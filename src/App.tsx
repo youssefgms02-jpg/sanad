@@ -39,6 +39,7 @@ export default function App() {
   }, [query])
 
   const openService = (name: string) => { setSelectedService(name); setActiveCategory(null) }
+  const ActiveCategoryIcon = activeCategory?.icon
   return (
     <div className={dark ? 'app dark' : 'app'}>
       <header className="topbar">
@@ -113,7 +114,7 @@ export default function App() {
         ) : activeCategory ? (
           <section className="inner-page">
             <button className="back-link" onClick={() => setActiveCategory(null)}> <ArrowLeft size={17}/> الرجوع للرئيسية</button>
-            <div className="inner-title"><span className={'category-icon large '+activeCategory.color}><activeCategory.icon size={28}/></span><div><span className="section-kicker">أقسام سَنَد</span><h1>{activeCategory.title}</h1><p>{activeCategory.description}</p></div></div>
+            <div className="inner-title"><span className={'category-icon large '+activeCategory.color}>{ActiveCategoryIcon && <ActiveCategoryIcon size={28}/>}</span><div><span className="section-kicker">أقسام سَنَد</span><h1>{activeCategory.title}</h1><p>{activeCategory.description}</p></div></div>
             <div className="service-list">{activeCategory.items.map(item => <button key={item} className="service-row" onClick={() => openService(item)}><span className="service-file"><FileText/></span><span><b>{item}</b><small>عرض التفاصيل والمعلومات وطرق التقديم</small></span><ChevronLeft/></button>)}</div>
           </section>
         ) : (
