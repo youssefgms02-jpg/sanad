@@ -37,7 +37,7 @@ export default function App() {
     return allItems.filter(x => (x.item + ' ' + x.category).toLowerCase().includes(q))
   }, [query])
 
-  const openService = (name: string) => { setSelectedService(name); setActiveCategory(null) }
+  const openService = (name) => { setSelectedService(name); setActiveCategory(null) }
   const ActiveCategoryIcon = activeCategory?.icon
   return (
     <div className={dark ? 'app dark' : 'app'}>
