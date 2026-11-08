@@ -2,6 +2,7 @@
 import { useParams, Link } from "react-router-dom";
 import { useState, useEffect } from "react";
 import Navbar from "./Navbar";
+import API_BASE_URL from "../api";
 
 const categories = {
     government: {
@@ -36,7 +37,7 @@ function CategoryPage() {
 
             try {
                 const response = await fetch(
-                    `http://127.0.0.1:8000/services?category=${categoryId}`
+                    `${API_BASE_URL}/services?category=${encodeURIComponent(categoryId)}`
                 );
 
                 if (!response.ok) {
