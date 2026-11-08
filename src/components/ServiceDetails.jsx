@@ -2,6 +2,7 @@
 import { useParams, Link } from "react-router-dom";
 import { useState, useEffect } from "react";
 import Navbar from "./Navbar";
+import API_BASE_URL from "../api";
 
 function ServiceDetails() {
     const { serviceId } = useParams();
@@ -17,7 +18,7 @@ function ServiceDetails() {
 
             try {
                 const response = await fetch(
-                    `http://127.0.0.1:8000/services/${serviceId}`
+                    `${API_BASE_URL}/services/${serviceId}`
                 );
 
                 if (!response.ok) {
