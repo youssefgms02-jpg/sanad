@@ -1,0 +1,56 @@
+
+import { useState } from "react";
+import { Routes, Route } from "react-router-dom";
+
+import CategoryPage from "./components/CategoryPage";
+import ServiceDetails from "./components/ServiceDetails";
+import Navbar from "./components/Navbar";
+import Services from "./components/Services";
+import Hero from "./components/Hero";
+import PopularServices from "./components/PopularServices";
+
+function Home() {
+    const [searchQuery, setSearchQuery] = useState("");
+    const [searchResults, setSearchResults] = useState([]);
+    const [hasSearched, setHasSearched] = useState(false);
+
+    return (
+        <>
+            <Navbar />
+
+            <main>
+                <Hero
+                    searchQuery={searchQuery}
+                    setSearchQuery={setSearchQuery}
+                    searchResults={searchResults}
+                    setSearchResults={setSearchResults}
+                    hasSearched={hasSearched}
+                    setHasSearched={setHasSearched}
+                />
+
+                <Services />
+                <PopularServices />
+            </main>
+        </>
+    );
+}
+
+function App() {
+    return (
+        <Routes>
+            <Route path="/" element={<Home />} />
+
+            <Route
+                path="/categories/:categoryId"
+                element={<CategoryPage />}
+            />
+
+            <Route
+                path="/services/:serviceId"
+                element={<ServiceDetails />}
+            />
+        </Routes>
+    );
+}
+
+export default App;
