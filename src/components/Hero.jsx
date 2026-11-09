@@ -2,7 +2,10 @@ import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import API_BASE_URL from "../api";
 
-function Hero({ searchQuery, setSearchQuery, searchResults, setSearchResults, hasSearched, setHasSearched }) {
+function Hero() {
+    const [searchQuery, setSearchQuery] = useState("");
+    const [searchResults, setSearchResults] = useState([]);
+    const [hasSearched, setHasSearched] = useState(false);
     const [loading, setLoading] = useState(false);
     const [searchError, setSearchError] = useState("");
 
