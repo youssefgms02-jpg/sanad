@@ -33,6 +33,7 @@ function AdminDashboard() {
     const [error, setError] = useState("");
     const [dashboard, setDashboard] = useState(null);
     const [services, setServices] = useState([]);
+    const [reports, setReports] = useState([]);
     const [filter, setFilter] = useState("all");
     const [search, setSearch] = useState("");
     const [showForm, setShowForm] = useState(false);
@@ -54,12 +55,14 @@ function AdminDashboard() {
         setLoading(true);
         setError("");
         try {
-            const [stats, result] = await Promise.all([
+            const [stats, result, reportResult] = await Promise.all([
                 apiRequest("/admin/dashboard"),
                 apiRequest(currentFilter === "all" ? "/admin/services" : `/admin/services?status=${currentFilter}`),
+                apiRequest("/admin/reports"),
             ]);
             setDashboard(stats);
             setServices(result.services || []);
+            setReports(reportResult.reports || []);
             setAuthenticated(true);
         } catch (err) {
             setError(err.message);
@@ -84,6 +87,7 @@ function AdminDashboard() {
         setAuthenticated(false);
         setDashboard(null);
         setServices([]);
+        setReports([]);
         setError("");
     }
 
@@ -167,6 +171,19 @@ function AdminDashboard() {
     const visibleServices = services.filter((service) =>
         `${service.name} ${service.description} ${service.category}`.toLowerCase().includes(search.toLowerCase())
     );
+
+    async function updateReportStatus(reportId, status) {
+        setError("");
+        try {
+            await apiRequest(`/admin/reports/${reportId}`, {
+                method: "PATCH",
+                body: JSON.stringify({ status }),
+            });
+            await loadDashboard(filter);
+        } catch (err) {
+            setError(err.message);
+        }
+    }
 
     if (!authenticated) {
         return (
@@ -276,6 +293,34 @@ function AdminDashboard() {
                         </div>
                     )
                 }
+            </section>
+
+            <section className="admin-services-panel admin-reports-panel">
+                <div className="admin-panel-heading">
+                    <div><h2>بلاغات وملاحظات المواطنين</h2><p>آخر 100 بلاغ مرسل عن الخدمات المنشورة</p></div>
+                </div>
+                {reports.length === 0 ? (
+                    <div className="admin-empty"><p>لا توجد بلاغات جديدة.</p></div>
+                ) : (
+                    <div className="admin-reports-list">
+                        {reports.map((report) => (
+                            <article className="admin-report-card" key={report.id}>
+                                <div className="admin-report-meta">
+                                    <strong>بلاغ #{report.id}</strong>
+                                    <span>الخدمة: {report.service_id ?? "غير محددة"}</span>
+                                    <span>الحالة: {report.status}</span>
+                                    <span>{report.kind === "wrong_info" ? "معلومة غير دقيقة" : report.kind === "broken_link" ? "رابط لا يعمل" : "ملاحظة أخرى"}</span>
+                                </div>
+                                <p>{report.message}</p>
+                                <div className="admin-report-actions">
+                                    <button onClick={() => updateReportStatus(report.id, "reviewing")}>قيد المراجعة</button>
+                                    <button onClick={() => updateReportStatus(report.id, "resolved")}>تمت المعالجة</button>
+                                    <button onClick={() => updateReportStatus(report.id, "dismissed")}>إغلاق البلاغ</button>
+                                </div>
+                            </article>
+                        ))}
+                    </div>
+                )}
             </section>
 
             {showForm && (
