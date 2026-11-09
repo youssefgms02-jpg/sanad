@@ -54,7 +54,8 @@ function Hero({ searchQuery, setSearchQuery, searchResults, setSearchResults, ha
         <>
             <h1 className="h1">أهلاً بيك في سَنَد</h1>
             <p className="p">حياة أسهل للمصريين.</p>
-            <div className="search">
+            <div className="search-area">
+              <div className="search">
                 <input
                     value={searchQuery}
                     onChange={(event) => setSearchQuery(event.target.value)}
@@ -65,12 +66,12 @@ function Hero({ searchQuery, setSearchQuery, searchResults, setSearchResults, ha
                     aria-label="ابحث عن خدمة"
                     placeholder="اكتب الخدمة أو الحاجة اللي بتدور عليها..."
                 />
-                {loading && <span className="search-loading" role="status">جاري البحث...</span>}
-            </div>
+                {loading && <span className="search-loading" role="status">جاري البحث</span>}
+              </div>
 
-            {searchError && <p className="search-message" role="alert">{searchError}</p>}
+              {searchError && <p className="search-message search-results" role="alert">{searchError}</p>}
 
-            {hasSearched && !loading && !searchError && (
+              {hasSearched && !searchError && (
                 <section className="search-results" aria-live="polite">
                     <h2>نتائج البحث ({searchResults.length})</h2>
                     {searchResults.length === 0 ? (
@@ -87,7 +88,8 @@ function Hero({ searchQuery, setSearchQuery, searchResults, setSearchResults, ha
                         </ul>
                     )}
                 </section>
-            )}
+              )}
+            </div>
         </>
     );
 }
