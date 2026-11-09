@@ -23,3 +23,11 @@ export function toggleFavorite(id) {
     window.dispatchEvent(new CustomEvent("sanad:favorites-changed"));
     return next.includes(numericId);
 }
+
+
+export function replaceFavoriteIds(ids) {
+    const unique = [...new Set((Array.isArray(ids) ? ids : []).map(Number).filter(Number.isInteger))];
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(unique));
+    window.dispatchEvent(new CustomEvent("sanad:favorites-changed"));
+    return unique;
+}
