@@ -64,18 +64,36 @@ function ServiceDetails() {
 
                             <h2>معلومات الخدمة</h2>
 
-                            <div className="service-card">
-                                <h3>الجهة المسؤولة</h3>
-                                <p>{service.authority || "لم تُحدد بعد"}</p>
-
-                                <h3>شروط الاستفادة</h3>
-                                <p>{service.eligibility || "لم تُحدد بعد"}</p>
-
-                                <h3>الأوراق المطلوبة</h3>
-                                <p>{service.documents || "لم تُحدد بعد"}</p>
-
-                                <h3>خطوات الحصول على الخدمة</h3>
-                                <p>{service.steps || "لم تُحدد بعد"}</p>
+                            <div className="service-details-panel">
+                                <section className="service-info-block">
+                                    <h3>الجهة المسؤولة</h3>
+                                    <p>{service.authority || "يرجى الرجوع إلى المصدر الرسمي لتحديد الجهة المختصة."}</p>
+                                </section>
+                                <section className="service-info-block">
+                                    <h3>شروط الاستفادة</h3>
+                                    <p>{service.eligibility || "لم تُراجع الشروط التفصيلية لهذه الخدمة بعد."}</p>
+                                </section>
+                                <section className="service-info-block">
+                                    <h3>المستندات المطلوبة</h3>
+                                    <p>{service.documents || "لم تُراجع قائمة المستندات التفصيلية لهذه الخدمة بعد."}</p>
+                                </section>
+                                <section className="service-info-block">
+                                    <h3>خطوات الحصول على الخدمة</h3>
+                                    <p>{service.steps || "يرجى اتباع التعليمات المنشورة لدى الجهة الرسمية."}</p>
+                                </section>
+                                {service.official_source && (
+                                    <section className="service-source-block">
+                                        <h3>المصدر الرسمي</h3>
+                                        <a href={service.official_source} target="_blank" rel="noopener noreferrer">
+                                            فتح موقع الجهة الرسمية
+                                        </a>
+                                        {service.last_reviewed && (
+                                            <p className="service-reviewed">
+                                                آخر مراجعة: {new Date(service.last_reviewed).toLocaleDateString("ar-EG")}
+                                            </p>
+                                        )}
+                                    </section>
+                                )}
                             </div>
                         </>
                     )}
