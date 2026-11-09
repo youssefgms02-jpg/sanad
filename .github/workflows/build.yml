@@ -36,6 +36,9 @@ jobs:
       - name: Compile backend modules
         working-directory: backend
         run: python -m py_compile main.py models.py schemas.py auth_utils.py seed_banking_services.py
+      - name: Import FastAPI application
+        working-directory: backend
+        run: python -c "from main import app; print('API routes:', len(app.routes))"
       - name: Run backend unit tests
         working-directory: backend
         run: python -m unittest discover -s tests -v
