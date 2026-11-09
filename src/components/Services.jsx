@@ -1,13 +1,8 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
 import {
-    Landmark,
-    GraduationCap,
-    HandHeart,
-    Accessibility,
-    Filter,
-    Lightbulb,
-    BriefcaseBusiness,
+    Landmark, GraduationCap, HandHeart, Accessibility, Filter,
+    Lightbulb, BriefcaseBusiness, WalletCards
 } from "lucide-react";
 
 const categories = [
@@ -17,6 +12,7 @@ const categories = [
     { id: 4, title: "ذوو الإعاقة وكبار السن", category: "accessibility", icon: Accessibility, description: "الخدمات والتأهيل والتيسيرات وسبل الرعاية." },
     { id: 5, title: "الفرص والمبادرات", category: "opportunities", icon: Lightbulb, description: "فرص التدريب والتطوع والتوظيف والمبادرات المجتمعية." },
     { id: 6, title: "دعم المشروعات الصغيرة", category: "business", icon: BriefcaseBusiness, description: "خدمات تأسيس وتمويل وتطوير المشروعات الصغيرة." },
+    { id: 7, title: "الخدمات البنكية", category: "banking", icon: WalletCards, description: "دليل الخدمات المصرفية للأفراد وطرق الوصول إليها من البنوك المصرية." },
 ];
 
 function Services() {
@@ -40,32 +36,18 @@ function Services() {
             <div className="services-header" id="services">
                 <h2 className="section-title">خدماتنا</h2>
                 <div className="filter-container">
-                    <button
-                        className="filter-button"
-                        onClick={() => setIsFilterOpen((open) => !open)}
-                        aria-expanded={isFilterOpen}
-                    >
-                        <Filter size={18} />
-                        تصفية الأقسام
+                    <button className="filter-button" onClick={() => setIsFilterOpen((open) => !open)} aria-expanded={isFilterOpen}>
+                        <Filter size={18} /> تصفية الأقسام
                     </button>
                     {isFilterOpen && (
                         <div className="filter-options">
                             {categories.map((category) => (
                                 <label key={category.id}>
-                                    <input
-                                        type="checkbox"
-                                        checked={selectedCategories.includes(category.category)}
-                                        onChange={() => toggleCategory(category.category)}
-                                    />
+                                    <input type="checkbox" checked={selectedCategories.includes(category.category)} onChange={() => toggleCategory(category.category)} />
                                     {category.title}
                                 </label>
                             ))}
-                            <button
-                                className="clear-filter-button"
-                                onClick={() => setSelectedCategories([])}
-                            >
-                                عرض كل الأقسام
-                            </button>
+                            <button className="clear-filter-button" onClick={() => setSelectedCategories([])}>عرض كل الأقسام</button>
                         </div>
                     )}
                 </div>
@@ -74,11 +56,7 @@ function Services() {
                 {filteredCategories.map((category) => {
                     const Icon = category.icon;
                     return (
-                        <Link
-                            to={`/categories/${category.category}`}
-                            className="service-card"
-                            key={category.id}
-                        >
+                        <Link to={`/categories/${category.category}`} className="service-card" key={category.id}>
                             <Icon size={48} />
                             <h3>{category.title}</h3>
                             <p>{category.description}</p>
