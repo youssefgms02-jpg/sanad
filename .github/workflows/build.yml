@@ -36,6 +36,9 @@ jobs:
       - name: Run backend unit tests
         working-directory: backend
         run: python -m unittest discover -s tests -v
+      - name: Exercise targeted support-data repair on CI copy
+        working-directory: backend
+        run: python repair_support_services_batch10.py
       - name: Audit tracked database (read-only)
         working-directory: backend
         run: |
