@@ -12,6 +12,7 @@ import EmergencyInfo from "./components/EmergencyInfo";
 import AdminDashboard from "./pages/AdminDashboard";
 import FavoritesPage from "./pages/FavoritesPage";
 import AboutPage from "./pages/AboutPage";
+import NotFoundPage from "./pages/NotFoundPage";
 
 function Home() {
     return (
@@ -50,6 +51,7 @@ function App() {
                 path="/admin"
                 element={<AdminDashboard />}
             />
+            <Route path="*" element={<NotFoundPage />} />
         </Routes>
     );
 }
