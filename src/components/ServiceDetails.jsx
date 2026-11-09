@@ -28,6 +28,7 @@ function ServiceDetails() {
 
     useEffect(() => {
         const syncFavorites = () => setFavorite(isFavorite(serviceId));
+        syncFavorites();
         window.addEventListener("sanad:favorites-changed", syncFavorites);
         return () => window.removeEventListener("sanad:favorites-changed", syncFavorites);
     }, [serviceId]);
