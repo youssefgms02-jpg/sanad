@@ -24,6 +24,11 @@ function ServiceDetails() {
     const [service, setService] = useState(null);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState("");
+    const [reportOpen, setReportOpen] = useState(false);
+    const [reportKind, setReportKind] = useState("wrong_info");
+    const [reportMessage, setReportMessage] = useState("");
+    const [reportSending, setReportSending] = useState(false);
+    const [reportFeedback, setReportFeedback] = useState("");
     const [favorite, setFavorite] = useState(() => isFavorite(serviceId));
 
     useEffect(() => {
@@ -50,6 +55,32 @@ function ServiceDetails() {
             setError("تم نسخ رابط الخدمة.");
         } catch {
             setError("انسخ رابط الصفحة من شريط العنوان لمشاركتها.");
+        }
+    }
+
+    async function submitReport(event) {
+        event.preventDefault();
+        setReportSending(true);
+        setReportFeedback("");
+        try {
+            const response = await fetch(`${API_BASE_URL}/reports`, {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({
+                    service_id: Number(serviceId),
+                    kind: reportKind,
+                    message: reportMessage,
+                }),
+            });
+            const data = await response.json().catch(() => ({}));
+            if (!response.ok) throw new Error(data.detail || "تعذر إرسال البلاغ.");
+            setReportFeedback(data.message || "تم استلام البلاغ للمراجعة.");
+            setReportMessage("");
+            setReportOpen(false);
+        } catch (err) {
+            setReportFeedback(err.message);
+        } finally {
+            setReportSending(false);
         }
     }
 
@@ -94,6 +125,7 @@ function ServiceDetails() {
                                     {favorite ? "إزالة من المفضلة" : "حفظ في المفضلة"}
                                 </button>
                                 <button type="button" onClick={handleShare}><Share2 size={17} /> مشاركة الخدمة</button>
+                                <button type="button" onClick={() => { setReportOpen((open) => !open); setReportFeedback(""); }}>الإبلاغ عن خطأ</button>
                             </div>
                             <p className="service-lead">{displayText(service.description)}</p>
                             <h2>معلومات الخدمة</h2>
@@ -114,6 +146,29 @@ function ServiceDetails() {
                                     <h3>خطوات الحصول على الخدمة</h3>
                                     <p>{displayText(service.steps) || "يرجى اتباع التعليمات المنشورة لدى الجهة الرسمية."}</p>
                                 </section>
+                                {reportOpen && (
+                                    <form className="service-report-form" onSubmit={submitReport}>
+                                        <h3>ساعدنا نصحح معلومات الخدمة</h3>
+                                        <label>
+                                            نوع البلاغ
+                                            <select value={reportKind} onChange={(event) => setReportKind(event.target.value)}>
+                                                <option value="wrong_info">معلومة غير دقيقة أو قديمة</option>
+                                                <option value="broken_link">رابط لا يعمل</option>
+                                                <option value="other">ملاحظة أخرى</option>
+                                            </select>
+                                        </label>
+                                        <label>
+                                            وضّح المشكلة
+                                            <textarea value={reportMessage} onChange={(event) => setReportMessage(event.target.value)} minLength={10} maxLength={1500} required placeholder="اكتب ما يحتاج إلى مراجعة..." />
+                                        </label>
+                                        <p>لا تكتب رقمك القومي أو بيانات شخصية أو معلومات حساسة في البلاغ.</p>
+                                        <div className="service-report-actions">
+                                            <button type="button" onClick={() => setReportOpen(false)}>إلغاء</button>
+                                            <button type="submit" disabled={reportSending || reportMessage.trim().length < 10}>{reportSending ? "جارٍ الإرسال..." : "إرسال البلاغ"}</button>
+                                        </div>
+                                    </form>
+                                )}
+                                {reportFeedback && <p className="service-report-feedback" role="status">{reportFeedback}</p>}
                                 <section className="service-source-block">
                                     <h3>روابط الجهات والمراجع</h3>
                                     {sources.length > 0 ? (
