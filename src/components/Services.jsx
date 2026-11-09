@@ -1,44 +1,22 @@
-
 import { useState } from "react";
 import { Link } from "react-router-dom";
-
 import {
     Landmark,
     GraduationCap,
     HandHeart,
     Accessibility,
     Filter,
+    Lightbulb,
+    BriefcaseBusiness,
 } from "lucide-react";
 
 const categories = [
-    {
-        id: 1,
-        title: "الخدمات الحكومية",
-        category: "government",
-        icon: Landmark,
-        description: "اكتشف الخدمات الحكومية وطريقة الحصول عليها."
-    },
-    {
-        id: 2,
-        title: "التعليم",
-        category: "education",
-        icon: GraduationCap,
-        description: "اكتشف الخدمات التعليمية وآخر القرارات والفرص المتاحة لك."
-    },
-    {
-        id: 3,
-        title: "المساعدات والدعم",
-        category: "support",
-        icon: HandHeart,
-        description: "احصل على معلومات حول المساعدات والدعم المتاحة لك."
-    },
-    {
-        id: 4,
-        title: "ذوو الإعاقة وكبار السن",
-        category: "accessibility",
-        icon: Accessibility,
-        description: "تعرف على الخدمات المتاحة لذوي الإعاقة وكبار السن وكيفية الوصول إليها."
-    }
+    { id: 1, title: "الخدمات الحكومية", category: "government", icon: Landmark, description: "الخدمات والمعاملات الحكومية التي يحتاجها المواطن." },
+    { id: 2, title: "التعليم", category: "education", icon: GraduationCap, description: "الخدمات التعليمية وشؤون الطلاب والتعلم." },
+    { id: 3, title: "المساعدات والدعم", category: "support", icon: HandHeart, description: "برامج الحماية الاجتماعية والمساعدات والخدمات الداعمة." },
+    { id: 4, title: "ذوو الإعاقة وكبار السن", category: "accessibility", icon: Accessibility, description: "الخدمات والتأهيل والتيسيرات وسبل الرعاية." },
+    { id: 5, title: "الفرص والمبادرات", category: "opportunities", icon: Lightbulb, description: "فرص التدريب والتطوع والتوظيف والمبادرات المجتمعية." },
+    { id: 6, title: "دعم المشروعات الصغيرة", category: "business", icon: BriefcaseBusiness, description: "خدمات تأسيس وتمويل وتطوير المشروعات الصغيرة." },
 ];
 
 function Services() {
@@ -46,54 +24,42 @@ function Services() {
     const [isFilterOpen, setIsFilterOpen] = useState(false);
 
     function toggleCategory(category) {
-        if (selectedCategories.includes(category)) {
-            setSelectedCategories(
-                selectedCategories.filter((c) => c !== category)
-            );
-        } else {
-            setSelectedCategories([...selectedCategories, category]);
-        }
+        setSelectedCategories((previous) =>
+            previous.includes(category)
+                ? previous.filter((item) => item !== category)
+                : [...previous, category]
+        );
     }
 
-    const filteredCategories =
-        selectedCategories.length === 0
-            ? categories
-            : categories.filter((category) =>
-                selectedCategories.includes(category.category)
-            );
+    const filteredCategories = selectedCategories.length === 0
+        ? categories
+        : categories.filter((item) => selectedCategories.includes(item.category));
 
     return (
         <>
             <div className="services-header">
                 <h2 className="section-title">خدماتنا</h2>
-
                 <div className="filter-container">
                     <button
                         className="filter-button"
-                        onClick={() => setIsFilterOpen(!isFilterOpen)}
+                        onClick={() => setIsFilterOpen((open) => !open)}
                         aria-expanded={isFilterOpen}
                     >
                         <Filter size={18} />
                         تصفية الأقسام
                     </button>
-
                     {isFilterOpen && (
                         <div className="filter-options">
                             {categories.map((category) => (
                                 <label key={category.id}>
                                     <input
                                         type="checkbox"
-                                        checked={selectedCategories.includes(
-                                            category.category
-                                        )}
-                                        onChange={() =>
-                                            toggleCategory(category.category)
-                                        }
+                                        checked={selectedCategories.includes(category.category)}
+                                        onChange={() => toggleCategory(category.category)}
                                     />
                                     {category.title}
                                 </label>
                             ))}
-
                             <button
                                 className="clear-filter-button"
                                 onClick={() => setSelectedCategories([])}
@@ -104,11 +70,9 @@ function Services() {
                     )}
                 </div>
             </div>
-
             <div className="services">
                 {filteredCategories.map((category) => {
                     const Icon = category.icon;
-
                     return (
                         <Link
                             to={`/categories/${category.category}`}
