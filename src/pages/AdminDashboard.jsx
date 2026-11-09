@@ -21,8 +21,9 @@ const emptyForm = {
 };
 
 function getSourceUrls(value) {
-    const matches = String(value || "").replace(/\\r\\n|\\n|\\r/g, "\n").match(/https?:\\/\\/[^\\s<>"']+/gi) || [];
-    return [...new Set(matches.map((url) => url.replace(/[.,،؛:!?)}\\]»]+$/g, "")))];
+    const normalized = String(value || "").replace(/\\r\\n|\\n|\\r/g, "\n");
+    const matches = normalized.match(/https?:\/\/[^\s<>"']+/gi) || [];
+    return [...new Set(matches.map((url) => url.replace(/[.,،؛:!?)}\]»]+$/g, "")))];
 }
 
 function AdminDashboard() {
