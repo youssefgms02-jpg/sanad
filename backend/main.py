@@ -4,7 +4,7 @@ import secrets
 import re
 from difflib import SequenceMatcher
 
-from datetime import datetime, timezone
+from datetime import datetime, timezone, timedelta
 from urllib.parse import urlparse
 
 from fastapi import (
@@ -12,6 +12,8 @@ from fastapi import (
     HTTPException,
     Depends,
     Header,
+    Request,
+    Response,
 )
 from fastapi.middleware.cors import CORSMiddleware
 from sqlalchemy.orm import Session
@@ -19,7 +21,8 @@ from sqlalchemy.orm import Session
 from database import Base, engine, SessionLocal
 from models import Service, ServiceReport, User, AuthSession, UserFavorite
 from schemas import ServiceCreate, ServiceUpdate, ServiceReportCreate, ServiceReportStatusUpdate, AuthRegister, AuthLogin, FavoriteSync
-from source_utils import extract_http_urls, valid_http_url, normalize_arabic_text\nfrom auth_utils import hash_password, verify_password, hash_session_token, new_session_token
+from source_utils import extract_http_urls, valid_http_url, normalize_arabic_text
+from auth_utils import hash_password, verify_password, hash_session_token, new_session_token
 
 
 # =====================================
@@ -181,7 +184,7 @@ def health():
     return {"status": "ok"}
 
 
-from datetime import timedelta\n\n
+
 # =====================================
 # حسابات مستخدمي سَنَد والمفضلة المتزامنة
 # =====================================
@@ -351,7 +354,8 @@ def sync_account_favorites(data: FavoriteSync, request: Request, user: User = De
         raise HTTPException(status_code=500, detail="تعذرت مزامنة المفضلة")
 
 
-\ndef normalize_search_text(value: str | None) -> str:
+
+def normalize_search_text(value: str | None) -> str:
     return normalize_arabic_text(value)
 
 
