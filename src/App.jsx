@@ -1,5 +1,4 @@
 
-import { useState } from "react";
 import { Routes, Route } from "react-router-dom";
 
 import CategoryPage from "./components/CategoryPage";
@@ -12,23 +11,12 @@ import PopularServices from "./components/PopularServices";
 import AdminDashboard from "./pages/AdminDashboard";
 
 function Home() {
-    const [searchQuery, setSearchQuery] = useState("");
-    const [searchResults, setSearchResults] = useState([]);
-    const [hasSearched, setHasSearched] = useState(false);
-
     return (
         <>
             <Navbar />
 
             <main>
-                <Hero
-                    searchQuery={searchQuery}
-                    setSearchQuery={setSearchQuery}
-                    searchResults={searchResults}
-                    setSearchResults={setSearchResults}
-                    hasSearched={hasSearched}
-                    setHasSearched={setHasSearched}
-                />
+                <Hero />
 
                 <Services />
                 <PopularServices />
