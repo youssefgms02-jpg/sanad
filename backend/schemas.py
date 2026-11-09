@@ -51,3 +51,28 @@ class ServiceReportStatusUpdate(BaseModel):
     model_config = ConfigDict(str_strip_whitespace=True, extra="forbid")
 
     status: Literal["new", "reviewing", "resolved", "dismissed"]
+
+
+class AuthRegister(BaseModel):
+    model_config = ConfigDict(str_strip_whitespace=True, extra="forbid")
+
+    display_name: str = Field(min_length=2, max_length=60)
+    email: str = Field(
+        min_length=6,
+        max_length=254,
+        pattern=r"^[^@\\s]+@[^@\\s]+\\.[^@\\s]+$",
+    )
+    password: str = Field(min_length=12, max_length=128)
+
+
+class AuthLogin(BaseModel):
+    model_config = ConfigDict(str_strip_whitespace=True, extra="forbid")
+
+    email: str = Field(min_length=6, max_length=254)
+    password: str = Field(min_length=1, max_length=128)
+
+
+class FavoriteSync(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+
+    service_ids: list[int] = Field(default_factory=list, max_length=500)
