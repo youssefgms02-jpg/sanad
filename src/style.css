@@ -832,3 +832,208 @@ main {
         min-height: 190px;
     }
 }
+
+
+/* SANAD accessibility and interaction improvements */
+:focus-visible {
+    outline: 3px solid #e0a33a;
+    outline-offset: 3px;
+}
+.theme-toggle {
+    display: inline-grid;
+    place-items: center;
+    width: 40px;
+    height: 40px;
+    flex: 0 0 auto;
+    border: 1px solid #ffffff55;
+    border-radius: 12px;
+    background: #ffffff16;
+    color: #fff;
+    cursor: pointer;
+}
+.theme-toggle:hover { background: #ffffff2a; }
+.service-detail-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin: 14px 0 18px;
+}
+.service-detail-actions button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    min-height: 42px;
+    padding: 9px 14px;
+    border: 1px solid #d6e2ec;
+    border-radius: 11px;
+    background: #fff;
+    color: #163b5c;
+    font: inherit;
+    cursor: pointer;
+}
+.service-source-note {
+    margin: 12px 0 0;
+    color: #7b8794;
+    font-size: 12px;
+    line-height: 1.7;
+}
+.admin-source-links {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    max-width: 190px;
+    white-space: normal;
+    overflow-wrap: anywhere;
+}
+.category-filters {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 14px;
+    margin: 24px 0;
+}
+.category-filters label {
+    display: grid;
+    gap: 7px;
+    color: #526b80;
+    font-size: 13px;
+}
+.category-filters input {
+    width: 100%;
+    min-height: 44px;
+    padding: 10px 13px;
+    border: 1px solid #d7e2ec;
+    border-radius: 11px;
+    background: #fff;
+    color: #163b5c;
+    font: inherit;
+}
+.favorites-page, .about-page { min-height: 65vh; }
+.empty-favorites {
+    margin: 28px 0;
+    padding: 30px;
+    border: 1px dashed #cbd8e3;
+    border-radius: 16px;
+    text-align: center;
+}
+.empty-favorites a, .about-cta a {
+    color: #176b91;
+    font-weight: 700;
+}
+.emergency-section {
+    width: min(1200px, calc(100% - 32px));
+    margin: 36px auto 70px;
+    padding: 25px;
+    border: 1px solid #e1eaf2;
+    border-radius: 20px;
+    background: #fff;
+}
+.emergency-heading {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 18px;
+}
+.emergency-heading h2 { margin: 0 0 5px; color: #163b5c; }
+.emergency-heading p { margin: 0; color: #718096; font-size: 13px; }
+.emergency-icon {
+    display: grid;
+    place-items: center;
+    width: 44px;
+    height: 44px;
+    border-radius: 13px;
+    background: #fff1ed;
+    color: #b54732;
+}
+.emergency-grid {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 12px;
+}
+.emergency-card {
+    display: flex;
+    flex-direction: column;
+    gap: 7px;
+    padding: 17px;
+    border: 1px solid #e6edf3;
+    border-radius: 14px;
+    color: #163b5c;
+    text-decoration: none;
+}
+.emergency-card strong { font-size: 27px; letter-spacing: 1px; }
+.emergency-card small { color: #718096; line-height: 1.5; }
+.emergency-source { margin: 16px 0 0; color: #718096; font-size: 12px; }
+.emergency-source a { color: #176b91; }
+html[data-theme="dark"] body {
+    background: #0c1723;
+    color: #e5edf5;
+}
+html[data-theme="dark"] .h1,
+html[data-theme="dark"] .section-title,
+html[data-theme="dark"] .category-page h1,
+html[data-theme="dark"] .category-page h2,
+html[data-theme="dark"] .category-page h3 {
+    color: #e5edf5;
+}
+html[data-theme="dark"] .category-page,
+html[data-theme="dark"] .popular-services,
+html[data-theme="dark"] .services-header,
+html[data-theme="dark"] .emergency-section {
+    color: #e5edf5;
+}
+html[data-theme="dark"] .service-card,
+html[data-theme="dark"] .popular-service-card,
+html[data-theme="dark"] .service-details-panel,
+html[data-theme="dark"] .service-info-block,
+html[data-theme="dark"] .service-source-block,
+html[data-theme="dark"] .emergency-card,
+html[data-theme="dark"] .empty-favorites {
+    background: #152536;
+    border-color: #2c4053;
+    color: #e5edf5;
+}
+html[data-theme="dark"] .service-card h3,
+html[data-theme="dark"] .popular-service-card h3,
+html[data-theme="dark"] .emergency-heading h2,
+html[data-theme="dark"] .emergency-card strong {
+    color: #e5edf5;
+}
+html[data-theme="dark"] .service-card p,
+html[data-theme="dark"] .popular-service-card p,
+html[data-theme="dark"] .service-info-block p,
+html[data-theme="dark"] .emergency-card small,
+html[data-theme="dark"] .emergency-heading p {
+    color: #b5c4d2;
+}
+html[data-theme="dark"] .category-filters input,
+html[data-theme="dark"] .service-detail-actions button {
+    background: #152536;
+    border-color: #344b60;
+    color: #e5edf5;
+}
+html[data-theme="dark"] .admin-page .admin-services-panel,
+html[data-theme="dark"] .admin-page .admin-stat-card {
+    background: #152536;
+    border-color: #2c4053;
+    color: #e5edf5;
+}
+html[data-theme="dark"] .admin-table th { background: #1d3043; color: #d6e2ec; }
+html[data-theme="dark"] .admin-table td { border-color: #2c4053; }
+html[data-theme="dark"] .admin-actions button { background: #152536; border-color: #344b60; }
+@media (max-width: 850px) {
+    .emergency-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+@media (max-width: 650px) {
+    .category-filters { grid-template-columns: 1fr; }
+    .emergency-grid { grid-template-columns: 1fr 1fr; }
+    .emergency-section { padding: 18px; }
+    .service-detail-actions button { flex: 1 1 100%; }
+}
+@media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after {
+        scroll-behavior: auto !important;
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+    }
+}
