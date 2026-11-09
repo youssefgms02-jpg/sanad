@@ -3,7 +3,7 @@ import { useState, useEffect } from "react";
 import Navbar from "./Navbar";
 import API_BASE_URL from "../api";
 import { Heart, Share2 } from "lucide-react";
-import { isFavorite, toggleFavorite } from "../utils/favorites";
+import { isFavorite, toggleFavorite, syncFavoritesToAccount } from "../utils/favorites";
 
 // Normalize both real line breaks and escaped "\\n" sequences from older records.
 function displayText(value) {
