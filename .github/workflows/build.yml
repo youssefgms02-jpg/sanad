@@ -36,3 +36,14 @@ jobs:
       - name: Run backend unit tests
         working-directory: backend
         run: python -m unittest discover -s tests -v
+      - name: Audit tracked database (read-only)
+        working-directory: backend
+        run: |
+          python audit_database.py
+          python -c "import json; r=json.load(open('service_audit_report.json', encoding='utf-8')); print('DATABASE AUDIT SUMMARY:', json.dumps(r['counts'], ensure_ascii=False)); print('STATUS COUNTS:', json.dumps(r['by_status'], ensure_ascii=False)); print('REPEATED DETAIL CANDIDATES:', len(r['checks']['repeated_detail_text_candidates']))"
+      - name: Upload database audit report
+        uses: actions/upload-artifact@v4
+        with:
+          name: sanad-database-audit
+          path: backend/service_audit_report.json
+          if-no-files-found: error
