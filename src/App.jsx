@@ -9,6 +9,8 @@ import Services from "./components/Services";
 import Hero from "./components/Hero";
 import PopularServices from "./components/PopularServices";
 
+import AdminDashboard from "./pages/AdminDashboard";
+
 function Home() {
     const [searchQuery, setSearchQuery] = useState("");
     const [searchResults, setSearchResults] = useState([]);
@@ -48,6 +50,11 @@ function App() {
             <Route
                 path="/services/:serviceId"
                 element={<ServiceDetails />}
+            />
+
+            <Route
+                path="/admin"
+                element={<AdminDashboard />}
             />
         </Routes>
     );
