@@ -1190,3 +1190,36 @@ html[data-theme="dark"] .banking-disclaimer, html[data-theme="dark"] .account-se
     .settings-card { padding: 18px; }
     .settings-account-card { grid-template-columns: 1fr; }
 }
+
+
+/* Account registration, login and synced favorites */
+.account-form-card { max-width: 620px; }
+.account-mode-switch { display: flex; gap: 8px; padding: 5px; border-radius: 12px; background: #f0f5f8; }
+.account-mode-switch button {
+    flex: 1; min-height: 42px; border: 0; border-radius: 9px; background: transparent;
+    color: #526b80; font: inherit; cursor: pointer;
+}
+.account-mode-switch button.selected { background: #fff; color: #176b91; box-shadow: 0 2px 8px #163b5c12; font-weight: 700; }
+.account-form { display: grid; gap: 15px; }
+.account-form label { display: grid; gap: 7px; color: #526b80; font-size: 13px; }
+.account-form input {
+    width: 100%; min-height: 46px; padding: 11px 13px; border: 1px solid #d7e2ec;
+    border-radius: 10px; background: #fff; color: #163b5c; font: inherit; direction: ltr;
+}
+.account-submit, .account-actions button {
+    display: inline-flex; align-items: center; justify-content: center; gap: 8px;
+    min-height: 43px; padding: 10px 15px; border: 1px solid #176b91;
+    border-radius: 10px; background: #176b91; color: #fff; font: inherit; cursor: pointer;
+}
+.account-submit:disabled, .account-actions button:disabled { opacity: .55; cursor: wait; }
+.account-form-hint { margin: -5px 0 0; color: #718096; font-size: 12px; }
+.account-actions { display: flex; flex-wrap: wrap; gap: 9px; margin-top: 16px; }
+.account-actions button:last-child { background: transparent; color: #526b80; border-color: #d7e2ec; }
+.account-user-details { min-width: 0; }
+.account-feedback { margin: 14px 0; padding: 12px 15px; border-radius: 10px; line-height: 1.7; }
+.account-feedback.error { background: #fff1f0; color: #a33a32; }
+.account-feedback.success { background: #eef8f1; color: #286344; }
+html[data-theme="dark"] .account-mode-switch { background: #1d3043; }
+html[data-theme="dark"] .account-mode-switch button.selected { background: #263d52; color: #d8edf8; }
+html[data-theme="dark"] .account-form label { color: #c3d1dc; }
+html[data-theme="dark"] .account-form input { background: #1d3043; border-color: #344b60; color: #e5edf5; }
