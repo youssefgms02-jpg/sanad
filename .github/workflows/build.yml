@@ -39,6 +39,11 @@ jobs:
       - name: Exercise targeted support-data repair on CI copy
         working-directory: backend
         run: python repair_support_services_batch10.py
+      - name: Seed and verify official banking catalog on CI copy
+        working-directory: backend
+        run: |
+          python seed_banking_services.py
+          python -c "from database import SessionLocal; from models import Service; db=SessionLocal(); n=db.query(Service).filter(Service.category=='banking', Service.status=='published').count(); db.close(); print('PUBLISHED BANKING SERVICES:', n); assert n == 50, f'Expected 50 published banking services, got {n}'"
       - name: Audit tracked database (read-only)
         working-directory: backend
         run: |
