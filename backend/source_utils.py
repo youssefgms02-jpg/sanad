@@ -3,7 +3,7 @@ import re
 import unicodedata
 from urllib.parse import urlsplit
 
-_URL_RE = re.compile(r"https?://[^\\s<>\"']+", re.IGNORECASE)
+_URL_RE = re.compile(r"https?://[^\s<>\"']+", re.IGNORECASE)
 _TRAILING_URL_PUNCTUATION = ".,،؛:!?)]}»،؛"
 
 
@@ -11,7 +11,7 @@ def extract_http_urls(value):
     """Extract URLs from multiline source fields, including legacy escaped newlines."""
     if not value:
         return []
-    text = str(value).replace(r"\\r\\n", "\\n").replace(r"\\n", "\\n").replace(r"\\r", "\\n")
+    text = str(value).replace(r"\r\n", "\n").replace(r"\n", "\n").replace(r"\r", "\n")
     found = []
     for match in _URL_RE.findall(text):
         url = match.rstrip(_TRAILING_URL_PUNCTUATION)
