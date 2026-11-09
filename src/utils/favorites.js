@@ -31,3 +31,20 @@ export function replaceFavoriteIds(ids) {
     window.dispatchEvent(new CustomEvent("sanad:favorites-changed"));
     return unique;
 }
+
+
+export async function syncFavoritesToAccount(apiBaseUrl) {
+    try {
+        const auth = await fetch(`${apiBaseUrl}/auth/me`, { credentials: "include" });
+        if (!auth.ok) return false;
+        const response = await fetch(`${apiBaseUrl}/me/favorites`, {
+            method: "PUT",
+            credentials: "include",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ service_ids: getFavoriteIds() }),
+        });
+        return response.ok;
+    } catch {
+        return false;
+    }
+}
