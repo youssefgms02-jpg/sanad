@@ -70,7 +70,7 @@ function Services() {
                     )}
                 </div>
             </div>
-            <div className="services">
+            <div className="services home-category-grid">
                 {filteredCategories.map((category) => {
                     const Icon = category.icon;
                     return (
