@@ -17,9 +17,9 @@ from fastapi.middleware.cors import CORSMiddleware
 from sqlalchemy.orm import Session
 
 from database import Base, engine, SessionLocal
-from models import Service, ServiceReport
-from schemas import ServiceCreate, ServiceUpdate, ServiceReportCreate, ServiceReportStatusUpdate
-from source_utils import extract_http_urls, valid_http_url, normalize_arabic_text
+from models import Service, ServiceReport, User, AuthSession, UserFavorite
+from schemas import ServiceCreate, ServiceUpdate, ServiceReportCreate, ServiceReportStatusUpdate, AuthRegister, AuthLogin, FavoriteSync
+from source_utils import extract_http_urls, valid_http_url, normalize_arabic_text\nfrom auth_utils import hash_password, verify_password, hash_session_token, new_session_token
 
 
 # =====================================
@@ -158,9 +158,9 @@ allowed_origins = [
 app.add_middleware(
     CORSMiddleware,
     allow_origins=allowed_origins,
-    allow_credentials=False,
+    allow_credentials=True,
     allow_methods=["GET", "POST", "PATCH", "DELETE"],
-    allow_headers=["Content-Type", "X-Admin-Token"],
+    allow_headers=["Content-Type", "X-Admin-Token", "Authorization"],
 )
 
 
@@ -181,7 +181,177 @@ def health():
     return {"status": "ok"}
 
 
-def normalize_search_text(value: str | None) -> str:
+from datetime import timedelta\n\n
+# =====================================
+# حسابات مستخدمي سَنَد والمفضلة المتزامنة
+# =====================================
+
+AUTH_COOKIE_NAME = "sanad_session"
+AUTH_SESSION_DAYS = 30
+
+
+def user_to_dict(user):
+    return {
+        "id": user.id,
+        "display_name": user.display_name,
+        "email": user.email,
+        "created_at": user.created_at.isoformat() if user.created_at else None,
+    }
+
+
+def check_request_origin(request: Request):
+    origin = request.headers.get("origin")
+    if origin and origin not in allowed_origins:
+        raise HTTPException(status_code=403, detail="مصدر الطلب غير مسموح")
+
+
+def set_auth_cookie(response: Response, token: str):
+    secure = os.getenv("SANAD_COOKIE_SECURE", "false").lower() == "true"
+    same_site = os.getenv("SANAD_COOKIE_SAMESITE", "lax").lower()
+    if same_site not in ("lax", "strict", "none"):
+        same_site = "lax"
+    if same_site == "none" and not secure:
+        raise HTTPException(status_code=500, detail="إعدادات ملفات تعريف الارتباط غير آمنة")
+    response.set_cookie(
+        key=AUTH_COOKIE_NAME,
+        value=token,
+        max_age=AUTH_SESSION_DAYS * 24 * 60 * 60,
+        httponly=True,
+        secure=secure,
+        samesite=same_site,
+        path="/",
+    )
+
+
+def find_auth_session(request: Request, db: Session):
+    token = request.cookies.get(AUTH_COOKIE_NAME)
+    if not token:
+        return None, None
+    session = db.query(AuthSession).filter(
+        AuthSession.token_hash == hash_session_token(token),
+        AuthSession.revoked_at.is_(None),
+    ).first()
+    if not session:
+        return None, None
+    expires_at = session.expires_at
+    if expires_at.tzinfo is None:
+        expires_at = expires_at.replace(tzinfo=timezone.utc)
+    if expires_at <= datetime.now(timezone.utc):
+        return None, None
+    user = db.query(User).filter(User.id == session.user_id).first()
+    if not user:
+        return None, None
+    return session, user
+
+
+def get_current_user(request: Request, db: Session = Depends(get_db)):
+    _, user = find_auth_session(request, db)
+    if not user:
+        raise HTTPException(status_code=401, detail="سجّل الدخول للمتابعة")
+    return user
+
+
+def create_auth_session(user: User, db: Session, response: Response):
+    token = new_session_token()
+    session = AuthSession(
+        user_id=user.id,
+        token_hash=hash_session_token(token),
+        expires_at=datetime.now(timezone.utc) + timedelta(days=AUTH_SESSION_DAYS),
+    )
+    db.add(session)
+    db.commit()
+    set_auth_cookie(response, token)
+
+
+@app.post("/auth/register", status_code=201)
+def register_account(data: AuthRegister, request: Request, response: Response, db: Session = Depends(get_db)):
+    check_request_origin(request)
+    email = data.email.lower()
+    if db.query(User).filter(User.email == email).first():
+        raise HTTPException(status_code=409, detail="البريد الإلكتروني مسجل بالفعل")
+    user = User(
+        email=email,
+        display_name=data.display_name,
+        password_hash=hash_password(data.password),
+    )
+    try:
+        db.add(user)
+        db.commit()
+        db.refresh(user)
+        create_auth_session(user, db, response)
+        return {"user": user_to_dict(user)}
+    except HTTPException:
+        db.rollback()
+        raise
+    except Exception:
+        db.rollback()
+        raise HTTPException(status_code=500, detail="تعذر إنشاء الحساب حاليًا")
+
+
+@app.post("/auth/login")
+def login_account(data: AuthLogin, request: Request, response: Response, db: Session = Depends(get_db)):
+    check_request_origin(request)
+    user = db.query(User).filter(User.email == data.email.lower()).first()
+    if not user or not verify_password(data.password, user.password_hash):
+        raise HTTPException(status_code=401, detail="البريد الإلكتروني أو كلمة المرور غير صحيحة")
+    try:
+        create_auth_session(user, db, response)
+        return {"user": user_to_dict(user)}
+    except Exception:
+        db.rollback()
+        raise HTTPException(status_code=500, detail="تعذر تسجيل الدخول حاليًا")
+
+
+@app.get("/auth/me")
+def current_account(user: User = Depends(get_current_user)):
+    return {"user": user_to_dict(user)}
+
+
+@app.post("/auth/logout")
+def logout_account(request: Request, response: Response, db: Session = Depends(get_db)):
+    check_request_origin(request)
+    session, _ = find_auth_session(request, db)
+    if session:
+        session.revoked_at = datetime.now(timezone.utc)
+        db.commit()
+    response.delete_cookie(
+        key=AUTH_COOKIE_NAME,
+        path="/",
+        httponly=True,
+        secure=os.getenv("SANAD_COOKIE_SECURE", "false").lower() == "true",
+        samesite=os.getenv("SANAD_COOKIE_SAMESITE", "lax").lower(),
+    )
+    return {"message": "تم تسجيل الخروج"}
+
+
+@app.get("/me/favorites")
+def get_account_favorites(user: User = Depends(get_current_user), db: Session = Depends(get_db)):
+    rows = db.query(UserFavorite.service_id).filter(UserFavorite.user_id == user.id).all()
+    return {"service_ids": [row[0] for row in rows]}
+
+
+@app.put("/me/favorites")
+def sync_account_favorites(data: FavoriteSync, request: Request, user: User = Depends(get_current_user), db: Session = Depends(get_db)):
+    check_request_origin(request)
+    service_ids = sorted(set(data.service_ids))
+    if service_ids:
+        valid_count = db.query(Service).filter(
+            Service.id.in_(service_ids),
+            Service.status == "published",
+        ).count()
+        if valid_count != len(service_ids):
+            raise HTTPException(status_code=400, detail="تتضمن المفضلة خدمة غير منشورة أو غير موجودة")
+    try:
+        db.query(UserFavorite).filter(UserFavorite.user_id == user.id).delete(synchronize_session=False)
+        db.add_all([UserFavorite(user_id=user.id, service_id=service_id) for service_id in service_ids])
+        db.commit()
+        return {"service_ids": service_ids, "total": len(service_ids)}
+    except Exception:
+        db.rollback()
+        raise HTTPException(status_code=500, detail="تعذرت مزامنة المفضلة")
+
+
+\ndef normalize_search_text(value: str | None) -> str:
     return normalize_arabic_text(value)
 
 
