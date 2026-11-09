@@ -530,3 +530,141 @@ main {
         font-size: 27px;
     }
 }
+
+
+/* =========================
+   11. Compact, stable live search
+========================= */
+
+.h1 {
+    animation: none;
+}
+
+.search-area {
+    position: relative;
+    z-index: 30;
+    width: min(100%, 620px);
+    margin: 18px auto 0;
+    direction: rtl;
+}
+
+.search-area .search {
+    position: relative;
+    width: 100%;
+    height: 54px;
+    min-height: 54px;
+    margin: 0;
+    padding: 4px 16px;
+    gap: 8px;
+    border: 1px solid #d5e1ec;
+    border-radius: 16px;
+    box-shadow: 0 3px 12px #163b5c0d;
+    transition: border-color .18s ease, box-shadow .18s ease;
+}
+
+.search-area .search:focus-within {
+    border-color: #4b9dbb;
+    box-shadow: 0 0 0 3px #247ba014;
+}
+
+.search-area .search-input {
+    height: 42px;
+    padding: 8px 4px;
+    font-size: 15px;
+}
+
+.search-loading {
+    flex: 0 0 auto;
+    color: #648096;
+    font-size: 12px;
+    white-space: nowrap;
+}
+
+.search-results {
+    position: absolute;
+    top: calc(100% + 8px);
+    inset-inline: 0;
+    z-index: 50;
+    max-height: min(360px, 55vh);
+    overflow-y: auto;
+    overscroll-behavior: contain;
+    margin: 0;
+    padding: 12px;
+    border: 1px solid #e0e9f1;
+    border-radius: 14px;
+    background: #fff;
+    box-shadow: 0 12px 32px #163b5c20;
+    text-align: right;
+}
+
+.search-results h2 {
+    margin: 0 0 8px;
+    color: #163b5c;
+    font-size: 14px;
+    font-weight: 700;
+}
+
+.search-results ul {
+    display: grid;
+    gap: 6px;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+}
+
+.search-results li {
+    padding: 10px 11px;
+    border: 1px solid #edf2f6;
+    border-radius: 10px;
+    background: #fbfdff;
+}
+
+.search-results li h3 {
+    margin: 0 0 4px;
+    color: #163b5c;
+    font-size: 14px;
+}
+
+.search-results li p {
+    margin: 0 0 7px;
+    color: #62788a;
+    font-size: 12px;
+    line-height: 1.6;
+}
+
+.search-results li a {
+    color: #176b91;
+    font-size: 12px;
+    font-weight: 700;
+    text-decoration: none;
+}
+
+.search-message {
+    margin: 4px 0;
+    color: #64788a;
+    font-size: 13px;
+    line-height: 1.7;
+}
+
+@media (max-width: 600px) {
+    .search-area {
+        width: 100%;
+        padding-inline: 2px;
+    }
+
+    .search-area .search {
+        flex-direction: row;
+        height: 52px;
+        min-height: 52px;
+        border-radius: 14px;
+    }
+
+    .search-area .search-input {
+        width: auto;
+        min-width: 0;
+    }
+
+    .search-results {
+        max-height: 45vh;
+    }
+}
