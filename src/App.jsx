@@ -9,6 +9,8 @@ import Hero from "./components/Hero";
 import PopularServices from "./components/PopularServices";
 
 import AdminDashboard from "./pages/AdminDashboard";
+import FavoritesPage from "./pages/FavoritesPage";
+import AboutPage from "./pages/AboutPage";
 
 function Home() {
     return (
@@ -40,6 +42,8 @@ function App() {
                 element={<ServiceDetails />}
             />
 
+            <Route path="/favorites" element={<FavoritesPage />} />
+            <Route path="/about" element={<AboutPage />} />
             <Route
                 path="/admin"
                 element={<AdminDashboard />}
