@@ -720,3 +720,28 @@ main {
     .service-details-panel { grid-template-columns: 1fr; }
     .service-source-block { grid-column: auto; }
 }
+
+
+/* Stable search status space: typing never resizes the input */
+.search-area .search-loading {
+    flex: 0 0 76px;
+    width: 76px;
+    min-width: 76px;
+    visibility: hidden;
+    text-align: center;
+    font-size: 11px;
+}
+.search-area .search-loading.is-active {
+    visibility: visible;
+}
+.published-services-state {
+    color: #64788a;
+    text-align: right;
+    direction: rtl;
+}
+.published-service-link {
+    margin-top: 10px;
+    color: #176b91;
+    font-size: 13px;
+    font-weight: 700;
+}
