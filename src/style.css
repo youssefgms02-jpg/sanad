@@ -1037,3 +1037,82 @@ html[data-theme="dark"] .admin-actions button { background: #152536; border-colo
         transition-duration: 0.01ms !important;
     }
 }
+
+
+/* Citizen feedback and administration review queue */
+.service-report-form {
+    display: grid;
+    gap: 13px;
+    grid-column: 1 / -1;
+    padding: 20px;
+    border: 1px solid #d8e5ee;
+    border-radius: 15px;
+    background: #f7fafc;
+}
+.service-report-form h3 { margin: 0; color: #163b5c; }
+.service-report-form label { display: grid; gap: 7px; color: #526b80; font-size: 13px; }
+.service-report-form select,
+.service-report-form textarea {
+    width: 100%;
+    padding: 11px 12px;
+    border: 1px solid #d7e2ec;
+    border-radius: 10px;
+    background: #fff;
+    color: #163b5c;
+    font: inherit;
+}
+.service-report-form textarea { min-height: 110px; resize: vertical; }
+.service-report-form p,
+.service-report-feedback { margin: 0; color: #718096; font-size: 12px; }
+.service-report-actions { display: flex; flex-wrap: wrap; gap: 9px; }
+.service-report-actions button {
+    min-height: 40px;
+    padding: 8px 14px;
+    border: 1px solid #d7e2ec;
+    border-radius: 9px;
+    background: #fff;
+    color: #163b5c;
+    font: inherit;
+    cursor: pointer;
+}
+.service-report-actions button[type="submit"] { background: #163b5c; color: #fff; }
+.service-report-actions button:disabled { opacity: .55; cursor: not-allowed; }
+.admin-reports-panel { margin-top: 24px; }
+.admin-reports-list { display: grid; gap: 12px; }
+.admin-report-card {
+    padding: 17px;
+    border: 1px solid #e1eaf2;
+    border-radius: 13px;
+    background: #fff;
+}
+.admin-report-meta { display: flex; flex-wrap: wrap; gap: 10px 16px; color: #718096; font-size: 12px; }
+.admin-report-meta strong { color: #163b5c; }
+.admin-report-card p { margin: 12px 0; white-space: pre-wrap; overflow-wrap: anywhere; }
+.admin-report-actions { display: flex; flex-wrap: wrap; gap: 8px; }
+.admin-report-actions button {
+    padding: 7px 11px;
+    border: 1px solid #d7e2ec;
+    border-radius: 8px;
+    background: #f7fafc;
+    color: #163b5c;
+    font: inherit;
+    font-size: 12px;
+    cursor: pointer;
+}
+html[data-theme="dark"] .service-report-form,
+html[data-theme="dark"] .admin-report-card {
+    background: #152536;
+    border-color: #2c4053;
+    color: #e5edf5;
+}
+html[data-theme="dark"] .service-report-form h3,
+html[data-theme="dark"] .admin-report-meta strong { color: #e5edf5; }
+html[data-theme="dark"] .service-report-form select,
+html[data-theme="dark"] .service-report-form textarea,
+html[data-theme="dark"] .service-report-actions button,
+html[data-theme="dark"] .admin-report-actions button {
+    background: #1d3043;
+    border-color: #344b60;
+    color: #e5edf5;
+}
+html[data-theme="dark"] .service-report-actions button[type="submit"] { background: #2b6288; }
