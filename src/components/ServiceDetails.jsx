@@ -1,92 +1,96 @@
-
 import { useParams, Link } from "react-router-dom";
 import { useState, useEffect } from "react";
 import Navbar from "./Navbar";
 import API_BASE_URL from "../api";
 
+// Normalize both real line breaks and escaped "\\n" sequences from older records.
+function displayText(value) {
+    if (value == null) return "";
+    return String(value)
+        .replace(/\\r\\n/g, "\n")
+        .replace(/\\n/g, "\n")
+        .replace(/\\r/g, "\n");
+}
+
+function getSourceUrls(value) {
+    return displayText(value)
+        .split(/\n|\s+(?=https?:\/\/)/)
+        .map((url) => url.trim())
+        .filter((url) => /^https?:\/\//i.test(url));
+}
+
 function ServiceDetails() {
     const { serviceId } = useParams();
-
     const [service, setService] = useState(null);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState("");
 
     useEffect(() => {
+        let cancelled = false;
         async function getService() {
             setLoading(true);
             setError("");
-
             try {
-                const response = await fetch(
-                    `${API_BASE_URL}/services/${serviceId}`
-                );
-
-                if (!response.ok) {
-                    throw new Error("تعذر العثور على الخدمة");
-                }
-
+                const response = await fetch(`${API_BASE_URL}/services/${serviceId}`);
+                if (!response.ok) throw new Error("تعذر العثور على الخدمة");
                 const data = await response.json();
-                setService(data);
-
+                if (!cancelled) setService(data);
             } catch (err) {
-                setError(err.message);
-
+                if (!cancelled) setError(err.message);
             } finally {
-                setLoading(false);
+                if (!cancelled) setLoading(false);
             }
         }
-
         getService();
+        return () => { cancelled = true; };
     }, [serviceId]);
+
+    const sources = service ? getSourceUrls(service.official_source) : [];
 
     return (
         <>
             <Navbar />
-
             <main>
-                <section className="category-page">
-
+                <section className="category-page service-detail-page">
                     <div className="category-top-bar">
-                        <Link to="/" className="back-home">
-                            ← العودة للرئيسية
-                        </Link>
+                        <Link to="/" className="back-home">← العودة للرئيسية</Link>
                     </div>
-
                     {loading && <p>جاري تحميل تفاصيل الخدمة...</p>}
-
-                    {error && <p>{error}</p>}
-
+                    {error && <p role="alert">{error}</p>}
                     {!loading && !error && service && (
                         <>
                             <h1>{service.name}</h1>
-
-                            <p>{service.description}</p>
-
+                            <p className="service-lead">{displayText(service.description)}</p>
                             <h2>معلومات الخدمة</h2>
-
                             <div className="service-details-panel">
                                 <section className="service-info-block">
                                     <h3>الجهة المسؤولة</h3>
-                                    <p>{service.authority || "يرجى الرجوع إلى المصدر الرسمي لتحديد الجهة المختصة."}</p>
+                                    <p>{displayText(service.authority) || "يرجى الرجوع إلى المصدر الرسمي لتحديد الجهة المختصة."}</p>
                                 </section>
                                 <section className="service-info-block">
                                     <h3>شروط الاستفادة</h3>
-                                    <p>{service.eligibility || "لم تُراجع الشروط التفصيلية لهذه الخدمة بعد."}</p>
+                                    <p>{displayText(service.eligibility) || "لا تتوفر تفاصيل منشورة عن الشروط."}</p>
                                 </section>
                                 <section className="service-info-block">
                                     <h3>المستندات المطلوبة</h3>
-                                    <p>{service.documents || "لم تُراجع قائمة المستندات التفصيلية لهذه الخدمة بعد."}</p>
+                                    <p>{displayText(service.documents) || "لا تتوفر قائمة مستندات مؤكدة لهذه الخدمة."}</p>
                                 </section>
                                 <section className="service-info-block">
                                     <h3>خطوات الحصول على الخدمة</h3>
-                                    <p>{service.steps || "يرجى اتباع التعليمات المنشورة لدى الجهة الرسمية."}</p>
+                                    <p>{displayText(service.steps) || "يرجى اتباع التعليمات المنشورة لدى الجهة الرسمية."}</p>
                                 </section>
-                                {service.official_source && (
+                                {sources.length > 0 && (
                                     <section className="service-source-block">
-                                        <h3>المصدر الرسمي</h3>
-                                        <a href={service.official_source} target="_blank" rel="noopener noreferrer">
-                                            فتح موقع الجهة الرسمية
-                                        </a>
+                                        <h3>المصادر الرسمية</h3>
+                                        <ul className="service-source-list">
+                                            {sources.map((url) => (
+                                                <li key={url}>
+                                                    <a href={url} target="_blank" rel="noopener noreferrer">
+                                                        زيارة المصدر الرسمي
+                                                    </a>
+                                                </li>
+                                            ))}
+                                        </ul>
                                         {service.last_reviewed && (
                                             <p className="service-reviewed">
                                                 آخر مراجعة: {new Date(service.last_reviewed).toLocaleDateString("ar-EG")}
@@ -97,7 +101,6 @@ function ServiceDetails() {
                             </div>
                         </>
                     )}
-
                 </section>
             </main>
         </>

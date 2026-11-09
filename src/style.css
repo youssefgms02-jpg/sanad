@@ -758,3 +758,77 @@ main {
     color: #247ba0;
     text-decoration: none;
 }
+
+
+/* SANAD homepage: spacious, responsive category cards */
+.services-header {
+    max-width: 1200px;
+}
+.home-category-grid {
+    width: 100%;
+    max-width: 1200px;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 22px;
+    margin: 22px auto 36px;
+}
+.home-category-grid .service-card {
+    min-width: 0;
+    min-height: 225px;
+    justify-content: center;
+    padding: 30px 24px;
+    border-radius: 20px;
+}
+.home-category-grid .service-card h3 {
+    margin: 18px 0 8px;
+    color: #163b5c;
+    font-size: 19px;
+}
+.home-category-grid .service-card p {
+    margin: 0;
+    color: #60778b;
+    line-height: 1.8;
+}
+.popular-services {
+    max-width: 1200px;
+}
+.popular-services-grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 22px;
+}
+.popular-service-card {
+    min-width: 0;
+    min-height: 190px;
+    justify-content: center;
+}
+.service-source-list {
+    display: grid;
+    gap: 10px;
+    margin: 0;
+    padding: 0 20px 0 0;
+}
+.service-source-list li {
+    overflow-wrap: anywhere;
+}
+.service-detail-page .service-lead {
+    white-space: pre-line;
+    line-height: 1.9;
+}
+.service-info-block p {
+    white-space: pre-line;
+    overflow-wrap: anywhere;
+}
+@media (max-width: 900px) {
+    .home-category-grid,
+    .popular-services-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+}
+@media (max-width: 600px) {
+    .home-category-grid,
+    .popular-services-grid {
+        grid-template-columns: 1fr;
+    }
+    .home-category-grid .service-card {
+        min-height: 190px;
+    }
+}
