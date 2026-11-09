@@ -13,10 +13,8 @@ function displayText(value) {
 }
 
 function getSourceUrls(value) {
-    return displayText(value)
-        .split(/\n|\s+(?=https?:\/\/)/)
-        .map((url) => url.trim())
-        .filter((url) => /^https?:\/\//i.test(url));
+    const matches = displayText(value).match(/https?:\/\/[^\s<>"']+/gi) || [];
+    return [...new Set(matches.map((url) => url.replace(/[.,،؛:!?)}\]»]+$/g, "")))];
 }
 
 function ServiceDetails() {
@@ -79,14 +77,36 @@ function ServiceDetails() {
                                     <h3>خطوات الحصول على الخدمة</h3>
                                     <p>{displayText(service.steps) || "يرجى اتباع التعليمات المنشورة لدى الجهة الرسمية."}</p>
                                 </section>
-                                {sources.length > 0 && (
+                                <section className="service-source-block">
+                                    <h3>المصادر الرسمية</h3>
+                                    {sources.length > 0 ? (
+                                        <ul className="service-source-list">
+                                            {sources.map((url) => (
+                                                <li key={url}>
+                                                    <a href={url} target="_blank" rel="noopener noreferrer">
+                                                        {new URL(url).hostname.replace(/^www\./, "")}
+                                                    </a>
+                                                </li>
+                                            ))}
+                                        </ul>
+                                    ) : (
+                                        <p>لا يوجد رابط مصدر صالح ظاهر لهذه الخدمة حاليًا. راجع الجهة المختصة قبل الاعتماد على التفاصيل.</p>
+                                    )}
+                                    {service.last_reviewed && (
+                                        <p className="service-reviewed">
+                                            تاريخ آخر مراجعة: {new Date(service.last_reviewed).toLocaleDateString("ar-EG")}
+                                        </p>
+                                    )}
+                                </section>
+                                {/* legacy source block replaced above */}
+                                {false && sources.length > 0 && (
                                     <section className="service-source-block">
                                         <h3>المصادر الرسمية</h3>
                                         <ul className="service-source-list">
                                             {sources.map((url) => (
                                                 <li key={url}>
                                                     <a href={url} target="_blank" rel="noopener noreferrer">
-                                                        زيارة المصدر الرسمي
+                                                        {new URL(url).hostname.replace(/^www\./, "")}
                                                     </a>
                                                 </li>
                                             ))}
