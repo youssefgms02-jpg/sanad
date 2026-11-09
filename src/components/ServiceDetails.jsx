@@ -98,26 +98,6 @@ function ServiceDetails() {
                                         </p>
                                     )}
                                 </section>
-                                {/* legacy source block replaced above */}
-                                {false && sources.length > 0 && (
-                                    <section className="service-source-block">
-                                        <h3>المصادر الرسمية</h3>
-                                        <ul className="service-source-list">
-                                            {sources.map((url) => (
-                                                <li key={url}>
-                                                    <a href={url} target="_blank" rel="noopener noreferrer">
-                                                        {new URL(url).hostname.replace(/^www\./, "")}
-                                                    </a>
-                                                </li>
-                                            ))}
-                                        </ul>
-                                        {service.last_reviewed && (
-                                            <p className="service-reviewed">
-                                                آخر مراجعة: {new Date(service.last_reviewed).toLocaleDateString("ar-EG")}
-                                            </p>
-                                        )}
-                                    </section>
-                                )}
                             </div>
                         </>
                     )}
