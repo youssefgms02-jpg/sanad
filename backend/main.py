@@ -19,6 +19,7 @@ from sqlalchemy.orm import Session
 from database import Base, engine, SessionLocal
 from models import Service
 from schemas import ServiceCreate, ServiceUpdate
+from source_utils import extract_http_urls, valid_http_url, normalize_arabic_text
 
 
 # =====================================
@@ -57,8 +58,6 @@ def verify_admin_token(
     expected_token = os.environ.get("SANAD_ADMIN_TOKEN")
 
     # نطبع حالة وجود المفتاح فقط، ولا نطبع قيمته حفاظًا على سريته.
-    print("ADMIN TOKEN CONFIGURED:", bool(expected_token), flush=True)
-
     if not expected_token:
         raise HTTPException(
             status_code=503,
@@ -89,6 +88,7 @@ def service_to_dict(service):
         "documents": service.documents,
         "steps": service.steps,
         "official_source": service.official_source,
+        "source_urls": extract_http_urls(service.official_source),
         "last_reviewed": (
             service.last_reviewed.isoformat()
             if service.last_reviewed
@@ -108,19 +108,38 @@ def service_to_dict(service):
 # =====================================
 
 def validate_official_source(source):
-    if not source:
+    urls = extract_http_urls(source)
+    if not urls:
         raise HTTPException(
             status_code=400,
-            detail="يجب إضافة رابط المصدر الرسمي قبل النشر",
+            detail="أضف رابطًا رسميًا كاملًا يبدأ بـ https:// قبل النشر",
         )
 
-    parsed = urlparse(source)
-
-    if parsed.scheme not in ("http", "https") or not parsed.netloc:
+    invalid_urls = [
+        url for url in urls
+        if not valid_http_url(url) or urlparse(url).scheme.lower() != "https"
+    ]
+    if invalid_urls:
         raise HTTPException(
             status_code=400,
-            detail="رابط المصدر غير صالح",
+            detail="كل روابط المصادر يجب أن تكون روابط HTTPS صالحة",
         )
+
+
+def validate_service_for_publish(service):
+    required = {
+        "authority": "الجهة المسؤولة",
+        "eligibility": "شروط الاستفادة",
+        "documents": "المستندات أو توضيح أن المتطلبات تختلف حسب الحالة",
+        "steps": "خطوات الحصول على الخدمة",
+    }
+    missing = [label for field, label in required.items() if not str(getattr(service, field, "") or "").strip()]
+    if missing:
+        raise HTTPException(
+            status_code=400,
+            detail="لا يمكن نشر الخدمة قبل استكمال: " + "، ".join(missing),
+        )
+    validate_official_source(service.official_source)
 
 
 # =====================================
@@ -139,9 +158,9 @@ allowed_origins = [
 app.add_middleware(
     CORSMiddleware,
     allow_origins=allowed_origins,
-    allow_credentials=True,
-    allow_methods=["*"],
-    allow_headers=["*"],
+    allow_credentials=False,
+    allow_methods=["GET", "POST", "PATCH", "DELETE"],
+    allow_headers=["Content-Type", "X-Admin-Token"],
 )
 
 
@@ -163,22 +182,17 @@ def health():
 
 
 def normalize_search_text(value: str | None) -> str:
-    if not value:
-        return ""
-    value = value.strip().lower()
-    value = re.sub(r"[\u064B-\u065F\u0670ـ]", "", value)
-    value = re.sub(r"[إأآٱ]", "ا", value)
-    value = value.replace("ى", "ي").replace("ؤ", "و").replace("ئ", "ي")
-    value = value.replace("ة", "ه")
-    value = re.sub(r"[^\w\s]", " ", value, flags=re.UNICODE)
-    return re.sub(r"\s+", " ", value).strip()
+    return normalize_arabic_text(value)
 
 
 def search_score(service, normalized_query: str) -> int:
     name = normalize_search_text(service.name)
     description = normalize_search_text(service.description)
     authority = normalize_search_text(service.authority)
-    searchable = f"{name} {description} {authority}"
+    eligibility = normalize_search_text(service.eligibility)
+    documents = normalize_search_text(service.documents)
+    steps = normalize_search_text(service.steps)
+    searchable = f"{name} {description} {authority} {eligibility} {documents} {steps}"
 
     score = 100 if normalized_query in name else (45 if normalized_query in searchable else 0)
     query_words = normalized_query.split()
@@ -212,11 +226,14 @@ def search_score(service, normalized_query: str) -> int:
 def get_services(
     category: str | None = None,
     q: str | None = None,
+    authority: str | None = None,
     db: Session = Depends(get_db),
 ):
     query = db.query(Service).filter(Service.status == "published")
     if category:
-        query = query.filter(Service.category.ilike(category))
+        query = query.filter(Service.category.ilike(category.strip()))
+    if authority:
+        query = query.filter(Service.authority.ilike(f"%{authority.strip()}%"))
 
     services = query.order_by(Service.id).all()
     normalized_query = normalize_search_text(q)
@@ -449,7 +466,7 @@ def publish_service(
             detail="الخدمة غير موجودة",
         )
 
-    validate_official_source(service.official_source)
+    validate_service_for_publish(service)
 
     service.status = "published"
     service.last_reviewed = datetime.now(timezone.utc)
