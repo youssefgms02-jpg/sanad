@@ -17,6 +17,8 @@ function CategoryPage() {
     const [services, setServices] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState("");
+    const [searchQuery, setSearchQuery] = useState("");
+    const [authority, setAuthority] = useState("");
 
     useEffect(() => {
         let cancelled = false;
@@ -25,7 +27,7 @@ function CategoryPage() {
             setError("");
             try {
                 const response = await fetch(
-                    `${API_BASE_URL}/services?category=${encodeURIComponent(categoryId)}`
+                    `${API_BASE_URL}/services?category=${encodeURIComponent(categoryId)}&q=${encodeURIComponent(searchQuery)}&authority=${encodeURIComponent(authority)}`
                 );
                 if (!response.ok) throw new Error("فشل تحميل الخدمات");
                 const data = await response.json();
@@ -38,7 +40,7 @@ function CategoryPage() {
         }
         getServices();
         return () => { cancelled = true; };
-    }, [categoryId]);
+    }, [categoryId, searchQuery, authority]);
 
     const category = categories[categoryId];
     if (!category) {
@@ -66,9 +68,19 @@ function CategoryPage() {
                     </div>
                     <h1>{category.title}</h1>
                     <p>{category.description}</p>
+                    <div className="category-filters">
+                        <label>
+                            <span>ابحث داخل القسم</span>
+                            <input type="search" value={searchQuery} onChange={(event) => setSearchQuery(event.target.value)} placeholder="اكتب اسم الخدمة أو احتياجك..." />
+                        </label>
+                        <label>
+                            <span>الجهة المقدمة للخدمة</span>
+                            <input type="search" value={authority} onChange={(event) => setAuthority(event.target.value)} placeholder="مثال: وزارة الداخلية" />
+                        </label>
+                    </div>
                     <h2>الخدمات المتاحة</h2>
-                    {loading && <p>جاري تحميل الخدمات...</p>}
-                    {error && <p>{error}</p>}
+                    {loading && <p role="status">جاري تحميل الخدمات...</p>}
+                    {error && <p role="alert">{error}</p>}
                     {!loading && !error && services.length === 0 && (
                         <p>لا توجد خدمات منشورة حاليًا في هذا القسم.</p>
                     )}
