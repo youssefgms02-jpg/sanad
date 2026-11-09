@@ -20,6 +20,11 @@ const emptyForm = {
     eligibility: "", documents: "", steps: "", official_source: "",
 };
 
+function getSourceUrls(value) {
+    const matches = String(value || "").replace(/\\r\\n|\\n|\\r/g, "\n").match(/https?:\\/\\/[^\\s<>"']+/gi) || [];
+    return [...new Set(matches.map((url) => url.replace(/[.,،؛:!?)}\\]»]+$/g, "")))];
+}
+
 function AdminDashboard() {
     const [token, setToken] = useState("");
     const [authenticated, setAuthenticated] = useState(false);
@@ -243,7 +248,17 @@ function AdminDashboard() {
                                             <td><strong>{service.name}</strong><small>رقم الخدمة: {service.id}</small></td>
                                             <td>{categoryLabels[service.category] || service.category}</td>
                                             <td><span className={service.status === "published" ? "admin-status published" : "admin-status draft"}>{service.status === "published" ? "منشورة" : "مسودة"}</span></td>
-                                            <td>{service.official_source ? <a href={service.official_source} target="_blank" rel="noreferrer">فتح المصدر</a> : "غير مضاف"}</td>
+                                            <td>
+                                {getSourceUrls(service.official_source).length > 0
+                                    ? <div className="admin-source-links">
+                                        {getSourceUrls(service.official_source).map((url) => (
+                                            <a key={url} href={url} target="_blank" rel="noopener noreferrer">
+                                                {(() => { try { return new URL(url).hostname.replace(/^www\\./, ""); } catch { return "فتح المصدر"; } })()}
+                                            </a>
+                                        ))}
+                                      </div>
+                                    : "غير مضاف"}
+                            </td>
                                             <td>
                                                 <div className="admin-actions">
                                                     <button title="تعديل" onClick={() => openEditForm(service)}><Pencil size={17} /></button>
@@ -290,7 +305,7 @@ function AdminDashboard() {
                             <label>شروط الاستفادة<textarea name="eligibility" value={form.eligibility} onChange={updateForm} /></label>
                             <label>الأوراق المطلوبة<textarea name="documents" value={form.documents} onChange={updateForm} /></label>
                             <label>خطوات الحصول على الخدمة<textarea name="steps" value={form.steps} onChange={updateForm} /></label>
-                            <label className="full-width">رابط المصدر الرسمي<input type="url" name="official_source" value={form.official_source} onChange={updateForm} placeholder="https://..." /></label>
+                            <label className="full-width">روابط المصادر الرسمية (رابط في كل سطر)<textarea name="official_source" value={form.official_source} onChange={updateForm} placeholder="https://..." dir="ltr" /></label>
                         </div>
 
                         <div className="admin-form-footer">
