@@ -1,6 +1,8 @@
 
 import os
 import secrets
+import re
+from difflib import SequenceMatcher
 
 from datetime import datetime, timezone
 from urllib.parse import urlparse
@@ -160,28 +162,77 @@ def health():
     return {"status": "ok"}
 
 
-# عرض الخدمات المنشورة فقط
+def normalize_search_text(value: str | None) -> str:
+    if not value:
+        return ""
+    value = value.strip().lower()
+    value = re.sub(r"[\u064B-\u065F\u0670ـ]", "", value)
+    value = re.sub(r"[إأآٱ]", "ا", value)
+    value = value.replace("ى", "ي").replace("ؤ", "و").replace("ئ", "ي")
+    value = value.replace("ة", "ه")
+    value = re.sub(r"[^\w\s]", " ", value, flags=re.UNICODE)
+    return re.sub(r"\s+", " ", value).strip()
+
+
+def search_score(service, normalized_query: str) -> int:
+    name = normalize_search_text(service.name)
+    description = normalize_search_text(service.description)
+    authority = normalize_search_text(service.authority)
+    searchable = f"{name} {description} {authority}"
+
+    score = 100 if normalized_query in name else (45 if normalized_query in searchable else 0)
+    query_words = normalized_query.split()
+    matched_words = 0
+    candidates = [part for part in searchable.split() if len(part) >= 3]
+
+    for word in query_words:
+        if len(word) < 2:
+            continue
+        if word in name:
+            score += 24
+            matched_words += 1
+        elif word in searchable:
+            score += 10
+            matched_words += 1
+        elif len(word) >= 3 and any(
+            SequenceMatcher(None, word, part).ratio() >= 0.82
+            for part in candidates
+        ):
+            score += 5
+            matched_words += 1
+
+    meaningful_words = [word for word in query_words if len(word) >= 2]
+    if meaningful_words and matched_words == len(meaningful_words):
+        score += 12
+    return score
+
+
+# عرض الخدمات المنشورة مع بحث عربي فوري ونتائج مرتبة حسب الصلة
 @app.get("/services")
 def get_services(
     category: str | None = None,
+    q: str | None = None,
     db: Session = Depends(get_db),
 ):
-    query = db.query(Service).filter(
-        Service.status == "published"
-    )
-
+    query = db.query(Service).filter(Service.status == "published")
     if category:
-        query = query.filter(
-            Service.category.ilike(category)
-        )
+        query = query.filter(Service.category.ilike(category))
 
     services = query.order_by(Service.id).all()
+    normalized_query = normalize_search_text(q)
 
-    return {
-        "services": [
-            service_to_dict(service)
+    if normalized_query:
+        ranked = [
+            (search_score(service, normalized_query), service)
             for service in services
         ]
+        ranked = [(score, service) for score, service in ranked if score > 0]
+        ranked.sort(key=lambda item: (-item[0], item[1].id))
+        services = [service for _, service in ranked]
+
+    return {
+        "services": [service_to_dict(service) for service in services],
+        "total": len(services),
     }
 
 
