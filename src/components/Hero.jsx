@@ -66,7 +66,7 @@ function Hero({ searchQuery, setSearchQuery, searchResults, setSearchResults, ha
                     aria-label="ابحث عن خدمة"
                     placeholder="اكتب الخدمة أو الحاجة اللي بتدور عليها..."
                 />
-                {loading && <span className="search-loading" role="status">جاري البحث</span>}
+                <span className={`search-loading ${loading ? "is-active" : ""}`} role="status" aria-live="polite">{loading ? "جارٍ البحث" : ""}</span>
               </div>
 
               {searchError && <p className="search-message search-results" role="alert">{searchError}</p>}
