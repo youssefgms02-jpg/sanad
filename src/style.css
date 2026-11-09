@@ -745,3 +745,16 @@ main {
     font-size: 13px;
     font-weight: 700;
 }
+
+
+/* Navigation links */
+.navbar-logo {
+    color: #fff;
+    font-size: 22px;
+    font-weight: 800;
+    text-decoration: none;
+}
+.mobile-nav-button {
+    color: #247ba0;
+    text-decoration: none;
+}
