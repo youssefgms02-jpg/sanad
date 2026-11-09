@@ -17,8 +17,8 @@ from fastapi.middleware.cors import CORSMiddleware
 from sqlalchemy.orm import Session
 
 from database import Base, engine, SessionLocal
-from models import Service
-from schemas import ServiceCreate, ServiceUpdate
+from models import Service, ServiceReport
+from schemas import ServiceCreate, ServiceUpdate, ServiceReportCreate, ServiceReportStatusUpdate
 from source_utils import extract_http_urls, valid_http_url, normalize_arabic_text
 
 
@@ -275,6 +275,75 @@ def get_service(
         )
 
     return service_to_dict(service)
+
+
+# =====================================
+# بلاغات مراجعة معلومات الخدمات
+# =====================================
+
+def report_to_dict(report):
+    return {
+        "id": report.id,
+        "service_id": report.service_id,
+        "kind": report.kind,
+        "message": report.message,
+        "status": report.status,
+        "created_at": report.created_at.isoformat() if report.created_at else None,
+    }
+
+
+@app.post("/reports", status_code=201)
+def create_service_report(
+    report_data: ServiceReportCreate,
+    db: Session = Depends(get_db),
+):
+    if report_data.service_id is not None:
+        service = db.query(Service).filter(
+            Service.id == report_data.service_id,
+            Service.status == "published",
+        ).first()
+        if not service:
+            raise HTTPException(status_code=404, detail="الخدمة غير موجودة أو غير منشورة")
+
+    report = ServiceReport(
+        service_id=report_data.service_id,
+        kind=report_data.kind,
+        message=report_data.message,
+        status="new",
+    )
+    try:
+        db.add(report)
+        db.commit()
+        db.refresh(report)
+        return {"message": "تم استلام البلاغ للمراجعة. شكرًا لمساعدتك.", "report_id": report.id}
+    except Exception:
+        db.rollback()
+        raise HTTPException(status_code=500, detail="تعذر إرسال البلاغ حاليًا")
+
+
+@app.get("/admin/reports")
+def get_service_reports(
+    db: Session = Depends(get_db),
+    admin: bool = Depends(verify_admin_token),
+):
+    reports = db.query(ServiceReport).order_by(ServiceReport.id.desc()).limit(100).all()
+    return {"reports": [report_to_dict(report) for report in reports]}
+
+
+@app.patch("/admin/reports/{report_id}")
+def update_service_report(
+    report_id: int,
+    status_data: ServiceReportStatusUpdate,
+    db: Session = Depends(get_db),
+    admin: bool = Depends(verify_admin_token),
+):
+    report = db.query(ServiceReport).filter(ServiceReport.id == report_id).first()
+    if not report:
+        raise HTTPException(status_code=404, detail="البلاغ غير موجود")
+    report.status = status_data.status
+    db.commit()
+    db.refresh(report)
+    return report_to_dict(report)
 
 
 # =====================================
