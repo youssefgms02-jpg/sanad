@@ -1,0 +1,2200 @@
+{
+  "generated_at_utc": "2026-11-09T18:22:03.602958+00:00",
+  "database": "C:\\Users\\Admin\\Desktop\\sanad\\backend\\sanad.db",
+  "read_only": true,
+  "total_services": 170,
+  "by_status": {
+    "published": 80,
+    "draft": 90
+  },
+  "by_category": {
+    "accessibility": {
+      "draft": 7,
+      "published": 22
+    },
+    "business": {
+      "published": 15,
+      "draft": 15
+    },
+    "education": {
+      "published": 8,
+      "draft": 20
+    },
+    "government": {
+      "published": 19,
+      "draft": 8
+    },
+    "opportunities": {
+      "published": 6,
+      "draft": 22
+    },
+    "support": {
+      "published": 10,
+      "draft": 18
+    }
+  },
+  "checks": {
+    "missing_fields": [
+      {
+        "id": 17,
+        "name": "تجديد جواز السفر",
+        "field": "eligibility",
+        "severity": "detail"
+      },
+      {
+        "id": 17,
+        "name": "تجديد جواز السفر",
+        "field": "documents",
+        "severity": "detail"
+      },
+      {
+        "id": 17,
+        "name": "تجديد جواز السفر",
+        "field": "steps",
+        "severity": "detail"
+      },
+      {
+        "id": 17,
+        "name": "تجديد جواز السفر",
+        "field": "last_reviewed",
+        "severity": "detail"
+      },
+      {
+        "id": 20,
+        "name": "استخراج تصريح عمل",
+        "field": "eligibility",
+        "severity": "detail"
+      },
+      {
+        "id": 20,
+        "name": "استخراج تصريح عمل",
+        "field": "documents",
+        "severity": "detail"
+      },
+      {
+        "id": 20,
+        "name": "استخراج تصريح عمل",
+        "field": "steps",
+        "severity": "detail"
+      },
+      {
+        "id": 20,
+        "name": "استخراج تصريح عمل",
+        "field": "last_reviewed",
+        "severity": "detail"
+      },
+      {
+        "id": 21,
+        "name": "تجديد تصريح عمل",
+        "field": "eligibility",
+        "severity": "detail"
+      },
+      {
+        "id": 21,
+        "name": "تجديد تصريح عمل",
+        "field": "documents",
+        "severity": "detail"
+      },
+      {
+        "id": 21,
+        "name": "تجديد تصريح عمل",
+        "field": "steps",
+        "severity": "detail"
+      },
+      {
+        "id": 21,
+        "name": "تجديد تصريح عمل",
+        "field": "last_reviewed",
+        "severity": "detail"
+      },
+      {
+        "id": 22,
+        "name": "استخراج تصريح سفر للمجندين",
+        "field": "eligibility",
+        "severity": "detail"
+      },
+      {
+        "id": 22,
+        "name": "استخراج تصريح سفر للمجندين",
+        "field": "documents",
+        "severity": "detail"
+      },
+      {
+        "id": 22,
+        "name": "استخراج تصريح سفر للمجندين",
+        "field": "steps",
+        "severity": "detail"
+      },
+      {
+        "id": 22,
+        "name": "استخراج تصريح سفر للمجندين",
+        "field": "last_reviewed",
+        "severity": "detail"
+      },
+      {
+        "id": 23,
+        "name": "الاستعلام عن مخالفات رخص القيادة",
+        "field": "eligibility",
+        "severity": "detail"
+      },
+      {
+        "id": 23,
+        "name": "الاستعلام عن مخالفات رخص القيادة",
+        "field": "documents",
+        "severity": "detail"
+      },
+      {
+        "id": 23,
+        "name": "الاستعلام عن مخالفات رخص القيادة",
+        "field": "steps",
+        "severity": "detail"
+      },
+      {
+        "id": 23,
+        "name": "الاستعلام عن مخالفات رخص القيادة",
+        "field": "last_reviewed",
+        "severity": "detail"
+      },
+      {
+        "id": 33,
+        "name": "استخراج شهادة محو الأمية",
+        "field": "eligibility",
+        "severity": "detail"
+      },
+      {
+        "id": 33,
+        "name": "استخراج شهادة محو الأمية",
+        "field": "documents",
+        "severity": "detail"
+      },
+      {
+        "id": 33,
+        "name": "استخراج شهادة محو الأمية",
+        "field": "steps",
+        "severity": "detail"
+      },
+      {
+        "id": 33,
+        "name": "استخراج شهادة محو الأمية",
+        "field": "last_reviewed",
+        "severity": "detail"
+      },
+      {
+        "id": 34,
+        "name": "التسجيل في برامج محو الأمية",
+        "field": "eligibility",
+        "severity": "detail"
+      },
+      {
+        "id": 34,
+        "name": "التسجيل في برامج محو الأمية",
+        "field": "documents",
+        "severity": "detail"
+      },
+      {
+        "id": 34,
+        "name": "التسجيل في برامج محو الأمية",
+        "field": "steps",
+        "severity": "detail"
+      },
+      {
+        "id": 34,
+        "name": "التسجيل في برامج محو الأمية",
+        "field": "last_reviewed",
+        "severity": "detail"
+      },
+      {
+        "id": 35,
+        "name": "خدمات تنسيق القبول بالجامعات والمعاهد",
+        "field": "eligibility",
+        "severity": "detail"
+      },
+      {
+        "id": 35,
+        "name": "خدمات تنسيق القبول بالجامعات والمعاهد",
+        "field": "documents",
+        "severity": "detail"
+      },
+      {
+        "id": 35,
+        "name": "خدمات تنسيق القبول بالجامعات والمعاهد",
+        "field": "steps",
+        "severity": "detail"
+      },
+      {
+        "id": 35,
+        "name": "خدمات تنسيق القبول بالجامعات والمعاهد",
+        "field": "last_reviewed",
+        "severity": "detail"
+      },
+      {
+        "id": 36,
+        "name": "تنسيق الشهادات الثانوية المعادلة",
+        "field": "eligibility",
+        "severity": "detail"
+      },
+      {
+        "id": 36,
+        "name": "تنسيق الشهادات الثانوية المعادلة",
+        "field": "documents",
+        "severity": "detail"
+      },
+      {
+        "id": 36,
+        "name": "تنسيق الشهادات الثانوية المعادلة",
+        "field": "steps",
+        "severity": "detail"
+      },
+      {
+        "id": 36,
+        "name": "تنسيق الشهادات الثانوية المعادلة",
+        "field": "last_reviewed",
+        "severity": "detail"
+      },
+      {
+        "id": 37,
+        "name": "تنسيق الشهادات الفنية",
+        "field": "eligibility",
+        "severity": "detail"
+      },
+      {
+        "id": 37,
+        "name": "تنسيق الشهادات الفنية",
+        "field": "documents",
+        "severity": "detail"
+      },
+      {
+        "id": 37,
+        "name": "تنسيق الشهادات الفنية",
+        "field": "steps",
+        "severity": "detail"
+      },
+      {
+        "id": 37,
+        "name": "تنسيق الشهادات الفنية",
+        "field": "last_reviewed",
+        "severity": "detail"
+      },
+      {
+        "id": 38,
+        "name": "تنسيق طلاب الثانوية الأزهرية",
+        "field": "eligibility",
+        "severity": "detail"
+      },
+      {
+        "id": 38,
+        "name": "تنسيق طلاب الثانوية الأزهرية",
+        "field": "documents",
+        "severity": "detail"
+      },
+      {
+        "id": 38,
+        "name": "تنسيق طلاب الثانوية الأزهرية",
+        "field": "steps",
+        "severity": "detail"
+      },
+      {
+        "id": 38,
+        "name": "تنسيق طلاب الثانوية الأزهرية",
+        "field": "last_reviewed",
+        "severity": "detail"
+      },
+      {
+        "id": 39,
+        "name": "تقليل الاغتراب والتحويلات الجامعية",
+        "field": "eligibility",
+        "severity": "detail"
+      },
+      {
+        "id": 39,
+        "name": "تقليل الاغتراب والتحويلات الجامعية",
+        "field": "documents",
+        "severity": "detail"
+      },
+      {
+        "id": 39,
+        "name": "تقليل الاغتراب والتحويلات الجامعية",
+        "field": "steps",
+        "severity": "detail"
+      },
+      {
+        "id": 39,
+        "name": "تقليل الاغتراب والتحويلات الجامعية",
+        "field": "last_reviewed",
+        "severity": "detail"
+      },
+      {
+        "id": 40,
+        "name": "معادلة شهادة جامعية",
+        "field": "eligibility",
+        "severity": "detail"
+      },
+      {
+        "id": 40,
+        "name": "معادلة شهادة جامعية",
+        "field": "documents",
+        "severity": "detail"
+      },
+      {
+        "id": 40,
+        "name": "معادلة شهادة جامعية",
+        "field": "steps",
+        "severity": "detail"
+      },
+      {
+        "id": 40,
+        "name": "معادلة شهادة جامعية",
+        "field": "last_reviewed",
+        "severity": "detail"
+      },
+      {
+        "id": 41,
+        "name": "استخراج شهادة معادلة للدرجات العلمية",
+        "field": "eligibility",
+        "severity": "detail"
+      },
+      {
+        "id": 41,
+        "name": "استخراج شهادة معادلة للدرجات العلمية",
+        "field": "documents",
+        "severity": "detail"
+      },
+      {
+        "id": 41,
+        "name": "استخراج شهادة معادلة للدرجات العلمية",
+        "field": "steps",
+        "severity": "detail"
+      },
+      {
+        "id": 41,
+        "name": "استخراج شهادة معادلة للدرجات العلمية",
+        "field": "last_reviewed",
+        "severity": "detail"
+      },
+      {
+        "id": 42,
+        "name": "التقدم لامتحانات الدبلومات والمعاهد الفنية",
+        "field": "eligibility",
+        "severity": "detail"
+      },
+      {
+        "id": 42,
+        "name": "التقدم لامتحانات الدبلومات والمعاهد الفنية",
+        "field": "documents",
+        "severity": "detail"
+      },
+      {
+        "id": 42,
+        "name": "التقدم لامتحانات الدبلومات والمعاهد الفنية",
+        "field": "steps",
+        "severity": "detail"
+      },
+      {
+        "id": 42,
+        "name": "التقدم لامتحانات الدبلومات والمعاهد الفنية",
+        "field": "last_reviewed",
+        "severity": "detail"
+      },
+      {
+        "id": 43,
+        "name": "التقدم لامتحان المعاهد الفنية لكلية الهندسة",
+        "field": "eligibility",
+        "severity": "detail"
+      },
+      {
+        "id": 43,
+        "name": "التقدم لامتحان المعاهد الفنية لكلية الهندسة",
+        "field": "documents",
+        "severity": "detail"
+      },
+      {
+        "id": 43,
+        "name": "التقدم لامتحان المعاهد الفنية لكلية الهندسة",
+        "field": "steps",
+        "severity": "detail"
+      },
+      {
+        "id": 43,
+        "name": "التقدم لامتحان المعاهد الفنية لكلية الهندسة",
+        "field": "last_reviewed",
+        "severity": "detail"
+      },
+      {
+        "id": 44,
+        "name": "التقدم لامتحان المعاهد الفنية لكلية الحاسبات",
+        "field": "eligibility",
+        "severity": "detail"
+      },
+      {
+        "id": 44,
+        "name": "التقدم لامتحان المعاهد الفنية لكلية الحاسبات",
+        "field": "documents",
+        "severity": "detail"
+      },
+      {
+        "id": 44,
+        "name": "التقدم لامتحان المعاهد الفنية لكلية الحاسبات",
+        "field": "steps",
+        "severity": "detail"
+      },
+      {
+        "id": 44,
+        "name": "التقدم لامتحان المعاهد الفنية لكلية الحاسبات",
+        "field": "last_reviewed",
+        "severity": "detail"
+      },
+      {
+        "id": 45,
+        "name": "التقدم لامتحان المعاهد الفنية لكلية التجارة",
+        "field": "eligibility",
+        "severity": "detail"
+      },
+      {
+        "id": 45,
+        "name": "التقدم لامتحان المعاهد الفنية لكلية التجارة",
+        "field": "documents",
+        "severity": "detail"
+      },
+      {
+        "id": 45,
+        "name": "التقدم لامتحان المعاهد الفنية لكلية التجارة",
+        "field": "steps",
+        "severity": "detail"
+      },
+      {
+        "id": 45,
+        "name": "التقدم لامتحان المعاهد الفنية لكلية التجارة",
+        "field": "last_reviewed",
+        "severity": "detail"
+      },
+      {
+        "id": 46,
+        "name": "التقدم لامتحان المعاهد الفنية لكلية الزراعة",
+        "field": "eligibility",
+        "severity": "detail"
+      },
+      {
+        "id": 46,
+        "name": "التقدم لامتحان المعاهد الفنية لكلية الزراعة",
+        "field": "documents",
+        "severity": "detail"
+      },
+      {
+        "id": 46,
+        "name": "التقدم لامتحان المعاهد الفنية لكلية الزراعة",
+        "field": "steps",
+        "severity": "detail"
+      },
+      {
+        "id": 46,
+        "name": "التقدم لامتحان المعاهد الفنية لكلية الزراعة",
+        "field": "last_reviewed",
+        "severity": "detail"
+      },
+      {
+        "id": 47,
+        "name": "الاستعلام عن قواعد قبول الشهادات المعادلة",
+        "field": "eligibility",
+        "severity": "detail"
+      },
+      {
+        "id": 47,
+        "name": "الاستعلام عن قواعد قبول الشهادات المعادلة",
+        "field": "documents",
+        "severity": "detail"
+      },
+      {
+        "id": 47,
+        "name": "الاستعلام عن قواعد قبول الشهادات المعادلة",
+        "field": "steps",
+        "severity": "detail"
+      },
+      {
+        "id": 47,
+        "name": "الاستعلام عن قواعد قبول الشهادات المعادلة",
+        "field": "last_reviewed",
+        "severity": "detail"
+      },
+      {
+        "id": 48,
+        "name": "التسجيل في الأنشطة الطلابية بالجامعات الحكومية",
+        "field": "eligibility",
+        "severity": "detail"
+      },
+      {
+        "id": 48,
+        "name": "التسجيل في الأنشطة الطلابية بالجامعات الحكومية",
+        "field": "documents",
+        "severity": "detail"
+      },
+      {
+        "id": 48,
+        "name": "التسجيل في الأنشطة الطلابية بالجامعات الحكومية",
+        "field": "steps",
+        "severity": "detail"
+      },
+      {
+        "id": 48,
+        "name": "التسجيل في الأنشطة الطلابية بالجامعات الحكومية",
+        "field": "last_reviewed",
+        "severity": "detail"
+      },
+      {
+        "id": 49,
+        "name": "الاستعلام عن إجراءات قبول الطلاب بالجامعات",
+        "field": "eligibility",
+        "severity": "detail"
+      },
+      {
+        "id": 49,
+        "name": "الاستعلام عن إجراءات قبول الطلاب بالجامعات",
+        "field": "documents",
+        "severity": "detail"
+      },
+      {
+        "id": 49,
+        "name": "الاستعلام عن إجراءات قبول الطلاب بالجامعات",
+        "field": "steps",
+        "severity": "detail"
+      },
+      {
+        "id": 49,
+        "name": "الاستعلام عن إجراءات قبول الطلاب بالجامعات",
+        "field": "last_reviewed",
+        "severity": "detail"
+      },
+      {
+        "id": 50,
+        "name": "التوجيه إلى برامج التدريب المهني",
+        "field": "eligibility",
+        "severity": "detail"
+      },
+      {
+        "id": 50,
+        "name": "التوجيه إلى برامج التدريب المهني",
+        "field": "documents",
+        "severity": "detail"
+      },
+      {
+        "id": 50,
+        "name": "التوجيه إلى برامج التدريب المهني",
+        "field": "steps",
+        "severity": "detail"
+      },
+      {
+        "id": 50,
+        "name": "التوجيه إلى برامج التدريب المهني",
+        "field": "last_reviewed",
+        "severity": "detail"
+      },
+      {
+        "id": 54,
+        "name": "طلب مساعدة شهرية ضمانية",
+        "field": "eligibility",
+        "severity": "detail"
+      },
+      {
+        "id": 54,
+        "name": "طلب مساعدة شهرية ضمانية",
+        "field": "documents",
+        "severity": "detail"
+      },
+      {
+        "id": 54,
+        "name": "طلب مساعدة شهرية ضمانية",
+        "field": "steps",
+        "severity": "detail"
+      },
+      {
+        "id": 54,
+        "name": "طلب مساعدة شهرية ضمانية",
+        "field": "last_reviewed",
+        "severity": "detail"
+      },
+      {
+        "id": 56,
+        "name": "طلب معاش ضماني أو معاش طفل",
+        "field": "eligibility",
+        "severity": "detail"
+      },
+      {
+        "id": 56,
+        "name": "طلب معاش ضماني أو معاش طفل",
+        "field": "documents",
+        "severity": "detail"
+      },
+      {
+        "id": 56,
+        "name": "طلب معاش ضماني أو معاش طفل",
+        "field": "steps",
+        "severity": "detail"
+      },
+      {
+        "id": 56,
+        "name": "طلب معاش ضماني أو معاش طفل",
+        "field": "last_reviewed",
+        "severity": "detail"
+      },
+      {
+        "id": 57,
+        "name": "طلب دعم من مؤسسة التكافل",
+        "field": "eligibility",
+        "severity": "detail"
+      },
+      {
+        "id": 57,
+        "name": "طلب دعم من مؤسسة التكافل",
+        "field": "documents",
+        "severity": "detail"
+      },
+      {
+        "id": 57,
+        "name": "طلب دعم من مؤسسة التكافل",
+        "field": "steps",
+        "severity": "detail"
+      },
+      {
+        "id": 57,
+        "name": "طلب دعم من مؤسسة التكافل",
+        "field": "last_reviewed",
+        "severity": "detail"
+      },
+      {
+        "id": 59,
+        "name": "طلب قرض اجتماعي بضمان المرتب",
+        "field": "eligibility",
+        "severity": "detail"
+      },
+      {
+        "id": 59,
+        "name": "طلب قرض اجتماعي بضمان المرتب",
+        "field": "documents",
+        "severity": "detail"
+      },
+      {
+        "id": 59,
+        "name": "طلب قرض اجتماعي بضمان المرتب",
+        "field": "steps",
+        "severity": "detail"
+      },
+      {
+        "id": 59,
+        "name": "طلب قرض اجتماعي بضمان المرتب",
+        "field": "last_reviewed",
+        "severity": "detail"
+      },
+      {
+        "id": 60,
+        "name": "طلب قرض اجتماعي بضمان المعاش",
+        "field": "eligibility",
+        "severity": "detail"
+      },
+      {
+        "id": 60,
+        "name": "طلب قرض اجتماعي بضمان المعاش",
+        "field": "documents",
+        "severity": "detail"
+      },
+      {
+        "id": 60,
+        "name": "طلب قرض اجتماعي بضمان المعاش",
+        "field": "steps",
+        "severity": "detail"
+      },
+      {
+        "id": 60,
+        "name": "طلب قرض اجتماعي بضمان المعاش",
+        "field": "last_reviewed",
+        "severity": "detail"
+      },
+      {
+        "id": 61,
+        "name": "طلب قرض لأصحاب المعاشات",
+        "field": "eligibility",
+        "severity": "detail"
+      },
+      {
+        "id": 61,
+        "name": "طلب قرض لأصحاب المعاشات",
+        "field": "documents",
+        "severity": "detail"
+      },
+      {
+        "id": 61,
+        "name": "طلب قرض لأصحاب المعاشات",
+        "field": "steps",
+        "severity": "detail"
+      },
+      {
+        "id": 61,
+        "name": "طلب قرض لأصحاب المعاشات",
+        "field": "last_reviewed",
+        "severity": "detail"
+      },
+      {
+        "id": 62,
+        "name": "فتح حساب في بنك ناصر الاجتماعي",
+        "field": "eligibility",
+        "severity": "detail"
+      },
+      {
+        "id": 62,
+        "name": "فتح حساب في بنك ناصر الاجتماعي",
+        "field": "documents",
+        "severity": "detail"
+      },
+      {
+        "id": 62,
+        "name": "فتح حساب في بنك ناصر الاجتماعي",
+        "field": "steps",
+        "severity": "detail"
+      },
+      {
+        "id": 62,
+        "name": "فتح حساب في بنك ناصر الاجتماعي",
+        "field": "last_reviewed",
+        "severity": "detail"
+      },
+      {
+        "id": 63,
+        "name": "استخراج بطاقة تموين جديدة",
+        "field": "eligibility",
+        "severity": "detail"
+      },
+      {
+        "id": 63,
+        "name": "استخراج بطاقة تموين جديدة",
+        "field": "documents",
+        "severity": "detail"
+      },
+      {
+        "id": 63,
+        "name": "استخراج بطاقة تموين جديدة",
+        "field": "steps",
+        "severity": "detail"
+      },
+      {
+        "id": 63,
+        "name": "استخراج بطاقة تموين جديدة",
+        "field": "last_reviewed",
+        "severity": "detail"
+      },
+      {
+        "id": 64,
+        "name": "استخراج بدل فاقد لبطاقة التموين",
+        "field": "eligibility",
+        "severity": "detail"
+      },
+      {
+        "id": 64,
+        "name": "استخراج بدل فاقد لبطاقة التموين",
+        "field": "documents",
+        "severity": "detail"
+      },
+      {
+        "id": 64,
+        "name": "استخراج بدل فاقد لبطاقة التموين",
+        "field": "steps",
+        "severity": "detail"
+      },
+      {
+        "id": 64,
+        "name": "استخراج بدل فاقد لبطاقة التموين",
+        "field": "last_reviewed",
+        "severity": "detail"
+      },
+      {
+        "id": 65,
+        "name": "استخراج بدل تالف لبطاقة التموين",
+        "field": "eligibility",
+        "severity": "detail"
+      },
+      {
+        "id": 65,
+        "name": "استخراج بدل تالف لبطاقة التموين",
+        "field": "documents",
+        "severity": "detail"
+      },
+      {
+        "id": 65,
+        "name": "استخراج بدل تالف لبطاقة التموين",
+        "field": "steps",
+        "severity": "detail"
+      },
+      {
+        "id": 65,
+        "name": "استخراج بدل تالف لبطاقة التموين",
+        "field": "last_reviewed",
+        "severity": "detail"
+      },
+      {
+        "id": 66,
+        "name": "تفعيل بطاقة التموين",
+        "field": "eligibility",
+        "severity": "detail"
+      },
+      {
+        "id": 66,
+        "name": "تفعيل بطاقة التموين",
+        "field": "documents",
+        "severity": "detail"
+      },
+      {
+        "id": 66,
+        "name": "تفعيل بطاقة التموين",
+        "field": "steps",
+        "severity": "detail"
+      },
+      {
+        "id": 66,
+        "name": "تفعيل بطاقة التموين",
+        "field": "last_reviewed",
+        "severity": "detail"
+      },
+      {
+        "id": 67,
+        "name": "طلب إضافة أفراد على بطاقة التموين",
+        "field": "eligibility",
+        "severity": "detail"
+      },
+      {
+        "id": 67,
+        "name": "طلب إضافة أفراد على بطاقة التموين",
+        "field": "documents",
+        "severity": "detail"
+      },
+      {
+        "id": 67,
+        "name": "طلب إضافة أفراد على بطاقة التموين",
+        "field": "steps",
+        "severity": "detail"
+      },
+      {
+        "id": 67,
+        "name": "طلب إضافة أفراد على بطاقة التموين",
+        "field": "last_reviewed",
+        "severity": "detail"
+      },
+      {
+        "id": 68,
+        "name": "الاستعلام عن خدمات الدعم التمويني",
+        "field": "eligibility",
+        "severity": "detail"
+      },
+      {
+        "id": 68,
+        "name": "الاستعلام عن خدمات الدعم التمويني",
+        "field": "documents",
+        "severity": "detail"
+      },
+      {
+        "id": 68,
+        "name": "الاستعلام عن خدمات الدعم التمويني",
+        "field": "steps",
+        "severity": "detail"
+      },
+      {
+        "id": 68,
+        "name": "الاستعلام عن خدمات الدعم التمويني",
+        "field": "last_reviewed",
+        "severity": "detail"
+      },
+      {
+        "id": 72,
+        "name": "طلب مساعدة اجتماعية من الوحدة الاجتماعية",
+        "field": "eligibility",
+        "severity": "detail"
+      },
+      {
+        "id": 72,
+        "name": "طلب مساعدة اجتماعية من الوحدة الاجتماعية",
+        "field": "documents",
+        "severity": "detail"
+      },
+      {
+        "id": 72,
+        "name": "طلب مساعدة اجتماعية من الوحدة الاجتماعية",
+        "field": "steps",
+        "severity": "detail"
+      },
+      {
+        "id": 72,
+        "name": "طلب مساعدة اجتماعية من الوحدة الاجتماعية",
+        "field": "last_reviewed",
+        "severity": "detail"
+      },
+      {
+        "id": 73,
+        "name": "التوجيه إلى خدمات حماية الطفل",
+        "field": "eligibility",
+        "severity": "detail"
+      },
+      {
+        "id": 73,
+        "name": "التوجيه إلى خدمات حماية الطفل",
+        "field": "documents",
+        "severity": "detail"
+      },
+      {
+        "id": 73,
+        "name": "التوجيه إلى خدمات حماية الطفل",
+        "field": "steps",
+        "severity": "detail"
+      },
+      {
+        "id": 73,
+        "name": "التوجيه إلى خدمات حماية الطفل",
+        "field": "last_reviewed",
+        "severity": "detail"
+      },
+      {
+        "id": 75,
+        "name": "التوجيه إلى خدمات دعم المرأة",
+        "field": "eligibility",
+        "severity": "detail"
+      },
+      {
+        "id": 75,
+        "name": "التوجيه إلى خدمات دعم المرأة",
+        "field": "documents",
+        "severity": "detail"
+      },
+      {
+        "id": 75,
+        "name": "التوجيه إلى خدمات دعم المرأة",
+        "field": "steps",
+        "severity": "detail"
+      },
+      {
+        "id": 75,
+        "name": "التوجيه إلى خدمات دعم المرأة",
+        "field": "last_reviewed",
+        "severity": "detail"
+      },
+      {
+        "id": 76,
+        "name": "إصدار بطاقة الخدمات المتكاملة لأول مرة",
+        "field": "eligibility",
+        "severity": "detail"
+      },
+      {
+        "id": 76,
+        "name": "إصدار بطاقة الخدمات المتكاملة لأول مرة",
+        "field": "documents",
+        "severity": "detail"
+      },
+      {
+        "id": 76,
+        "name": "إصدار بطاقة الخدمات المتكاملة لأول مرة",
+        "field": "steps",
+        "severity": "detail"
+      },
+      {
+        "id": 76,
+        "name": "إصدار بطاقة الخدمات المتكاملة لأول مرة",
+        "field": "last_reviewed",
+        "severity": "detail"
+      },
+      {
+        "id": 77,
+        "name": "تجديد بطاقة الخدمات المتكاملة",
+        "field": "eligibility",
+        "severity": "detail"
+      },
+      {
+        "id": 77,
+        "name": "تجديد بطاقة الخدمات المتكاملة",
+        "field": "documents",
+        "severity": "detail"
+      },
+      {
+        "id": 77,
+        "name": "تجديد بطاقة الخدمات المتكاملة",
+        "field": "steps",
+        "severity": "detail"
+      },
+      {
+        "id": 77,
+        "name": "تجديد بطاقة الخدمات المتكاملة",
+        "field": "last_reviewed",
+        "severity": "detail"
+      },
+      {
+        "id": 84,
+        "name": "التوجيه والإرشاد بمكاتب التأهيل الاجتماعي",
+        "field": "eligibility",
+        "severity": "detail"
+      },
+      {
+        "id": 84,
+        "name": "التوجيه والإرشاد بمكاتب التأهيل الاجتماعي",
+        "field": "documents",
+        "severity": "detail"
+      },
+      {
+        "id": 84,
+        "name": "التوجيه والإرشاد بمكاتب التأهيل الاجتماعي",
+        "field": "steps",
+        "severity": "detail"
+      },
+      {
+        "id": 84,
+        "name": "التوجيه والإرشاد بمكاتب التأهيل الاجتماعي",
+        "field": "last_reviewed",
+        "severity": "detail"
+      },
+      {
+        "id": 96,
+        "name": "التعرف على الإعفاءات المرتبطة بالأجهزة التعويضية",
+        "field": "eligibility",
+        "severity": "detail"
+      },
+      {
+        "id": 96,
+        "name": "التعرف على الإعفاءات المرتبطة بالأجهزة التعويضية",
+        "field": "documents",
+        "severity": "detail"
+      },
+      {
+        "id": 96,
+        "name": "التعرف على الإعفاءات المرتبطة بالأجهزة التعويضية",
+        "field": "steps",
+        "severity": "detail"
+      },
+      {
+        "id": 96,
+        "name": "التعرف على الإعفاءات المرتبطة بالأجهزة التعويضية",
+        "field": "last_reviewed",
+        "severity": "detail"
+      },
+      {
+        "id": 97,
+        "name": "التعرف على إجراءات سيارات الأشخاص ذوي الإعاقة",
+        "field": "eligibility",
+        "severity": "detail"
+      },
+      {
+        "id": 97,
+        "name": "التعرف على إجراءات سيارات الأشخاص ذوي الإعاقة",
+        "field": "documents",
+        "severity": "detail"
+      },
+      {
+        "id": 97,
+        "name": "التعرف على إجراءات سيارات الأشخاص ذوي الإعاقة",
+        "field": "steps",
+        "severity": "detail"
+      },
+      {
+        "id": 97,
+        "name": "التعرف على إجراءات سيارات الأشخاص ذوي الإعاقة",
+        "field": "last_reviewed",
+        "severity": "detail"
+      },
+      {
+        "id": 100,
+        "name": "التوجيه إلى خدمات الرعاية المنزلية للمسنين",
+        "field": "eligibility",
+        "severity": "detail"
+      },
+      {
+        "id": 100,
+        "name": "التوجيه إلى خدمات الرعاية المنزلية للمسنين",
+        "field": "documents",
+        "severity": "detail"
+      },
+      {
+        "id": 100,
+        "name": "التوجيه إلى خدمات الرعاية المنزلية للمسنين",
+        "field": "steps",
+        "severity": "detail"
+      },
+      {
+        "id": 100,
+        "name": "التوجيه إلى خدمات الرعاية المنزلية للمسنين",
+        "field": "last_reviewed",
+        "severity": "detail"
+      },
+      {
+        "id": 106,
+        "name": "الاشتراك في مراكز الفنون بالجامعات",
+        "field": "eligibility",
+        "severity": "detail"
+      },
+      {
+        "id": 106,
+        "name": "الاشتراك في مراكز الفنون بالجامعات",
+        "field": "documents",
+        "severity": "detail"
+      },
+      {
+        "id": 106,
+        "name": "الاشتراك في مراكز الفنون بالجامعات",
+        "field": "steps",
+        "severity": "detail"
+      },
+      {
+        "id": 106,
+        "name": "الاشتراك في مراكز الفنون بالجامعات",
+        "field": "last_reviewed",
+        "severity": "detail"
+      },
+      {
+        "id": 107,
+        "name": "التقديم للبرنامج الكشفي لتنمية المهارات",
+        "field": "eligibility",
+        "severity": "detail"
+      },
+      {
+        "id": 107,
+        "name": "التقديم للبرنامج الكشفي لتنمية المهارات",
+        "field": "documents",
+        "severity": "detail"
+      },
+      {
+        "id": 107,
+        "name": "التقديم للبرنامج الكشفي لتنمية المهارات",
+        "field": "steps",
+        "severity": "detail"
+      },
+      {
+        "id": 107,
+        "name": "التقديم للبرنامج الكشفي لتنمية المهارات",
+        "field": "last_reviewed",
+        "severity": "detail"
+      },
+      {
+        "id": 108,
+        "name": "الاشتراك في برنامج العروض الرياضية بالمدارس",
+        "field": "eligibility",
+        "severity": "detail"
+      },
+      {
+        "id": 108,
+        "name": "الاشتراك في برنامج العروض الرياضية بالمدارس",
+        "field": "documents",
+        "severity": "detail"
+      },
+      {
+        "id": 108,
+        "name": "الاشتراك في برنامج العروض الرياضية بالمدارس",
+        "field": "steps",
+        "severity": "detail"
+      },
+      {
+        "id": 108,
+        "name": "الاشتراك في برنامج العروض الرياضية بالمدارس",
+        "field": "last_reviewed",
+        "severity": "detail"
+      },
+      {
+        "id": 109,
+        "name": "التقديم لمشروع سفراء ضد الفساد",
+        "field": "eligibility",
+        "severity": "detail"
+      },
+      {
+        "id": 109,
+        "name": "التقديم لمشروع سفراء ضد الفساد",
+        "field": "documents",
+        "severity": "detail"
+      },
+      {
+        "id": 109,
+        "name": "التقديم لمشروع سفراء ضد الفساد",
+        "field": "steps",
+        "severity": "detail"
+      },
+      {
+        "id": 109,
+        "name": "التقديم لمشروع سفراء ضد الفساد",
+        "field": "last_reviewed",
+        "severity": "detail"
+      },
+      {
+        "id": 110,
+        "name": "التقديم لمهرجان إبداع قادرون",
+        "field": "eligibility",
+        "severity": "detail"
+      },
+      {
+        "id": 110,
+        "name": "التقديم لمهرجان إبداع قادرون",
+        "field": "documents",
+        "severity": "detail"
+      },
+      {
+        "id": 110,
+        "name": "التقديم لمهرجان إبداع قادرون",
+        "field": "steps",
+        "severity": "detail"
+      },
+      {
+        "id": 110,
+        "name": "التقديم لمهرجان إبداع قادرون",
+        "field": "last_reviewed",
+        "severity": "detail"
+      },
+      {
+        "id": 111,
+        "name": "الاستعلام عن ملتقيات التوظيف للشباب",
+        "field": "eligibility",
+        "severity": "detail"
+      },
+      {
+        "id": 111,
+        "name": "الاستعلام عن ملتقيات التوظيف للشباب",
+        "field": "documents",
+        "severity": "detail"
+      },
+      {
+        "id": 111,
+        "name": "الاستعلام عن ملتقيات التوظيف للشباب",
+        "field": "steps",
+        "severity": "detail"
+      },
+      {
+        "id": 111,
+        "name": "الاستعلام عن ملتقيات التوظيف للشباب",
+        "field": "last_reviewed",
+        "severity": "detail"
+      },
+      {
+        "id": 112,
+        "name": "التقديم لفرص التدريب المهني",
+        "field": "eligibility",
+        "severity": "detail"
+      },
+      {
+        "id": 112,
+        "name": "التقديم لفرص التدريب المهني",
+        "field": "documents",
+        "severity": "detail"
+      },
+      {
+        "id": 112,
+        "name": "التقديم لفرص التدريب المهني",
+        "field": "steps",
+        "severity": "detail"
+      },
+      {
+        "id": 112,
+        "name": "التقديم لفرص التدريب المهني",
+        "field": "last_reviewed",
+        "severity": "detail"
+      },
+      {
+        "id": 113,
+        "name": "التعرف على برامج التدريب في البرمجة",
+        "field": "eligibility",
+        "severity": "detail"
+      },
+      {
+        "id": 113,
+        "name": "التعرف على برامج التدريب في البرمجة",
+        "field": "documents",
+        "severity": "detail"
+      },
+      {
+        "id": 113,
+        "name": "التعرف على برامج التدريب في البرمجة",
+        "field": "steps",
+        "severity": "detail"
+      },
+      {
+        "id": 113,
+        "name": "التعرف على برامج التدريب في البرمجة",
+        "field": "last_reviewed",
+        "severity": "detail"
+      },
+      {
+        "id": 114,
+        "name": "التعرف على برامج التدريب في التصميم والجرافيك",
+        "field": "eligibility",
+        "severity": "detail"
+      },
+      {
+        "id": 114,
+        "name": "التعرف على برامج التدريب في التصميم والجرافيك",
+        "field": "documents",
+        "severity": "detail"
+      },
+      {
+        "id": 114,
+        "name": "التعرف على برامج التدريب في التصميم والجرافيك",
+        "field": "steps",
+        "severity": "detail"
+      },
+      {
+        "id": 114,
+        "name": "التعرف على برامج التدريب في التصميم والجرافيك",
+        "field": "last_reviewed",
+        "severity": "detail"
+      },
+      {
+        "id": 115,
+        "name": "التعرف على برامج التدريب في الشبكات والدعم الفني",
+        "field": "eligibility",
+        "severity": "detail"
+      },
+      {
+        "id": 115,
+        "name": "التعرف على برامج التدريب في الشبكات والدعم الفني",
+        "field": "documents",
+        "severity": "detail"
+      },
+      {
+        "id": 115,
+        "name": "التعرف على برامج التدريب في الشبكات والدعم الفني",
+        "field": "steps",
+        "severity": "detail"
+      },
+      {
+        "id": 115,
+        "name": "التعرف على برامج التدريب في الشبكات والدعم الفني",
+        "field": "last_reviewed",
+        "severity": "detail"
+      },
+      {
+        "id": 116,
+        "name": "التعرف على برامج التدريب في التسويق الإلكتروني",
+        "field": "eligibility",
+        "severity": "detail"
+      },
+      {
+        "id": 116,
+        "name": "التعرف على برامج التدريب في التسويق الإلكتروني",
+        "field": "documents",
+        "severity": "detail"
+      },
+      {
+        "id": 116,
+        "name": "التعرف على برامج التدريب في التسويق الإلكتروني",
+        "field": "steps",
+        "severity": "detail"
+      },
+      {
+        "id": 116,
+        "name": "التعرف على برامج التدريب في التسويق الإلكتروني",
+        "field": "last_reviewed",
+        "severity": "detail"
+      },
+      {
+        "id": 117,
+        "name": "التعرف على برامج التدريب في إدارة الأعمال",
+        "field": "eligibility",
+        "severity": "detail"
+      },
+      {
+        "id": 117,
+        "name": "التعرف على برامج التدريب في إدارة الأعمال",
+        "field": "documents",
+        "severity": "detail"
+      },
+      {
+        "id": 117,
+        "name": "التعرف على برامج التدريب في إدارة الأعمال",
+        "field": "steps",
+        "severity": "detail"
+      },
+      {
+        "id": 117,
+        "name": "التعرف على برامج التدريب في إدارة الأعمال",
+        "field": "last_reviewed",
+        "severity": "detail"
+      },
+      {
+        "id": 118,
+        "name": "التعرف على برامج التدريب في رعاية المسنين",
+        "field": "eligibility",
+        "severity": "detail"
+      },
+      {
+        "id": 118,
+        "name": "التعرف على برامج التدريب في رعاية المسنين",
+        "field": "documents",
+        "severity": "detail"
+      },
+      {
+        "id": 118,
+        "name": "التعرف على برامج التدريب في رعاية المسنين",
+        "field": "steps",
+        "severity": "detail"
+      },
+      {
+        "id": 118,
+        "name": "التعرف على برامج التدريب في رعاية المسنين",
+        "field": "last_reviewed",
+        "severity": "detail"
+      },
+      {
+        "id": 119,
+        "name": "التعرف على خدمات التوجيه المهني",
+        "field": "eligibility",
+        "severity": "detail"
+      },
+      {
+        "id": 119,
+        "name": "التعرف على خدمات التوجيه المهني",
+        "field": "documents",
+        "severity": "detail"
+      },
+      {
+        "id": 119,
+        "name": "التعرف على خدمات التوجيه المهني",
+        "field": "steps",
+        "severity": "detail"
+      },
+      {
+        "id": 119,
+        "name": "التعرف على خدمات التوجيه المهني",
+        "field": "last_reviewed",
+        "severity": "detail"
+      },
+      {
+        "id": 120,
+        "name": "الاستعلام عن فرص العمل المتاحة",
+        "field": "eligibility",
+        "severity": "detail"
+      },
+      {
+        "id": 120,
+        "name": "الاستعلام عن فرص العمل المتاحة",
+        "field": "documents",
+        "severity": "detail"
+      },
+      {
+        "id": 120,
+        "name": "الاستعلام عن فرص العمل المتاحة",
+        "field": "steps",
+        "severity": "detail"
+      },
+      {
+        "id": 120,
+        "name": "الاستعلام عن فرص العمل المتاحة",
+        "field": "last_reviewed",
+        "severity": "detail"
+      },
+      {
+        "id": 121,
+        "name": "التعرف على برامج التطوع بمراكز الشباب",
+        "field": "eligibility",
+        "severity": "detail"
+      },
+      {
+        "id": 121,
+        "name": "التعرف على برامج التطوع بمراكز الشباب",
+        "field": "documents",
+        "severity": "detail"
+      },
+      {
+        "id": 121,
+        "name": "التعرف على برامج التطوع بمراكز الشباب",
+        "field": "steps",
+        "severity": "detail"
+      },
+      {
+        "id": 121,
+        "name": "التعرف على برامج التطوع بمراكز الشباب",
+        "field": "last_reviewed",
+        "severity": "detail"
+      },
+      {
+        "id": 122,
+        "name": "التقديم للأنشطة والبرامج الرياضية للشباب",
+        "field": "eligibility",
+        "severity": "detail"
+      },
+      {
+        "id": 122,
+        "name": "التقديم للأنشطة والبرامج الرياضية للشباب",
+        "field": "documents",
+        "severity": "detail"
+      },
+      {
+        "id": 122,
+        "name": "التقديم للأنشطة والبرامج الرياضية للشباب",
+        "field": "steps",
+        "severity": "detail"
+      },
+      {
+        "id": 122,
+        "name": "التقديم للأنشطة والبرامج الرياضية للشباب",
+        "field": "last_reviewed",
+        "severity": "detail"
+      },
+      {
+        "id": 123,
+        "name": "التعرف على برامج بناء المهارات الحياتية",
+        "field": "eligibility",
+        "severity": "detail"
+      },
+      {
+        "id": 123,
+        "name": "التعرف على برامج بناء المهارات الحياتية",
+        "field": "documents",
+        "severity": "detail"
+      },
+      {
+        "id": 123,
+        "name": "التعرف على برامج بناء المهارات الحياتية",
+        "field": "steps",
+        "severity": "detail"
+      },
+      {
+        "id": 123,
+        "name": "التعرف على برامج بناء المهارات الحياتية",
+        "field": "last_reviewed",
+        "severity": "detail"
+      },
+      {
+        "id": 124,
+        "name": "الاستعلام عن مبادرات تمكين الشباب",
+        "field": "eligibility",
+        "severity": "detail"
+      },
+      {
+        "id": 124,
+        "name": "الاستعلام عن مبادرات تمكين الشباب",
+        "field": "documents",
+        "severity": "detail"
+      },
+      {
+        "id": 124,
+        "name": "الاستعلام عن مبادرات تمكين الشباب",
+        "field": "steps",
+        "severity": "detail"
+      },
+      {
+        "id": 124,
+        "name": "الاستعلام عن مبادرات تمكين الشباب",
+        "field": "last_reviewed",
+        "severity": "detail"
+      },
+      {
+        "id": 125,
+        "name": "التعرف على برامج التأهيل لسوق العمل",
+        "field": "eligibility",
+        "severity": "detail"
+      },
+      {
+        "id": 125,
+        "name": "التعرف على برامج التأهيل لسوق العمل",
+        "field": "documents",
+        "severity": "detail"
+      },
+      {
+        "id": 125,
+        "name": "التعرف على برامج التأهيل لسوق العمل",
+        "field": "steps",
+        "severity": "detail"
+      },
+      {
+        "id": 125,
+        "name": "التعرف على برامج التأهيل لسوق العمل",
+        "field": "last_reviewed",
+        "severity": "detail"
+      },
+      {
+        "id": 133,
+        "name": "التعرف على إجراءات تراخيص المشروعات",
+        "field": "eligibility",
+        "severity": "detail"
+      },
+      {
+        "id": 133,
+        "name": "التعرف على إجراءات تراخيص المشروعات",
+        "field": "documents",
+        "severity": "detail"
+      },
+      {
+        "id": 133,
+        "name": "التعرف على إجراءات تراخيص المشروعات",
+        "field": "steps",
+        "severity": "detail"
+      },
+      {
+        "id": 133,
+        "name": "التعرف على إجراءات تراخيص المشروعات",
+        "field": "last_reviewed",
+        "severity": "detail"
+      },
+      {
+        "id": 135,
+        "name": "الاستفادة من خدمات تسويق المنتجات",
+        "field": "eligibility",
+        "severity": "detail"
+      },
+      {
+        "id": 135,
+        "name": "الاستفادة من خدمات تسويق المنتجات",
+        "field": "documents",
+        "severity": "detail"
+      },
+      {
+        "id": 135,
+        "name": "الاستفادة من خدمات تسويق المنتجات",
+        "field": "steps",
+        "severity": "detail"
+      },
+      {
+        "id": 135,
+        "name": "الاستفادة من خدمات تسويق المنتجات",
+        "field": "last_reviewed",
+        "severity": "detail"
+      },
+      {
+        "id": 136,
+        "name": "التعرف على فرص التصدير للمشروعات الصغيرة",
+        "field": "eligibility",
+        "severity": "detail"
+      },
+      {
+        "id": 136,
+        "name": "التعرف على فرص التصدير للمشروعات الصغيرة",
+        "field": "documents",
+        "severity": "detail"
+      },
+      {
+        "id": 136,
+        "name": "التعرف على فرص التصدير للمشروعات الصغيرة",
+        "field": "steps",
+        "severity": "detail"
+      },
+      {
+        "id": 136,
+        "name": "التعرف على فرص التصدير للمشروعات الصغيرة",
+        "field": "last_reviewed",
+        "severity": "detail"
+      },
+      {
+        "id": 139,
+        "name": "طلب معلومات أعمال للمشروعات",
+        "field": "eligibility",
+        "severity": "detail"
+      },
+      {
+        "id": 139,
+        "name": "طلب معلومات أعمال للمشروعات",
+        "field": "documents",
+        "severity": "detail"
+      },
+      {
+        "id": 139,
+        "name": "طلب معلومات أعمال للمشروعات",
+        "field": "steps",
+        "severity": "detail"
+      },
+      {
+        "id": 139,
+        "name": "طلب معلومات أعمال للمشروعات",
+        "field": "last_reviewed",
+        "severity": "detail"
+      },
+      {
+        "id": 140,
+        "name": "التعرف على وحدات تطوير الأعمال",
+        "field": "eligibility",
+        "severity": "detail"
+      },
+      {
+        "id": 140,
+        "name": "التعرف على وحدات تطوير الأعمال",
+        "field": "documents",
+        "severity": "detail"
+      },
+      {
+        "id": 140,
+        "name": "التعرف على وحدات تطوير الأعمال",
+        "field": "steps",
+        "severity": "detail"
+      },
+      {
+        "id": 140,
+        "name": "التعرف على وحدات تطوير الأعمال",
+        "field": "last_reviewed",
+        "severity": "detail"
+      },
+      {
+        "id": 141,
+        "name": "التعرف على خدمات الشباك الواحد",
+        "field": "eligibility",
+        "severity": "detail"
+      },
+      {
+        "id": 141,
+        "name": "التعرف على خدمات الشباك الواحد",
+        "field": "documents",
+        "severity": "detail"
+      },
+      {
+        "id": 141,
+        "name": "التعرف على خدمات الشباك الواحد",
+        "field": "steps",
+        "severity": "detail"
+      },
+      {
+        "id": 141,
+        "name": "التعرف على خدمات الشباك الواحد",
+        "field": "last_reviewed",
+        "severity": "detail"
+      },
+      {
+        "id": 146,
+        "name": "التعرف على خدمات التسجيل الضريبي",
+        "field": "eligibility",
+        "severity": "detail"
+      },
+      {
+        "id": 146,
+        "name": "التعرف على خدمات التسجيل الضريبي",
+        "field": "documents",
+        "severity": "detail"
+      },
+      {
+        "id": 146,
+        "name": "التعرف على خدمات التسجيل الضريبي",
+        "field": "steps",
+        "severity": "detail"
+      },
+      {
+        "id": 146,
+        "name": "التعرف على خدمات التسجيل الضريبي",
+        "field": "last_reviewed",
+        "severity": "detail"
+      },
+      {
+        "id": 148,
+        "name": "التعرف على خدمات التراخيص الصناعية",
+        "field": "eligibility",
+        "severity": "detail"
+      },
+      {
+        "id": 148,
+        "name": "التعرف على خدمات التراخيص الصناعية",
+        "field": "documents",
+        "severity": "detail"
+      },
+      {
+        "id": 148,
+        "name": "التعرف على خدمات التراخيص الصناعية",
+        "field": "steps",
+        "severity": "detail"
+      },
+      {
+        "id": 148,
+        "name": "التعرف على خدمات التراخيص الصناعية",
+        "field": "last_reviewed",
+        "severity": "detail"
+      },
+      {
+        "id": 149,
+        "name": "التعرف على خدمات تسجيل العلامات التجارية",
+        "field": "eligibility",
+        "severity": "detail"
+      },
+      {
+        "id": 149,
+        "name": "التعرف على خدمات تسجيل العلامات التجارية",
+        "field": "documents",
+        "severity": "detail"
+      },
+      {
+        "id": 149,
+        "name": "التعرف على خدمات تسجيل العلامات التجارية",
+        "field": "steps",
+        "severity": "detail"
+      },
+      {
+        "id": 149,
+        "name": "التعرف على خدمات تسجيل العلامات التجارية",
+        "field": "last_reviewed",
+        "severity": "detail"
+      },
+      {
+        "id": 150,
+        "name": "التعرف على الخدمات التكنولوجية للمشروعات",
+        "field": "eligibility",
+        "severity": "detail"
+      },
+      {
+        "id": 150,
+        "name": "التعرف على الخدمات التكنولوجية للمشروعات",
+        "field": "documents",
+        "severity": "detail"
+      },
+      {
+        "id": 150,
+        "name": "التعرف على الخدمات التكنولوجية للمشروعات",
+        "field": "steps",
+        "severity": "detail"
+      },
+      {
+        "id": 150,
+        "name": "التعرف على الخدمات التكنولوجية للمشروعات",
+        "field": "last_reviewed",
+        "severity": "detail"
+      },
+      {
+        "id": 151,
+        "name": "استخراج شهادة الميلاد المميكنة",
+        "field": "eligibility",
+        "severity": "detail"
+      },
+      {
+        "id": 151,
+        "name": "استخراج شهادة الميلاد المميكنة",
+        "field": "documents",
+        "severity": "detail"
+      },
+      {
+        "id": 151,
+        "name": "استخراج شهادة الميلاد المميكنة",
+        "field": "steps",
+        "severity": "detail"
+      },
+      {
+        "id": 151,
+        "name": "استخراج شهادة الميلاد المميكنة",
+        "field": "last_reviewed",
+        "severity": "detail"
+      },
+      {
+        "id": 152,
+        "name": "استخراج بطاقة الرقم القومي",
+        "field": "eligibility",
+        "severity": "detail"
+      },
+      {
+        "id": 152,
+        "name": "استخراج بطاقة الرقم القومي",
+        "field": "documents",
+        "severity": "detail"
+      },
+      {
+        "id": 152,
+        "name": "استخراج بطاقة الرقم القومي",
+        "field": "steps",
+        "severity": "detail"
+      },
+      {
+        "id": 152,
+        "name": "استخراج بطاقة الرقم القومي",
+        "field": "last_reviewed",
+        "severity": "detail"
+      },
+      {
+        "id": 154,
+        "name": "الاستعلام عن معادلة الجامعات والمعاهد الخاصة",
+        "field": "eligibility",
+        "severity": "detail"
+      },
+      {
+        "id": 154,
+        "name": "الاستعلام عن معادلة الجامعات والمعاهد الخاصة",
+        "field": "documents",
+        "severity": "detail"
+      },
+      {
+        "id": 154,
+        "name": "الاستعلام عن معادلة الجامعات والمعاهد الخاصة",
+        "field": "steps",
+        "severity": "detail"
+      },
+      {
+        "id": 154,
+        "name": "الاستعلام عن معادلة الجامعات والمعاهد الخاصة",
+        "field": "last_reviewed",
+        "severity": "detail"
+      },
+      {
+        "id": 155,
+        "name": "التقدم لاختبارات الدبلومات والمعاهد الفنية",
+        "field": "eligibility",
+        "severity": "detail"
+      },
+      {
+        "id": 155,
+        "name": "التقدم لاختبارات الدبلومات والمعاهد الفنية",
+        "field": "documents",
+        "severity": "detail"
+      },
+      {
+        "id": 155,
+        "name": "التقدم لاختبارات الدبلومات والمعاهد الفنية",
+        "field": "steps",
+        "severity": "detail"
+      },
+      {
+        "id": 155,
+        "name": "التقدم لاختبارات الدبلومات والمعاهد الفنية",
+        "field": "last_reviewed",
+        "severity": "detail"
+      },
+      {
+        "id": 157,
+        "name": "الاستعلام عن برامج الدعم والمساعدات الاجتماعية",
+        "field": "eligibility",
+        "severity": "detail"
+      },
+      {
+        "id": 157,
+        "name": "الاستعلام عن برامج الدعم والمساعدات الاجتماعية",
+        "field": "documents",
+        "severity": "detail"
+      },
+      {
+        "id": 157,
+        "name": "الاستعلام عن برامج الدعم والمساعدات الاجتماعية",
+        "field": "steps",
+        "severity": "detail"
+      },
+      {
+        "id": 157,
+        "name": "الاستعلام عن برامج الدعم والمساعدات الاجتماعية",
+        "field": "last_reviewed",
+        "severity": "detail"
+      },
+      {
+        "id": 158,
+        "name": "التعرف على برامج المساندة والحد من الفقر",
+        "field": "eligibility",
+        "severity": "detail"
+      },
+      {
+        "id": 158,
+        "name": "التعرف على برامج المساندة والحد من الفقر",
+        "field": "documents",
+        "severity": "detail"
+      },
+      {
+        "id": 158,
+        "name": "التعرف على برامج المساندة والحد من الفقر",
+        "field": "steps",
+        "severity": "detail"
+      },
+      {
+        "id": 158,
+        "name": "التعرف على برامج المساندة والحد من الفقر",
+        "field": "last_reviewed",
+        "severity": "detail"
+      },
+      {
+        "id": 160,
+        "name": "بدل فاقد أو تالف لبطاقة الخدمات المتكاملة",
+        "field": "eligibility",
+        "severity": "detail"
+      },
+      {
+        "id": 160,
+        "name": "بدل فاقد أو تالف لبطاقة الخدمات المتكاملة",
+        "field": "documents",
+        "severity": "detail"
+      },
+      {
+        "id": 160,
+        "name": "بدل فاقد أو تالف لبطاقة الخدمات المتكاملة",
+        "field": "steps",
+        "severity": "detail"
+      },
+      {
+        "id": 160,
+        "name": "بدل فاقد أو تالف لبطاقة الخدمات المتكاملة",
+        "field": "last_reviewed",
+        "severity": "detail"
+      },
+      {
+        "id": 161,
+        "name": "التوجيه إلى خدمات التدريب المهني",
+        "field": "eligibility",
+        "severity": "detail"
+      },
+      {
+        "id": 161,
+        "name": "التوجيه إلى خدمات التدريب المهني",
+        "field": "documents",
+        "severity": "detail"
+      },
+      {
+        "id": 161,
+        "name": "التوجيه إلى خدمات التدريب المهني",
+        "field": "steps",
+        "severity": "detail"
+      },
+      {
+        "id": 161,
+        "name": "التوجيه إلى خدمات التدريب المهني",
+        "field": "last_reviewed",
+        "severity": "detail"
+      },
+      {
+        "id": 162,
+        "name": "البحث عن خدمات التدريب وفرص التأهيل للعمل",
+        "field": "eligibility",
+        "severity": "detail"
+      },
+      {
+        "id": 162,
+        "name": "البحث عن خدمات التدريب وفرص التأهيل للعمل",
+        "field": "documents",
+        "severity": "detail"
+      },
+      {
+        "id": 162,
+        "name": "البحث عن خدمات التدريب وفرص التأهيل للعمل",
+        "field": "steps",
+        "severity": "detail"
+      },
+      {
+        "id": 162,
+        "name": "البحث عن خدمات التدريب وفرص التأهيل للعمل",
+        "field": "last_reviewed",
+        "severity": "detail"
+      },
+      {
+        "id": 163,
+        "name": "استخراج شهادة تصنيف المشروع",
+        "field": "eligibility",
+        "severity": "detail"
+      },
+      {
+        "id": 163,
+        "name": "استخراج شهادة تصنيف المشروع",
+        "field": "documents",
+        "severity": "detail"
+      },
+      {
+        "id": 163,
+        "name": "استخراج شهادة تصنيف المشروع",
+        "field": "steps",
+        "severity": "detail"
+      },
+      {
+        "id": 163,
+        "name": "استخراج شهادة تصنيف المشروع",
+        "field": "last_reviewed",
+        "severity": "detail"
+      },
+      {
+        "id": 164,
+        "name": "خدمات الشباك الواحد للمشروعات",
+        "field": "eligibility",
+        "severity": "detail"
+      },
+      {
+        "id": 164,
+        "name": "خدمات الشباك الواحد للمشروعات",
+        "field": "documents",
+        "severity": "detail"
+      },
+      {
+        "id": 164,
+        "name": "خدمات الشباك الواحد للمشروعات",
+        "field": "steps",
+        "severity": "detail"
+      },
+      {
+        "id": 164,
+        "name": "خدمات الشباك الواحد للمشروعات",
+        "field": "last_reviewed",
+        "severity": "detail"
+      },
+      {
+        "id": 165,
+        "name": "تأسيس منشأة فردية",
+        "field": "eligibility",
+        "severity": "detail"
+      },
+      {
+        "id": 165,
+        "name": "تأسيس منشأة فردية",
+        "field": "documents",
+        "severity": "detail"
+      },
+      {
+        "id": 165,
+        "name": "تأسيس منشأة فردية",
+        "field": "steps",
+        "severity": "detail"
+      },
+      {
+        "id": 165,
+        "name": "تأسيس منشأة فردية",
+        "field": "last_reviewed",
+        "severity": "detail"
+      },
+      {
+        "id": 166,
+        "name": "تأسيس شركة الشخص الواحد",
+        "field": "eligibility",
+        "severity": "detail"
+      },
+      {
+        "id": 166,
+        "name": "تأسيس شركة الشخص الواحد",
+        "field": "documents",
+        "severity": "detail"
+      },
+      {
+        "id": 166,
+        "name": "تأسيس شركة الشخص الواحد",
+        "field": "steps",
+        "severity": "detail"
+      },
+      {
+        "id": 166,
+        "name": "تأسيس شركة الشخص الواحد",
+        "field": "last_reviewed",
+        "severity": "detail"
+      },
+      {
+        "id": 167,
+        "name": "التسجيل في منظومة الفاتورة الإلكترونية",
+        "field": "eligibility",
+        "severity": "detail"
+      },
+      {
+        "id": 167,
+        "name": "التسجيل في منظومة الفاتورة الإلكترونية",
+        "field": "documents",
+        "severity": "detail"
+      },
+      {
+        "id": 167,
+        "name": "التسجيل في منظومة الفاتورة الإلكترونية",
+        "field": "steps",
+        "severity": "detail"
+      },
+      {
+        "id": 167,
+        "name": "التسجيل في منظومة الفاتورة الإلكترونية",
+        "field": "last_reviewed",
+        "severity": "detail"
+      }
+    ],
+    "invalid_categories": [],
+    "invalid_statuses": [],
+    "malformed_source_urls": [
+      {
+        "id": 16,
+        "name": "استخراج جواز سفر مميكن لأول مرة",
+        "url": "وزارة الداخلية – المستندات اللازمة: https://www.moi.gov.eg/Passports/home/PassportRequiredPapers\\nوزارة الداخلية – استخراج جواز سفر والإجراءات والرسوم: https://www.moi.gov.eg/passports/home/GetPassport/1\\nوزارة الداخلية – الفروع الجغرافية: https://www.moi.gov.eg/Passports/Home/Index"
+      }
+    ],
+    "published_records_missing_required_review_details": [],
+    "published_records_missing_review_date": [],
+    "exact_duplicate_name_groups": [],
+    "possible_near_duplicate_pairs": []
+  },
+  "counts": {
+    "missing_field_entries": 356,
+    "invalid_categories": 0,
+    "invalid_statuses": 0,
+    "malformed_source_urls": 1,
+    "published_incomplete": 0,
+    "published_missing_review_date": 0,
+    "exact_duplicate_groups": 0,
+    "possible_near_duplicate_pairs": 0
+  },
+  "note": "URL checks validate syntax only, not whether a website is online or whether its content supports the service. Near-duplicate pairs are review candidates, not confirmed duplicates. No database records were changed."
+}
