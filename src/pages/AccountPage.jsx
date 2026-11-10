@@ -20,6 +20,7 @@ function AccountPage() {
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
     const [busy, setBusy] = useState(false);
+    const [googleReady, setGoogleReady] = useState(false);
     const [message, setMessage] = useState("");
     const [error, setError] = useState("");
     const googleClientId = import.meta.env.VITE_GOOGLE_CLIENT_ID || "";
@@ -81,7 +82,7 @@ function AccountPage() {
         let script = document.getElementById("google-identity-services");
 
         const renderGoogleButton = () => {
-            if (cancelled || !googleButtonRef.current) return;
+            if (cancelled) return;
             if (!window.google?.accounts?.id) {
                 setError("تم تحميل صفحة Google لكن خدمة تسجيل الدخول لم تبدأ. جرّب تحديث الصفحة.");
                 return;
