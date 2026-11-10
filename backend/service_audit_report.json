@@ -1,5 +1,5 @@
 {
-  "generated_at_utc": "2026-11-09T18:22:03.602958+00:00",
+  "generated_at_utc": "2026-11-09T22:15:59.608653+00:00",
   "database": "C:\\Users\\Admin\\Desktop\\sanad\\backend\\sanad.db",
   "read_only": true,
   "total_services": 170,
@@ -2174,27 +2174,2387 @@
     ],
     "invalid_categories": [],
     "invalid_statuses": [],
-    "malformed_source_urls": [
-      {
-        "id": 16,
-        "name": "استخراج جواز سفر مميكن لأول مرة",
-        "url": "وزارة الداخلية – المستندات اللازمة: https://www.moi.gov.eg/Passports/home/PassportRequiredPapers\\nوزارة الداخلية – استخراج جواز سفر والإجراءات والرسوم: https://www.moi.gov.eg/passports/home/GetPassport/1\\nوزارة الداخلية – الفروع الجغرافية: https://www.moi.gov.eg/Passports/Home/Index"
-      }
-    ],
+    "malformed_source_urls": [],
     "published_records_missing_required_review_details": [],
     "published_records_missing_review_date": [],
     "exact_duplicate_name_groups": [],
-    "possible_near_duplicate_pairs": []
+    "possible_near_duplicate_pairs": [
+      {
+        "category": "education",
+        "similarity": 0.93,
+        "first": {
+          "id": 45,
+          "name": "التقدم لامتحان المعاهد الفنية لكلية التجارة",
+          "status": "draft"
+        },
+        "second": {
+          "id": 46,
+          "name": "التقدم لامتحان المعاهد الفنية لكلية الزراعة",
+          "status": "draft"
+        }
+      },
+      {
+        "category": "government",
+        "similarity": 0.929,
+        "first": {
+          "id": 1,
+          "name": "استخراج شهادة ميلاد مميكنة",
+          "status": "published"
+        },
+        "second": {
+          "id": 151,
+          "name": "استخراج شهادة الميلاد المميكنة",
+          "status": "draft"
+        }
+      },
+      {
+        "category": "education",
+        "similarity": 0.929,
+        "first": {
+          "id": 42,
+          "name": "التقدم لامتحانات الدبلومات والمعاهد الفنية",
+          "status": "draft"
+        },
+        "second": {
+          "id": 155,
+          "name": "التقدم لاختبارات الدبلومات والمعاهد الفنية",
+          "status": "draft"
+        }
+      },
+      {
+        "category": "accessibility",
+        "similarity": 0.927,
+        "first": {
+          "id": 78,
+          "name": "استخراج بدل فاقد لبطاقة الخدمات المتكاملة",
+          "status": "published"
+        },
+        "second": {
+          "id": 79,
+          "name": "استخراج بدل تالف لبطاقة الخدمات المتكاملة",
+          "status": "published"
+        }
+      },
+      {
+        "category": "accessibility",
+        "similarity": 0.909,
+        "first": {
+          "id": 159,
+          "name": "إصدار بطاقة إثبات الإعاقة والخدمات المتكاملة",
+          "status": "published"
+        },
+        "second": {
+          "id": 168,
+          "name": "تجديد بطاقة إثبات الإعاقة والخدمات المتكاملة",
+          "status": "published"
+        }
+      },
+      {
+        "category": "education",
+        "similarity": 0.907,
+        "first": {
+          "id": 43,
+          "name": "التقدم لامتحان المعاهد الفنية لكلية الهندسة",
+          "status": "draft"
+        },
+        "second": {
+          "id": 45,
+          "name": "التقدم لامتحان المعاهد الفنية لكلية التجارة",
+          "status": "draft"
+        }
+      },
+      {
+        "category": "education",
+        "similarity": 0.907,
+        "first": {
+          "id": 43,
+          "name": "التقدم لامتحان المعاهد الفنية لكلية الهندسة",
+          "status": "draft"
+        },
+        "second": {
+          "id": 46,
+          "name": "التقدم لامتحان المعاهد الفنية لكلية الزراعة",
+          "status": "draft"
+        }
+      },
+      {
+        "category": "support",
+        "similarity": 0.903,
+        "first": {
+          "id": 64,
+          "name": "استخراج بدل فاقد لبطاقة التموين",
+          "status": "draft"
+        },
+        "second": {
+          "id": 65,
+          "name": "استخراج بدل تالف لبطاقة التموين",
+          "status": "draft"
+        }
+      }
+    ],
+    "repeated_detail_text_candidates": [
+      {
+        "field": "documents",
+        "category": "government",
+        "count": 15,
+        "service_ids": [
+          1,
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9,
+          10,
+          11,
+          12,
+          13,
+          14,
+          15
+        ],
+        "service_names": [
+          "استخراج شهادة ميلاد مميكنة",
+          "استخراج شهادة وفاة مميكنة",
+          "استخراج قيد زواج",
+          "استخراج قيد طلاق",
+          "استخراج قيد عائلي",
+          "إصدار بطاقة رقم قومي لأول مرة",
+          "تجديد بطاقة الرقم القومي",
+          "بدل فاقد بطاقة الرقم القومي",
+          "بدل تالف بطاقة الرقم القومي",
+          "تغيير محل الإقامة في بطاقة الرقم القومي",
+          "تعديل الحالة الاجتماعية في بطاقة الرقم القومي",
+          "تعديل المهنة في بطاقة الرقم القومي",
+          "تصحيح بيانات قيد الميلاد أو الوفاة",
+          "استخراج صورة قيد ميلاد",
+          "استخراج صورة قيد وفاة"
+        ],
+        "sample": "لا تنشر صفحة دليل الخدمات قائمة موحدة تصلح لكل خدمات الأحوال المدنية. تختلف المستندات بحسب نوع الوثيقة والواقعة وصفة مقدم الطلب. المرجع الحاسم هو قائمة المتطلبات التي تظهر داخل بوابة وزارة الداخلية بعد اختيار الخدمة، مع تجهيز إثبات الشخصية "
+      },
+      {
+        "field": "eligibility",
+        "category": "government",
+        "count": 15,
+        "service_ids": [
+          1,
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9,
+          10,
+          11,
+          12,
+          13,
+          14,
+          15
+        ],
+        "service_names": [
+          "استخراج شهادة ميلاد مميكنة",
+          "استخراج شهادة وفاة مميكنة",
+          "استخراج قيد زواج",
+          "استخراج قيد طلاق",
+          "استخراج قيد عائلي",
+          "إصدار بطاقة رقم قومي لأول مرة",
+          "تجديد بطاقة الرقم القومي",
+          "بدل فاقد بطاقة الرقم القومي",
+          "بدل تالف بطاقة الرقم القومي",
+          "تغيير محل الإقامة في بطاقة الرقم القومي",
+          "تعديل الحالة الاجتماعية في بطاقة الرقم القومي",
+          "تعديل المهنة في بطاقة الرقم القومي",
+          "تصحيح بيانات قيد الميلاد أو الوفاة",
+          "استخراج صورة قيد ميلاد",
+          "استخراج صورة قيد وفاة"
+        ],
+        "sample": "المواطن صاحب الواقعة أو مقدم الطلب الذي تسمح له قواعد الأحوال المدنية بذلك. تختلف صفة مقدم الطلب المقبولة باختلاف نوع الوثيقة والواقعة؛ يجب مراجعة شروط الخدمة المحددة قبل السداد."
+      },
+      {
+        "field": "steps",
+        "category": "government",
+        "count": 15,
+        "service_ids": [
+          1,
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9,
+          10,
+          11,
+          12,
+          13,
+          14,
+          15
+        ],
+        "service_names": [
+          "استخراج شهادة ميلاد مميكنة",
+          "استخراج شهادة وفاة مميكنة",
+          "استخراج قيد زواج",
+          "استخراج قيد طلاق",
+          "استخراج قيد عائلي",
+          "إصدار بطاقة رقم قومي لأول مرة",
+          "تجديد بطاقة الرقم القومي",
+          "بدل فاقد بطاقة الرقم القومي",
+          "بدل تالف بطاقة الرقم القومي",
+          "تغيير محل الإقامة في بطاقة الرقم القومي",
+          "تعديل الحالة الاجتماعية في بطاقة الرقم القومي",
+          "تعديل المهنة في بطاقة الرقم القومي",
+          "تصحيح بيانات قيد الميلاد أو الوفاة",
+          "استخراج صورة قيد ميلاد",
+          "استخراج صورة قيد وفاة"
+        ],
+        "sample": "1. افتح دليل الخدمات الرسمي لوزارة الداخلية أو بوابة الخدمات الإلكترونية للأحوال المدنية.\n2. اختر نوع الوثيقة أو المعاملة المطلوبة بدقة.\n3. راجع شروط الخدمة والمستندات التي يعرضها النظام لهذه المعاملة تحديدًا.\n4. أدخل البيانات كما هي في الم"
+      },
+      {
+        "field": "documents",
+        "category": "business",
+        "count": 10,
+        "service_ids": [
+          126,
+          127,
+          128,
+          129,
+          130,
+          131,
+          132,
+          134,
+          137,
+          138
+        ],
+        "service_names": [
+          "طلب تمويل مشروع صغير",
+          "التعرف على التمويل من خلال البنوك",
+          "التعرف على الإقراض المباشر للمشروعات",
+          "التعرف على تمويل المشروعات متناهية الصغر",
+          "طلب دعم فني لمشروع قائم",
+          "التسجيل في برامج تدريب رواد الأعمال",
+          "الاستفادة من خدمات تأسيس المشروعات",
+          "طلب استشارة لتطوير مشروع صغير",
+          "التعرف على حاضنات الأعمال",
+          "الحصول على أفكار استرشادية لمشروع صغير"
+        ],
+        "sample": "لا ينشر الجهاز قائمة واحدة تصلح لكل التمويلات أو خدمات الدعم. تتحدد المستندات بحسب نوع النشاط، ومرحلة المشروع، والجهة الممولة أو الخدمة المطلوبة. عند التقديم الأولي جهز بيانات التواصل ووصف المشروع وبيانات صاحبه، ثم اطلب قائمة المستندات الرس"
+      },
+      {
+        "field": "eligibility",
+        "category": "business",
+        "count": 10,
+        "service_ids": [
+          126,
+          127,
+          128,
+          129,
+          130,
+          131,
+          132,
+          134,
+          137,
+          138
+        ],
+        "service_names": [
+          "طلب تمويل مشروع صغير",
+          "التعرف على التمويل من خلال البنوك",
+          "التعرف على الإقراض المباشر للمشروعات",
+          "التعرف على تمويل المشروعات متناهية الصغر",
+          "طلب دعم فني لمشروع قائم",
+          "التسجيل في برامج تدريب رواد الأعمال",
+          "الاستفادة من خدمات تأسيس المشروعات",
+          "طلب استشارة لتطوير مشروع صغير",
+          "التعرف على حاضنات الأعمال",
+          "الحصول على أفكار استرشادية لمشروع صغير"
+        ],
+        "sample": "تختلف الأهلية حسب الخدمة: التمويل يمر عبر قنوات تمويلية وشركاء مختلفين، بينما الخدمات غير المالية قد تستهدف أصحاب المشروعات القائمة أو رواد الأعمال المقبلين على بدء مشروع. لا يوجد شرط موحد أو مبلغ تمويل مضمون لكل المتقدمين."
+      },
+      {
+        "field": "steps",
+        "category": "business",
+        "count": 10,
+        "service_ids": [
+          126,
+          127,
+          128,
+          129,
+          130,
+          131,
+          132,
+          134,
+          137,
+          138
+        ],
+        "service_names": [
+          "طلب تمويل مشروع صغير",
+          "التعرف على التمويل من خلال البنوك",
+          "التعرف على الإقراض المباشر للمشروعات",
+          "التعرف على تمويل المشروعات متناهية الصغر",
+          "طلب دعم فني لمشروع قائم",
+          "التسجيل في برامج تدريب رواد الأعمال",
+          "الاستفادة من خدمات تأسيس المشروعات",
+          "طلب استشارة لتطوير مشروع صغير",
+          "التعرف على حاضنات الأعمال",
+          "الحصول على أفكار استرشادية لمشروع صغير"
+        ],
+        "sample": "1. افتح الموقع الرسمي لجهاز تنمية المشروعات واختر التمويل أو الخدمة غير المالية المناسبة.\n2. حدد ما إذا كان طلبك تمويلًا أو تدريبًا أو دعمًا فنيًا أو معلومات أعمال.\n3. استكمل نموذج الاستفسار الإلكتروني إن كان متاحًا، أو توجه إلى أقرب فرع لل"
+      },
+      {
+        "field": "documents",
+        "category": "education",
+        "count": 7,
+        "service_ids": [
+          26,
+          27,
+          28,
+          29,
+          30,
+          31,
+          32
+        ],
+        "service_names": [
+          "التقديم الإلكتروني للصف الأول الابتدائي",
+          "التقديم الإلكتروني لمرحلة رياض الأطفال",
+          "التحويل بين المدارس",
+          "الاستعلام عن أرقام جلوس الثانوية العامة",
+          "الاستعلام عن مقار لجان امتحانات الثانوية العامة",
+          "التقديم لمدارس المتفوقين STEM",
+          "الاستعلام عن خدمات الطلاب والمدرسين"
+        ],
+        "sample": "لا توجد قائمة واحدة لكل خدمات المجموعة. في خدمات التقديم المدرسي تُراجع بيانات الطالب وولي الأمر والمستندات التي يطلبها النظام أو المدرسة بعد إعلان القبول. في خدمات الامتحانات والاستعلام قد يكفي إدخال بيانات الطالب أو رقم الجلوس وفق المنصة."
+      },
+      {
+        "field": "eligibility",
+        "category": "education",
+        "count": 7,
+        "service_ids": [
+          26,
+          27,
+          28,
+          29,
+          30,
+          31,
+          32
+        ],
+        "service_names": [
+          "التقديم الإلكتروني للصف الأول الابتدائي",
+          "التقديم الإلكتروني لمرحلة رياض الأطفال",
+          "التحويل بين المدارس",
+          "الاستعلام عن أرقام جلوس الثانوية العامة",
+          "الاستعلام عن مقار لجان امتحانات الثانوية العامة",
+          "التقديم لمدارس المتفوقين STEM",
+          "الاستعلام عن خدمات الطلاب والمدرسين"
+        ],
+        "sample": "الطالب أو ولي الأمر أو صاحب الحساب التعليمي، بحسب الخدمة والمرحلة الدراسية والعام الدراسي. شروط السن والقبول والمواعيد تتغير وفق القرارات والإعلانات السنوية ولا يصح تعميم شروط عام سابق على عام جديد."
+      },
+      {
+        "field": "steps",
+        "category": "education",
+        "count": 7,
+        "service_ids": [
+          26,
+          27,
+          28,
+          29,
+          30,
+          31,
+          32
+        ],
+        "service_names": [
+          "التقديم الإلكتروني للصف الأول الابتدائي",
+          "التقديم الإلكتروني لمرحلة رياض الأطفال",
+          "التحويل بين المدارس",
+          "الاستعلام عن أرقام جلوس الثانوية العامة",
+          "الاستعلام عن مقار لجان امتحانات الثانوية العامة",
+          "التقديم لمدارس المتفوقين STEM",
+          "الاستعلام عن خدمات الطلاب والمدرسين"
+        ],
+        "sample": "1. افتح بوابة مركز معلومات وزارة التربية والتعليم أو الموقع الرسمي للوزارة.\n2. اختر المنصة المرتبطة بالخدمة والمرحلة الدراسية الصحيحة.\n3. راجع الإعلان أو التعليمات الخاصة بالعام الدراسي الحالي قبل التسجيل.\n4. أدخل بيانات الطالب بدقة واحتفظ "
+      },
+      {
+        "field": "documents",
+        "category": "accessibility",
+        "count": 5,
+        "service_ids": [
+          80,
+          86,
+          87,
+          94,
+          95
+        ],
+        "service_names": [
+          "تعديل بيانات بطاقة الخدمات المتكاملة",
+          "التقديم لفرص عمل للأشخاص ذوي الإعاقة",
+          "التعرف على نسبة التعيين المقررة للأشخاص ذوي الإعاقة",
+          "التوجيه بشأن الدمج التعليمي",
+          "التعرف على مزايا بطاقة الخدمات المتكاملة"
+        ],
+        "sample": "لتعديل بيانات البطاقة: الرقم القومي المسجل وبيانات البطاقة والمستند الرسمي الذي يثبت التعديل المطلوب. للتشغيل: صورة بطاقة الرقم القومي، وبطاقة الخدمات المتكاملة أو شهادة التأهيل، والمؤهل الدراسي، والسيرة الذاتية إن وجدت. أما الاستفسار عن ال"
+      },
+      {
+        "field": "documents",
+        "category": "accessibility",
+        "count": 5,
+        "service_ids": [
+          88,
+          89,
+          90,
+          92,
+          93
+        ],
+        "service_names": [
+          "التعرف على خدمات مراكز التأهيل الشاملة",
+          "خدمات العلاج الطبيعي بمراكز التأهيل",
+          "خدمات تنمية المهارات والقدرات",
+          "خدمات التخاطب والتواصل",
+          "خدمات التأهيل المهني للأشخاص ذوي الإعاقة"
+        ],
+        "sample": "وفق ملف الالتحاق العام بالمركز: 3 صور شخصية؛ صورة بطاقة الرقم القومي لمن بلغ 15 عامًا فأكثر؛ شهادة ميلاد الطفل؛ صورة بطاقة ولي الأمر للأطفال وحالات الإعاقة الذهنية؛ تقرير طبي شامل يوضح نوع الإعاقة وشدتها وخلو الحالة من الأمراض المعدية؛ صورة"
+      },
+      {
+        "field": "documents",
+        "category": "opportunities",
+        "count": 5,
+        "service_ids": [
+          101,
+          102,
+          103,
+          104,
+          105
+        ],
+        "service_names": [
+          "التسجيل في استمارة متطوع بوزارة الشباب والرياضة",
+          "الاشتراك في المسابقات الثقافية للشباب",
+          "التقديم للورش التدريبية الشبابية",
+          "التعرف على مبادرات وزارة الشباب والرياضة",
+          "التقديم لبرنامج مشواري لتنمية المهارات"
+        ],
+        "sample": "لا توجد مستندات موحدة لكل الفرص. اتبع الإعلان الرسمي الخاص بالبرنامج؛ وقد يطلب نموذج تسجيل وبيانات اتصال وإثبات شخصية أو مؤهل أو نماذج أعمال بحسب طبيعة النشاط."
+      },
+      {
+        "field": "eligibility",
+        "category": "accessibility",
+        "count": 5,
+        "service_ids": [
+          80,
+          86,
+          87,
+          94,
+          95
+        ],
+        "service_names": [
+          "تعديل بيانات بطاقة الخدمات المتكاملة",
+          "التقديم لفرص عمل للأشخاص ذوي الإعاقة",
+          "التعرف على نسبة التعيين المقررة للأشخاص ذوي الإعاقة",
+          "التوجيه بشأن الدمج التعليمي",
+          "التعرف على مزايا بطاقة الخدمات المتكاملة"
+        ],
+        "sample": "تختلف شروط كل خدمة. تعديل بيانات البطاقة متاح لحاملي بطاقة الخدمات المتكاملة وفق بياناتهم المسجلة. خدمة التشغيل تستهدف الأشخاص ذوي الإعاقة الحاصلين على بطاقة الخدمات المتكاملة أو شهادة التأهيل. المزايا لا تُمنح إلا عند استيفاء شروط كل جهة م"
+      },
+      {
+        "field": "eligibility",
+        "category": "accessibility",
+        "count": 5,
+        "service_ids": [
+          88,
+          89,
+          90,
+          92,
+          93
+        ],
+        "service_names": [
+          "التعرف على خدمات مراكز التأهيل الشاملة",
+          "خدمات العلاج الطبيعي بمراكز التأهيل",
+          "خدمات تنمية المهارات والقدرات",
+          "خدمات التخاطب والتواصل",
+          "خدمات التأهيل المهني للأشخاص ذوي الإعاقة"
+        ],
+        "sample": "الأشخاص ذوو الإعاقة من الفئات التي يخدمها المركز، وفق العمر ونوع الإعاقة والخدمة المطلوبة ونتيجة التقييم. توافر البرنامج وحدود السن يختلفان من مركز لآخر."
+      },
+      {
+        "field": "eligibility",
+        "category": "opportunities",
+        "count": 5,
+        "service_ids": [
+          101,
+          102,
+          103,
+          104,
+          105
+        ],
+        "service_names": [
+          "التسجيل في استمارة متطوع بوزارة الشباب والرياضة",
+          "الاشتراك في المسابقات الثقافية للشباب",
+          "التقديم للورش التدريبية الشبابية",
+          "التعرف على مبادرات وزارة الشباب والرياضة",
+          "التقديم لبرنامج مشواري لتنمية المهارات"
+        ],
+        "sample": "تتغير شروط السن والمحافظة والمؤهل ومواعيد التقديم بحسب كل مبادرة أو دورة أو فعالية. بعض الفرص تكون مفتوحة لفئات عمرية محددة أو لمحافظات بعينها، ولا يعني ظهور اسم البرنامج أن باب التقديم مفتوح حاليًا."
+      },
+      {
+        "field": "steps",
+        "category": "accessibility",
+        "count": 5,
+        "service_ids": [
+          80,
+          86,
+          87,
+          94,
+          95
+        ],
+        "service_names": [
+          "تعديل بيانات بطاقة الخدمات المتكاملة",
+          "التقديم لفرص عمل للأشخاص ذوي الإعاقة",
+          "التعرف على نسبة التعيين المقررة للأشخاص ذوي الإعاقة",
+          "التوجيه بشأن الدمج التعليمي",
+          "التعرف على مزايا بطاقة الخدمات المتكاملة"
+        ],
+        "sample": "1. حدد الخدمة المطلوبة: تعديل بيانات، أو تشغيل، أو استفسار عن ميزة أو دمج تعليمي.\n2. استخدم بوابة خدمات ذوي الإعاقة أو الجهة المختصة الموضحة في صفحة الخدمة.\n3. أدخل الرقم القومي والبيانات المسجلة بدقة، وأرفق المستندات الداعمة عند طلبها.\n4. "
+      },
+      {
+        "field": "steps",
+        "category": "opportunities",
+        "count": 5,
+        "service_ids": [
+          101,
+          102,
+          103,
+          104,
+          105
+        ],
+        "service_names": [
+          "التسجيل في استمارة متطوع بوزارة الشباب والرياضة",
+          "الاشتراك في المسابقات الثقافية للشباب",
+          "التقديم للورش التدريبية الشبابية",
+          "التعرف على مبادرات وزارة الشباب والرياضة",
+          "التقديم لبرنامج مشواري لتنمية المهارات"
+        ],
+        "sample": "1. افتح بوابة وزارة الشباب والرياضة أو صفحة وزارة العمل الرسمية.\n2. ابحث عن الإعلان الأحدث للبرنامج أو الفرصة التي تناسبك.\n3. تحقق من تاريخ الإعلان، والمحافظات، والفئة العمرية، وشروط القبول قبل التسجيل.\n4. قدم من خلال الرابط أو الجهة المذكو"
+      },
+      {
+        "field": "steps",
+        "category": "accessibility",
+        "count": 4,
+        "service_ids": [
+          89,
+          90,
+          91,
+          92
+        ],
+        "service_names": [
+          "خدمات العلاج الطبيعي بمراكز التأهيل",
+          "خدمات تنمية المهارات والقدرات",
+          "خدمات التدخل المبكر للأطفال ذوي الإعاقة",
+          "خدمات التخاطب والتواصل"
+        ],
+        "sample": "1. تواصل مع مركز التأهيل الشامل للتأكد من توافر الخدمة والفئة العمرية المقبولة.\n2. قدم طلب الالتحاق وفق النموذج المعد بالمركز وأرفق المستندات.\n3. يخضع الملف لبحث اجتماعي وتقييمات مناسبة لنوع الإعاقة والخدمة.\n4. يحدد الفريق الفني مدى ملاءمة "
+      }
+    ],
+    "source_inventory": [
+      {
+        "id": 1,
+        "name": "استخراج شهادة ميلاد مميكنة",
+        "category": "government",
+        "status": "published",
+        "urls": [
+          "https://www.moi.gov.eg/home/directoryservices",
+          "https://publicservices.moi.gov.eg/",
+          "https://psm.gov.eg/providers/1/services"
+        ],
+        "source_count": 3
+      },
+      {
+        "id": 2,
+        "name": "استخراج شهادة وفاة مميكنة",
+        "category": "government",
+        "status": "published",
+        "urls": [
+          "https://www.moi.gov.eg/home/directoryservices",
+          "https://publicservices.moi.gov.eg/",
+          "https://psm.gov.eg/providers/1/services"
+        ],
+        "source_count": 3
+      },
+      {
+        "id": 3,
+        "name": "استخراج قيد زواج",
+        "category": "government",
+        "status": "published",
+        "urls": [
+          "https://www.moi.gov.eg/home/directoryservices",
+          "https://publicservices.moi.gov.eg/",
+          "https://psm.gov.eg/providers/1/services"
+        ],
+        "source_count": 3
+      },
+      {
+        "id": 4,
+        "name": "استخراج قيد طلاق",
+        "category": "government",
+        "status": "published",
+        "urls": [
+          "https://www.moi.gov.eg/home/directoryservices",
+          "https://publicservices.moi.gov.eg/",
+          "https://psm.gov.eg/providers/1/services"
+        ],
+        "source_count": 3
+      },
+      {
+        "id": 5,
+        "name": "استخراج قيد عائلي",
+        "category": "government",
+        "status": "published",
+        "urls": [
+          "https://www.moi.gov.eg/home/directoryservices",
+          "https://publicservices.moi.gov.eg/",
+          "https://psm.gov.eg/providers/1/services"
+        ],
+        "source_count": 3
+      },
+      {
+        "id": 6,
+        "name": "إصدار بطاقة رقم قومي لأول مرة",
+        "category": "government",
+        "status": "published",
+        "urls": [
+          "https://www.moi.gov.eg/home/directoryservices",
+          "https://publicservices.moi.gov.eg/",
+          "https://psm.gov.eg/providers/1/services"
+        ],
+        "source_count": 3
+      },
+      {
+        "id": 7,
+        "name": "تجديد بطاقة الرقم القومي",
+        "category": "government",
+        "status": "published",
+        "urls": [
+          "https://www.moi.gov.eg/home/directoryservices",
+          "https://publicservices.moi.gov.eg/",
+          "https://psm.gov.eg/providers/1/services"
+        ],
+        "source_count": 3
+      },
+      {
+        "id": 8,
+        "name": "بدل فاقد بطاقة الرقم القومي",
+        "category": "government",
+        "status": "published",
+        "urls": [
+          "https://www.moi.gov.eg/home/directoryservices",
+          "https://publicservices.moi.gov.eg/",
+          "https://psm.gov.eg/providers/1/services"
+        ],
+        "source_count": 3
+      },
+      {
+        "id": 9,
+        "name": "بدل تالف بطاقة الرقم القومي",
+        "category": "government",
+        "status": "published",
+        "urls": [
+          "https://www.moi.gov.eg/home/directoryservices",
+          "https://publicservices.moi.gov.eg/",
+          "https://psm.gov.eg/providers/1/services"
+        ],
+        "source_count": 3
+      },
+      {
+        "id": 10,
+        "name": "تغيير محل الإقامة في بطاقة الرقم القومي",
+        "category": "government",
+        "status": "published",
+        "urls": [
+          "https://www.moi.gov.eg/home/directoryservices",
+          "https://publicservices.moi.gov.eg/",
+          "https://psm.gov.eg/providers/1/services"
+        ],
+        "source_count": 3
+      },
+      {
+        "id": 11,
+        "name": "تعديل الحالة الاجتماعية في بطاقة الرقم القومي",
+        "category": "government",
+        "status": "published",
+        "urls": [
+          "https://www.moi.gov.eg/home/directoryservices",
+          "https://publicservices.moi.gov.eg/",
+          "https://psm.gov.eg/providers/1/services"
+        ],
+        "source_count": 3
+      },
+      {
+        "id": 12,
+        "name": "تعديل المهنة في بطاقة الرقم القومي",
+        "category": "government",
+        "status": "published",
+        "urls": [
+          "https://www.moi.gov.eg/home/directoryservices",
+          "https://publicservices.moi.gov.eg/",
+          "https://psm.gov.eg/providers/1/services"
+        ],
+        "source_count": 3
+      },
+      {
+        "id": 13,
+        "name": "تصحيح بيانات قيد الميلاد أو الوفاة",
+        "category": "government",
+        "status": "published",
+        "urls": [
+          "https://www.moi.gov.eg/home/directoryservices",
+          "https://publicservices.moi.gov.eg/",
+          "https://psm.gov.eg/providers/1/services"
+        ],
+        "source_count": 3
+      },
+      {
+        "id": 14,
+        "name": "استخراج صورة قيد ميلاد",
+        "category": "government",
+        "status": "published",
+        "urls": [
+          "https://www.moi.gov.eg/home/directoryservices",
+          "https://publicservices.moi.gov.eg/",
+          "https://psm.gov.eg/providers/1/services"
+        ],
+        "source_count": 3
+      },
+      {
+        "id": 15,
+        "name": "استخراج صورة قيد وفاة",
+        "category": "government",
+        "status": "published",
+        "urls": [
+          "https://www.moi.gov.eg/home/directoryservices",
+          "https://publicservices.moi.gov.eg/",
+          "https://psm.gov.eg/providers/1/services"
+        ],
+        "source_count": 3
+      },
+      {
+        "id": 16,
+        "name": "استخراج جواز سفر مميكن لأول مرة",
+        "category": "government",
+        "status": "published",
+        "urls": [
+          "https://www.moi.gov.eg/Passports/home/PassportRequiredPapers",
+          "https://www.moi.gov.eg/passports/home/GetPassport/1",
+          "https://www.moi.gov.eg/Passports/Home/Index"
+        ],
+        "source_count": 3
+      },
+      {
+        "id": 17,
+        "name": "تجديد جواز السفر",
+        "category": "government",
+        "status": "draft",
+        "urls": [
+          "https://psm.gov.eg/Services/getServices"
+        ],
+        "source_count": 1
+      },
+      {
+        "id": 18,
+        "name": "بدل فاقد أو تالف لجواز السفر",
+        "category": "government",
+        "status": "draft",
+        "urls": [
+          "https://moi.gov.eg/Passports/home/PasswordLost"
+        ],
+        "source_count": 1
+      },
+      {
+        "id": 19,
+        "name": "استخراج صحيفة الحالة الجنائية",
+        "category": "government",
+        "status": "published",
+        "urls": [
+          "https://www.moi.gov.eg/publicsecurity/home/department1"
+        ],
+        "source_count": 1
+      },
+      {
+        "id": 20,
+        "name": "استخراج تصريح عمل",
+        "category": "government",
+        "status": "draft",
+        "urls": [
+          "https://psm.gov.eg/Services/getServices"
+        ],
+        "source_count": 1
+      },
+      {
+        "id": 21,
+        "name": "تجديد تصريح عمل",
+        "category": "government",
+        "status": "draft",
+        "urls": [
+          "https://psm.gov.eg/Services/getServices"
+        ],
+        "source_count": 1
+      },
+      {
+        "id": 22,
+        "name": "استخراج تصريح سفر للمجندين",
+        "category": "government",
+        "status": "draft",
+        "urls": [
+          "https://psm.gov.eg/Services/getServices"
+        ],
+        "source_count": 1
+      },
+      {
+        "id": 23,
+        "name": "الاستعلام عن مخالفات رخص القيادة",
+        "category": "government",
+        "status": "draft",
+        "urls": [
+          "https://psm.gov.eg/Services/getServices"
+        ],
+        "source_count": 1
+      },
+      {
+        "id": 24,
+        "name": "تجديد رخصة مركبة",
+        "category": "government",
+        "status": "published",
+        "urls": [
+          "https://traffic.moi.gov.eg/Arabic/pages/terms-vehicleslicense-renewal.aspx"
+        ],
+        "source_count": 1
+      },
+      {
+        "id": 25,
+        "name": "استخراج بدل فاقد أو تالف لرخصة مركبة",
+        "category": "government",
+        "status": "published",
+        "urls": [
+          "https://traffic.moi.gov.eg/Arabic/OurServices/InfoServices/InteriorMinisterDecision/Pages/replacement-lost-damaged-license.aspx"
+        ],
+        "source_count": 1
+      },
+      {
+        "id": 26,
+        "name": "التقديم الإلكتروني للصف الأول الابتدائي",
+        "category": "education",
+        "status": "published",
+        "urls": [
+          "https://emis.gov.eg/",
+          "https://moe.gov.eg/",
+          "https://science3sec.moe.gov.eg/"
+        ],
+        "source_count": 3
+      },
+      {
+        "id": 27,
+        "name": "التقديم الإلكتروني لمرحلة رياض الأطفال",
+        "category": "education",
+        "status": "published",
+        "urls": [
+          "https://emis.gov.eg/",
+          "https://moe.gov.eg/",
+          "https://science3sec.moe.gov.eg/"
+        ],
+        "source_count": 3
+      },
+      {
+        "id": 28,
+        "name": "التحويل بين المدارس",
+        "category": "education",
+        "status": "published",
+        "urls": [
+          "https://emis.gov.eg/",
+          "https://moe.gov.eg/",
+          "https://science3sec.moe.gov.eg/"
+        ],
+        "source_count": 3
+      },
+      {
+        "id": 29,
+        "name": "الاستعلام عن أرقام جلوس الثانوية العامة",
+        "category": "education",
+        "status": "published",
+        "urls": [
+          "https://emis.gov.eg/",
+          "https://moe.gov.eg/",
+          "https://science3sec.moe.gov.eg/"
+        ],
+        "source_count": 3
+      },
+      {
+        "id": 30,
+        "name": "الاستعلام عن مقار لجان امتحانات الثانوية العامة",
+        "category": "education",
+        "status": "published",
+        "urls": [
+          "https://emis.gov.eg/",
+          "https://moe.gov.eg/",
+          "https://science3sec.moe.gov.eg/"
+        ],
+        "source_count": 3
+      },
+      {
+        "id": 31,
+        "name": "التقديم لمدارس المتفوقين STEM",
+        "category": "education",
+        "status": "published",
+        "urls": [
+          "https://emis.gov.eg/",
+          "https://moe.gov.eg/",
+          "https://science3sec.moe.gov.eg/"
+        ],
+        "source_count": 3
+      },
+      {
+        "id": 32,
+        "name": "الاستعلام عن خدمات الطلاب والمدرسين",
+        "category": "education",
+        "status": "published",
+        "urls": [
+          "https://emis.gov.eg/",
+          "https://moe.gov.eg/",
+          "https://science3sec.moe.gov.eg/"
+        ],
+        "source_count": 3
+      },
+      {
+        "id": 33,
+        "name": "استخراج شهادة محو الأمية",
+        "category": "education",
+        "status": "draft",
+        "urls": [
+          "https://psm.gov.eg/Services/searchResult"
+        ],
+        "source_count": 1
+      },
+      {
+        "id": 34,
+        "name": "التسجيل في برامج محو الأمية",
+        "category": "education",
+        "status": "draft",
+        "urls": [
+          "https://psm.gov.eg/Services/searchResult"
+        ],
+        "source_count": 1
+      },
+      {
+        "id": 35,
+        "name": "خدمات تنسيق القبول بالجامعات والمعاهد",
+        "category": "education",
+        "status": "draft",
+        "urls": [
+          "https://psm.gov.eg/Services/searchResult"
+        ],
+        "source_count": 1
+      },
+      {
+        "id": 36,
+        "name": "تنسيق الشهادات الثانوية المعادلة",
+        "category": "education",
+        "status": "draft",
+        "urls": [
+          "https://psm.gov.eg/Services/searchResult"
+        ],
+        "source_count": 1
+      },
+      {
+        "id": 37,
+        "name": "تنسيق الشهادات الفنية",
+        "category": "education",
+        "status": "draft",
+        "urls": [
+          "https://psm.gov.eg/Services/searchResult"
+        ],
+        "source_count": 1
+      },
+      {
+        "id": 38,
+        "name": "تنسيق طلاب الثانوية الأزهرية",
+        "category": "education",
+        "status": "draft",
+        "urls": [
+          "https://psm.gov.eg/Services/searchResult"
+        ],
+        "source_count": 1
+      },
+      {
+        "id": 39,
+        "name": "تقليل الاغتراب والتحويلات الجامعية",
+        "category": "education",
+        "status": "draft",
+        "urls": [
+          "https://psm.gov.eg/Services/searchResult"
+        ],
+        "source_count": 1
+      },
+      {
+        "id": 40,
+        "name": "معادلة شهادة جامعية",
+        "category": "education",
+        "status": "draft",
+        "urls": [
+          "https://psm.gov.eg/Services/searchResult"
+        ],
+        "source_count": 1
+      },
+      {
+        "id": 41,
+        "name": "استخراج شهادة معادلة للدرجات العلمية",
+        "category": "education",
+        "status": "draft",
+        "urls": [
+          "https://psm.gov.eg/Services/searchResult"
+        ],
+        "source_count": 1
+      },
+      {
+        "id": 42,
+        "name": "التقدم لامتحانات الدبلومات والمعاهد الفنية",
+        "category": "education",
+        "status": "draft",
+        "urls": [
+          "https://psm.gov.eg/Services/searchResult"
+        ],
+        "source_count": 1
+      },
+      {
+        "id": 43,
+        "name": "التقدم لامتحان المعاهد الفنية لكلية الهندسة",
+        "category": "education",
+        "status": "draft",
+        "urls": [
+          "https://psm.gov.eg/Services/searchResult"
+        ],
+        "source_count": 1
+      },
+      {
+        "id": 44,
+        "name": "التقدم لامتحان المعاهد الفنية لكلية الحاسبات",
+        "category": "education",
+        "status": "draft",
+        "urls": [
+          "https://psm.gov.eg/Services/searchResult"
+        ],
+        "source_count": 1
+      },
+      {
+        "id": 45,
+        "name": "التقدم لامتحان المعاهد الفنية لكلية التجارة",
+        "category": "education",
+        "status": "draft",
+        "urls": [
+          "https://psm.gov.eg/Services/searchResult"
+        ],
+        "source_count": 1
+      },
+      {
+        "id": 46,
+        "name": "التقدم لامتحان المعاهد الفنية لكلية الزراعة",
+        "category": "education",
+        "status": "draft",
+        "urls": [
+          "https://psm.gov.eg/Services/searchResult"
+        ],
+        "source_count": 1
+      },
+      {
+        "id": 47,
+        "name": "الاستعلام عن قواعد قبول الشهادات المعادلة",
+        "category": "education",
+        "status": "draft",
+        "urls": [
+          "https://psm.gov.eg/Services/searchResult"
+        ],
+        "source_count": 1
+      },
+      {
+        "id": 48,
+        "name": "التسجيل في الأنشطة الطلابية بالجامعات الحكومية",
+        "category": "education",
+        "status": "draft",
+        "urls": [
+          "https://psm.gov.eg/Services/searchResult"
+        ],
+        "source_count": 1
+      },
+      {
+        "id": 49,
+        "name": "الاستعلام عن إجراءات قبول الطلاب بالجامعات",
+        "category": "education",
+        "status": "draft",
+        "urls": [
+          "https://psm.gov.eg/Services/searchResult"
+        ],
+        "source_count": 1
+      },
+      {
+        "id": 50,
+        "name": "التوجيه إلى برامج التدريب المهني",
+        "category": "education",
+        "status": "draft",
+        "urls": [
+          "https://psm.gov.eg/Services/searchResult"
+        ],
+        "source_count": 1
+      },
+      {
+        "id": 51,
+        "name": "التقديم لبرنامج تكافل",
+        "category": "support",
+        "status": "published",
+        "urls": [
+          "https://moss.gov.eg/الخدمات/الحماية-الاجتماعية/الإدارة-العامة-للدعم-النقدي-أولا-برنامج-الدعم-النقدي-المشروط-تكافل-وكرامة/",
+          "https://www.moss.gov.eg/الاسئلة-الشائعة/"
+        ],
+        "source_count": 2
+      },
+      {
+        "id": 52,
+        "name": "التقديم لبرنامج كرامة",
+        "category": "support",
+        "status": "published",
+        "urls": [
+          "https://moss.gov.eg/الخدمات/الحماية-الاجتماعية/الإدارة-العامة-للدعم-النقدي-أولا-برنامج-الدعم-النقدي-المشروط-تكافل-وكرامة/",
+          "https://www.moss.gov.eg/الاسئلة-الشائعة/"
+        ],
+        "source_count": 2
+      },
+      {
+        "id": 53,
+        "name": "الاستعلام عن برامج تكافل وكرامة",
+        "category": "support",
+        "status": "published",
+        "urls": [
+          "https://moss.gov.eg/",
+          "https://www.moss.gov.eg/الاسئلة-الشائعة/"
+        ],
+        "source_count": 2
+      },
+      {
+        "id": 54,
+        "name": "طلب مساعدة شهرية ضمانية",
+        "category": "support",
+        "status": "draft",
+        "urls": [
+          "https://psm.gov.eg/providers/17/services"
+        ],
+        "source_count": 1
+      },
+      {
+        "id": 55,
+        "name": "طلب مساعدة استثنائية ضمانية",
+        "category": "support",
+        "status": "published",
+        "urls": [
+          "https://moss.gov.eg/الخدمات/الحماية-الاجتماعية/الإدارة-العامة-للدعم-النقدي-ثانيا-المساعدات-الاستثنائية/"
+        ],
+        "source_count": 1
+      },
+      {
+        "id": 56,
+        "name": "طلب معاش ضماني أو معاش طفل",
+        "category": "support",
+        "status": "draft",
+        "urls": [
+          "https://psm.gov.eg/providers/17/services"
+        ],
+        "source_count": 1
+      },
+      {
+        "id": 57,
+        "name": "طلب دعم من مؤسسة التكافل",
+        "category": "support",
+        "status": "draft",
+        "urls": [
+          "https://psm.gov.eg/providers/17/services"
+        ],
+        "source_count": 1
+      },
+      {
+        "id": 58,
+        "name": "الاستعلام عن برامج الحماية الاجتماعية",
+        "category": "support",
+        "status": "published",
+        "urls": [
+          "https://moss.gov.eg/",
+          "https://moss.gov.eg/الخدمات/الرعاية-الاجتماعية/"
+        ],
+        "source_count": 2
+      },
+      {
+        "id": 59,
+        "name": "طلب قرض اجتماعي بضمان المرتب",
+        "category": "support",
+        "status": "draft",
+        "urls": [
+          "https://psm.gov.eg/providers/17/services"
+        ],
+        "source_count": 1
+      },
+      {
+        "id": 60,
+        "name": "طلب قرض اجتماعي بضمان المعاش",
+        "category": "support",
+        "status": "draft",
+        "urls": [
+          "https://psm.gov.eg/providers/17/services"
+        ],
+        "source_count": 1
+      },
+      {
+        "id": 61,
+        "name": "طلب قرض لأصحاب المعاشات",
+        "category": "support",
+        "status": "draft",
+        "urls": [
+          "https://psm.gov.eg/providers/17/services"
+        ],
+        "source_count": 1
+      },
+      {
+        "id": 62,
+        "name": "فتح حساب في بنك ناصر الاجتماعي",
+        "category": "support",
+        "status": "draft",
+        "urls": [
+          "https://psm.gov.eg/providers/17/services"
+        ],
+        "source_count": 1
+      },
+      {
+        "id": 63,
+        "name": "استخراج بطاقة تموين جديدة",
+        "category": "support",
+        "status": "draft",
+        "urls": [
+          "https://psm.gov.eg/providers/17/services"
+        ],
+        "source_count": 1
+      },
+      {
+        "id": 64,
+        "name": "استخراج بدل فاقد لبطاقة التموين",
+        "category": "support",
+        "status": "draft",
+        "urls": [
+          "https://psm.gov.eg/providers/17/services"
+        ],
+        "source_count": 1
+      },
+      {
+        "id": 65,
+        "name": "استخراج بدل تالف لبطاقة التموين",
+        "category": "support",
+        "status": "draft",
+        "urls": [
+          "https://psm.gov.eg/providers/17/services"
+        ],
+        "source_count": 1
+      },
+      {
+        "id": 66,
+        "name": "تفعيل بطاقة التموين",
+        "category": "support",
+        "status": "draft",
+        "urls": [
+          "https://psm.gov.eg/providers/17/services"
+        ],
+        "source_count": 1
+      },
+      {
+        "id": 67,
+        "name": "طلب إضافة أفراد على بطاقة التموين",
+        "category": "support",
+        "status": "draft",
+        "urls": [
+          "https://psm.gov.eg/providers/17/services"
+        ],
+        "source_count": 1
+      },
+      {
+        "id": 68,
+        "name": "الاستعلام عن خدمات الدعم التمويني",
+        "category": "support",
+        "status": "draft",
+        "urls": [
+          "https://psm.gov.eg/providers/17/services"
+        ],
+        "source_count": 1
+      },
+      {
+        "id": 69,
+        "name": "طلب العلاج على نفقة الدولة",
+        "category": "support",
+        "status": "published",
+        "urls": [
+          "https://www.mohp.gov.eg/SectorServices.aspx?Deptcode=21&SectorCode=7"
+        ],
+        "source_count": 1
+      },
+      {
+        "id": 70,
+        "name": "الاستعلام عن خدمات التأمين الصحي",
+        "category": "support",
+        "status": "published",
+        "urls": [
+          "https://uhia.gov.eg/نظام-التأمين-الصحي-الشامل/",
+          "https://uhia.gov.eg/الأسئلة-الشائعة/"
+        ],
+        "source_count": 2
+      },
+      {
+        "id": 71,
+        "name": "التسجيل بمنظومة التأمين الصحي الشامل",
+        "category": "support",
+        "status": "published",
+        "urls": [
+          "https://uhia.gov.eg/التسجيل-بالنظام/",
+          "https://uhia.gov.eg/نظام-التأمين-الصحي-الشامل/"
+        ],
+        "source_count": 2
+      },
+      {
+        "id": 72,
+        "name": "طلب مساعدة اجتماعية من الوحدة الاجتماعية",
+        "category": "support",
+        "status": "draft",
+        "urls": [
+          "https://psm.gov.eg/providers/17/services"
+        ],
+        "source_count": 1
+      },
+      {
+        "id": 73,
+        "name": "التوجيه إلى خدمات حماية الطفل",
+        "category": "support",
+        "status": "draft",
+        "urls": [
+          "https://psm.gov.eg/providers/17/services"
+        ],
+        "source_count": 1
+      },
+      {
+        "id": 74,
+        "name": "الاستعلام عن خدمات رعاية المسنين",
+        "category": "support",
+        "status": "published",
+        "urls": [
+          "https://moss.gov.eg/الخدمات/الرعاية-الاجتماعية/دور-رعاية-المسنين-الإدارة-العامة-لرعاية-المسنين/",
+          "https://moss.gov.eg/الخدمات/الرعاية-الاجتماعية/"
+        ],
+        "source_count": 2
+      },
+      {
+        "id": 75,
+        "name": "التوجيه إلى خدمات دعم المرأة",
+        "category": "support",
+        "status": "draft",
+        "urls": [
+          "https://psm.gov.eg/providers/17/services"
+        ],
+        "source_count": 1
+      },
+      {
+        "id": 76,
+        "name": "إصدار بطاقة الخدمات المتكاملة لأول مرة",
+        "category": "accessibility",
+        "status": "draft",
+        "urls": [
+          "https://rdis.moss.gov.eg/EDR/OnlineRegistration/OnlineHome"
+        ],
+        "source_count": 1
+      },
+      {
+        "id": 77,
+        "name": "تجديد بطاقة الخدمات المتكاملة",
+        "category": "accessibility",
+        "status": "draft",
+        "urls": [
+          "https://rdis.moss.gov.eg/EDR/OnlineRegistration/OnlineHome"
+        ],
+        "source_count": 1
+      },
+      {
+        "id": 78,
+        "name": "استخراج بدل فاقد لبطاقة الخدمات المتكاملة",
+        "category": "accessibility",
+        "status": "published",
+        "urls": [
+          "https://moss.gov.eg/الخدمات/الأشخاص-ذوي-الاعاقة/الإدارة-العامة-للتسجيل-والتوجيه-ثانيا-بدل-فاقد-بدل-تالف-لبطاقة-إثبات-الإعاقة-والخدمات-المتكاملة/",
+          "https://rdis.moss.gov.eg/EDR/OnlineRegistration/OnlineHome"
+        ],
+        "source_count": 2
+      },
+      {
+        "id": 79,
+        "name": "استخراج بدل تالف لبطاقة الخدمات المتكاملة",
+        "category": "accessibility",
+        "status": "published",
+        "urls": [
+          "https://moss.gov.eg/الخدمات/الأشخاص-ذوي-الاعاقة/الإدارة-العامة-للتسجيل-والتوجيه-ثانيا-بدل-فاقد-بدل-تالف-لبطاقة-إثبات-الإعاقة-والخدمات-المتكاملة/",
+          "https://rdis.moss.gov.eg/EDR/OnlineRegistration/OnlineHome"
+        ],
+        "source_count": 2
+      },
+      {
+        "id": 80,
+        "name": "تعديل بيانات بطاقة الخدمات المتكاملة",
+        "category": "accessibility",
+        "status": "published",
+        "urls": [
+          "https://rdis.moss.gov.eg/EDR/OnlineRegistration/OnlineHome",
+          "https://moss.gov.eg/",
+          "https://www.moss.gov.eg/"
+        ],
+        "source_count": 3
+      },
+      {
+        "id": 81,
+        "name": "الاستعلام عن طلب بطاقة الخدمات المتكاملة",
+        "category": "accessibility",
+        "status": "published",
+        "urls": [
+          "https://rdis.moss.gov.eg/EDR/OnlineRegistration/InquireOnlineRequest"
+        ],
+        "source_count": 1
+      },
+      {
+        "id": 82,
+        "name": "التظلم من نتيجة التقييم الطبي للإعاقة",
+        "category": "accessibility",
+        "status": "published",
+        "urls": [
+          "https://moss.gov.eg/الخدمات/الأشخاص-ذوي-الاعاقة/الإدارة-العامة-للتسجيل-والتوجيه-عاشرا-العرض-على-لجنة-التظلمات/",
+          "https://rdis.moss.gov.eg/EDR/OnlineRegistration/OnlineCompRegistrationHome"
+        ],
+        "source_count": 2
+      },
+      {
+        "id": 83,
+        "name": "حجز الكشف الطبي لإثبات الإعاقة",
+        "category": "accessibility",
+        "status": "published",
+        "urls": [
+          "https://moss.gov.eg/الخدمات/الأشخاص-ذوي-الاعاقة/الإدارة-العامة-للتسجيل-والتوجيه-أولا-بطاقة-إثبات-الإعاقة-والخدمات-المتكاملة/",
+          "https://pod.mohp.gov.eg/"
+        ],
+        "source_count": 2
+      },
+      {
+        "id": 84,
+        "name": "التوجيه والإرشاد بمكاتب التأهيل الاجتماعي",
+        "category": "accessibility",
+        "status": "draft",
+        "urls": [
+          "https://rdis.moss.gov.eg/EDR/OnlineRegistration/OnlineHome"
+        ],
+        "source_count": 1
+      },
+      {
+        "id": 85,
+        "name": "طلب شهادة تأهيل للأشخاص ذوي الإعاقة",
+        "category": "accessibility",
+        "status": "published",
+        "urls": [
+          "https://moss.gov.eg/الخدمات/الأشخاص-ذوي-الاعاقة/الإدارة-العامة-للتسجيل-والتوجيه-سابعا-شهادة-التأهيل/"
+        ],
+        "source_count": 1
+      },
+      {
+        "id": 86,
+        "name": "التقديم لفرص عمل للأشخاص ذوي الإعاقة",
+        "category": "accessibility",
+        "status": "published",
+        "urls": [
+          "https://rdis.moss.gov.eg/EDR/OnlineRegistration/OnlineHome",
+          "https://moss.gov.eg/",
+          "https://www.moss.gov.eg/"
+        ],
+        "source_count": 3
+      },
+      {
+        "id": 87,
+        "name": "التعرف على نسبة التعيين المقررة للأشخاص ذوي الإعاقة",
+        "category": "accessibility",
+        "status": "published",
+        "urls": [
+          "https://rdis.moss.gov.eg/EDR/OnlineRegistration/OnlineHome",
+          "https://moss.gov.eg/",
+          "https://www.moss.gov.eg/"
+        ],
+        "source_count": 3
+      },
+      {
+        "id": 88,
+        "name": "التعرف على خدمات مراكز التأهيل الشاملة",
+        "category": "accessibility",
+        "status": "published",
+        "urls": [
+          "https://moss.gov.eg/الخدمات/الأشخاص-ذوي-الاعاقة/الإدارة-العامة-للخدمات-التأهيلية-أولا-مراكز-التأهيل-الشاملة/"
+        ],
+        "source_count": 1
+      },
+      {
+        "id": 89,
+        "name": "خدمات العلاج الطبيعي بمراكز التأهيل",
+        "category": "accessibility",
+        "status": "published",
+        "urls": [
+          "https://moss.gov.eg/الخدمات/الأشخاص-ذوي-الاعاقة/الإدارة-العامة-للخدمات-التأهيلية-أولا-مراكز-التأهيل-الشاملة/"
+        ],
+        "source_count": 1
+      },
+      {
+        "id": 90,
+        "name": "خدمات تنمية المهارات والقدرات",
+        "category": "accessibility",
+        "status": "published",
+        "urls": [
+          "https://moss.gov.eg/الخدمات/الأشخاص-ذوي-الاعاقة/الإدارة-العامة-للخدمات-التأهيلية-أولا-مراكز-التأهيل-الشاملة/"
+        ],
+        "source_count": 1
+      },
+      {
+        "id": 91,
+        "name": "خدمات التدخل المبكر للأطفال ذوي الإعاقة",
+        "category": "accessibility",
+        "status": "published",
+        "urls": [
+          "https://moss.gov.eg/الخدمات/الأشخاص-ذوي-الاعاقة/الإدارة-العامة-للخدمات-التأهيلية-أولا-مراكز-التأهيل-الشاملة/"
+        ],
+        "source_count": 1
+      },
+      {
+        "id": 92,
+        "name": "خدمات التخاطب والتواصل",
+        "category": "accessibility",
+        "status": "published",
+        "urls": [
+          "https://moss.gov.eg/الخدمات/الأشخاص-ذوي-الاعاقة/الإدارة-العامة-للخدمات-التأهيلية-أولا-مراكز-التأهيل-الشاملة/"
+        ],
+        "source_count": 1
+      },
+      {
+        "id": 93,
+        "name": "خدمات التأهيل المهني للأشخاص ذوي الإعاقة",
+        "category": "accessibility",
+        "status": "published",
+        "urls": [
+          "https://moss.gov.eg/الخدمات/الأشخاص-ذوي-الاعاقة/الإدارة-العامة-للخدمات-التأهيلية-أولا-مراكز-التأهيل-الشاملة/"
+        ],
+        "source_count": 1
+      },
+      {
+        "id": 94,
+        "name": "التوجيه بشأن الدمج التعليمي",
+        "category": "accessibility",
+        "status": "published",
+        "urls": [
+          "https://rdis.moss.gov.eg/EDR/OnlineRegistration/OnlineHome",
+          "https://moss.gov.eg/",
+          "https://www.moss.gov.eg/"
+        ],
+        "source_count": 3
+      },
+      {
+        "id": 95,
+        "name": "التعرف على مزايا بطاقة الخدمات المتكاملة",
+        "category": "accessibility",
+        "status": "published",
+        "urls": [
+          "https://rdis.moss.gov.eg/EDR/OnlineRegistration/OnlineHome",
+          "https://moss.gov.eg/",
+          "https://www.moss.gov.eg/"
+        ],
+        "source_count": 3
+      },
+      {
+        "id": 96,
+        "name": "التعرف على الإعفاءات المرتبطة بالأجهزة التعويضية",
+        "category": "accessibility",
+        "status": "draft",
+        "urls": [
+          "https://rdis.moss.gov.eg/EDR/OnlineRegistration/OnlineHome"
+        ],
+        "source_count": 1
+      },
+      {
+        "id": 97,
+        "name": "التعرف على إجراءات سيارات الأشخاص ذوي الإعاقة",
+        "category": "accessibility",
+        "status": "draft",
+        "urls": [
+          "https://rdis.moss.gov.eg/EDR/OnlineRegistration/OnlineHome"
+        ],
+        "source_count": 1
+      },
+      {
+        "id": 98,
+        "name": "طلب التوجيه لخدمات كبار السن",
+        "category": "accessibility",
+        "status": "published",
+        "urls": [
+          "https://moss.gov.eg/الخدمات/الرعاية-الاجتماعية/أندية-المسنين-الإدارة-العامة-للرعاية-المؤسسية-والأسرية/",
+          "https://moss.gov.eg/الخدمات/الرعاية-الاجتماعية/دور-رعاية-المسنين-الإدارة-العامة-لرعاية-المسنين/"
+        ],
+        "source_count": 2
+      },
+      {
+        "id": 99,
+        "name": "الاستعلام عن دور رعاية كبار السن",
+        "category": "accessibility",
+        "status": "published",
+        "urls": [
+          "https://moss.gov.eg/الخدمات/الرعاية-الاجتماعية/دور-رعاية-المسنين-الإدارة-العامة-لرعاية-المسنين/"
+        ],
+        "source_count": 1
+      },
+      {
+        "id": 100,
+        "name": "التوجيه إلى خدمات الرعاية المنزلية للمسنين",
+        "category": "accessibility",
+        "status": "draft",
+        "urls": [
+          "https://rdis.moss.gov.eg/EDR/OnlineRegistration/OnlineHome"
+        ],
+        "source_count": 1
+      },
+      {
+        "id": 101,
+        "name": "التسجيل في استمارة متطوع بوزارة الشباب والرياضة",
+        "category": "opportunities",
+        "status": "published",
+        "urls": [
+          "https://apps.emys.gov.eg/youth/",
+          "https://www.labour.gov.eg/ar/الخدمات/خدمات-المواطنين/التدريب-المهني/",
+          "https://www.emys.gov.eg/"
+        ],
+        "source_count": 3
+      },
+      {
+        "id": 102,
+        "name": "الاشتراك في المسابقات الثقافية للشباب",
+        "category": "opportunities",
+        "status": "published",
+        "urls": [
+          "https://apps.emys.gov.eg/youth/",
+          "https://www.labour.gov.eg/ar/الخدمات/خدمات-المواطنين/التدريب-المهني/",
+          "https://www.emys.gov.eg/"
+        ],
+        "source_count": 3
+      },
+      {
+        "id": 103,
+        "name": "التقديم للورش التدريبية الشبابية",
+        "category": "opportunities",
+        "status": "published",
+        "urls": [
+          "https://apps.emys.gov.eg/youth/",
+          "https://www.labour.gov.eg/ar/الخدمات/خدمات-المواطنين/التدريب-المهني/",
+          "https://www.emys.gov.eg/"
+        ],
+        "source_count": 3
+      },
+      {
+        "id": 104,
+        "name": "التعرف على مبادرات وزارة الشباب والرياضة",
+        "category": "opportunities",
+        "status": "published",
+        "urls": [
+          "https://apps.emys.gov.eg/youth/",
+          "https://www.labour.gov.eg/ar/الخدمات/خدمات-المواطنين/التدريب-المهني/",
+          "https://www.emys.gov.eg/"
+        ],
+        "source_count": 3
+      },
+      {
+        "id": 105,
+        "name": "التقديم لبرنامج مشواري لتنمية المهارات",
+        "category": "opportunities",
+        "status": "published",
+        "urls": [
+          "https://apps.emys.gov.eg/youth/",
+          "https://www.labour.gov.eg/ar/الخدمات/خدمات-المواطنين/التدريب-المهني/",
+          "https://www.emys.gov.eg/"
+        ],
+        "source_count": 3
+      },
+      {
+        "id": 106,
+        "name": "الاشتراك في مراكز الفنون بالجامعات",
+        "category": "opportunities",
+        "status": "draft",
+        "urls": [
+          "https://apps.emys.gov.eg/youth/"
+        ],
+        "source_count": 1
+      },
+      {
+        "id": 107,
+        "name": "التقديم للبرنامج الكشفي لتنمية المهارات",
+        "category": "opportunities",
+        "status": "draft",
+        "urls": [
+          "https://apps.emys.gov.eg/youth/"
+        ],
+        "source_count": 1
+      },
+      {
+        "id": 108,
+        "name": "الاشتراك في برنامج العروض الرياضية بالمدارس",
+        "category": "opportunities",
+        "status": "draft",
+        "urls": [
+          "https://apps.emys.gov.eg/youth/"
+        ],
+        "source_count": 1
+      },
+      {
+        "id": 109,
+        "name": "التقديم لمشروع سفراء ضد الفساد",
+        "category": "opportunities",
+        "status": "draft",
+        "urls": [
+          "https://apps.emys.gov.eg/youth/"
+        ],
+        "source_count": 1
+      },
+      {
+        "id": 110,
+        "name": "التقديم لمهرجان إبداع قادرون",
+        "category": "opportunities",
+        "status": "draft",
+        "urls": [
+          "https://apps.emys.gov.eg/youth/"
+        ],
+        "source_count": 1
+      },
+      {
+        "id": 111,
+        "name": "الاستعلام عن ملتقيات التوظيف للشباب",
+        "category": "opportunities",
+        "status": "draft",
+        "urls": [
+          "https://apps.emys.gov.eg/youth/"
+        ],
+        "source_count": 1
+      },
+      {
+        "id": 112,
+        "name": "التقديم لفرص التدريب المهني",
+        "category": "opportunities",
+        "status": "draft",
+        "urls": [
+          "https://apps.emys.gov.eg/youth/"
+        ],
+        "source_count": 1
+      },
+      {
+        "id": 113,
+        "name": "التعرف على برامج التدريب في البرمجة",
+        "category": "opportunities",
+        "status": "draft",
+        "urls": [
+          "https://apps.emys.gov.eg/youth/"
+        ],
+        "source_count": 1
+      },
+      {
+        "id": 114,
+        "name": "التعرف على برامج التدريب في التصميم والجرافيك",
+        "category": "opportunities",
+        "status": "draft",
+        "urls": [
+          "https://apps.emys.gov.eg/youth/"
+        ],
+        "source_count": 1
+      },
+      {
+        "id": 115,
+        "name": "التعرف على برامج التدريب في الشبكات والدعم الفني",
+        "category": "opportunities",
+        "status": "draft",
+        "urls": [
+          "https://apps.emys.gov.eg/youth/"
+        ],
+        "source_count": 1
+      },
+      {
+        "id": 116,
+        "name": "التعرف على برامج التدريب في التسويق الإلكتروني",
+        "category": "opportunities",
+        "status": "draft",
+        "urls": [
+          "https://apps.emys.gov.eg/youth/"
+        ],
+        "source_count": 1
+      },
+      {
+        "id": 117,
+        "name": "التعرف على برامج التدريب في إدارة الأعمال",
+        "category": "opportunities",
+        "status": "draft",
+        "urls": [
+          "https://apps.emys.gov.eg/youth/"
+        ],
+        "source_count": 1
+      },
+      {
+        "id": 118,
+        "name": "التعرف على برامج التدريب في رعاية المسنين",
+        "category": "opportunities",
+        "status": "draft",
+        "urls": [
+          "https://apps.emys.gov.eg/youth/"
+        ],
+        "source_count": 1
+      },
+      {
+        "id": 119,
+        "name": "التعرف على خدمات التوجيه المهني",
+        "category": "opportunities",
+        "status": "draft",
+        "urls": [
+          "https://apps.emys.gov.eg/youth/"
+        ],
+        "source_count": 1
+      },
+      {
+        "id": 120,
+        "name": "الاستعلام عن فرص العمل المتاحة",
+        "category": "opportunities",
+        "status": "draft",
+        "urls": [
+          "https://apps.emys.gov.eg/youth/"
+        ],
+        "source_count": 1
+      },
+      {
+        "id": 121,
+        "name": "التعرف على برامج التطوع بمراكز الشباب",
+        "category": "opportunities",
+        "status": "draft",
+        "urls": [
+          "https://apps.emys.gov.eg/youth/"
+        ],
+        "source_count": 1
+      },
+      {
+        "id": 122,
+        "name": "التقديم للأنشطة والبرامج الرياضية للشباب",
+        "category": "opportunities",
+        "status": "draft",
+        "urls": [
+          "https://apps.emys.gov.eg/youth/"
+        ],
+        "source_count": 1
+      },
+      {
+        "id": 123,
+        "name": "التعرف على برامج بناء المهارات الحياتية",
+        "category": "opportunities",
+        "status": "draft",
+        "urls": [
+          "https://apps.emys.gov.eg/youth/"
+        ],
+        "source_count": 1
+      },
+      {
+        "id": 124,
+        "name": "الاستعلام عن مبادرات تمكين الشباب",
+        "category": "opportunities",
+        "status": "draft",
+        "urls": [
+          "https://apps.emys.gov.eg/youth/"
+        ],
+        "source_count": 1
+      },
+      {
+        "id": 125,
+        "name": "التعرف على برامج التأهيل لسوق العمل",
+        "category": "opportunities",
+        "status": "draft",
+        "urls": [
+          "https://apps.emys.gov.eg/youth/"
+        ],
+        "source_count": 1
+      },
+      {
+        "id": 126,
+        "name": "طلب تمويل مشروع صغير",
+        "category": "business",
+        "status": "published",
+        "urls": [
+          "https://www.msmeda.org.eg/",
+          "https://www.msmeda.org.eg/sitemap/4030"
+        ],
+        "source_count": 2
+      },
+      {
+        "id": 127,
+        "name": "التعرف على التمويل من خلال البنوك",
+        "category": "business",
+        "status": "published",
+        "urls": [
+          "https://www.msmeda.org.eg/",
+          "https://www.msmeda.org.eg/sitemap/4030"
+        ],
+        "source_count": 2
+      },
+      {
+        "id": 128,
+        "name": "التعرف على الإقراض المباشر للمشروعات",
+        "category": "business",
+        "status": "published",
+        "urls": [
+          "https://www.msmeda.org.eg/",
+          "https://www.msmeda.org.eg/sitemap/4030"
+        ],
+        "source_count": 2
+      },
+      {
+        "id": 129,
+        "name": "التعرف على تمويل المشروعات متناهية الصغر",
+        "category": "business",
+        "status": "published",
+        "urls": [
+          "https://www.msmeda.org.eg/",
+          "https://www.msmeda.org.eg/sitemap/4030"
+        ],
+        "source_count": 2
+      },
+      {
+        "id": 130,
+        "name": "طلب دعم فني لمشروع قائم",
+        "category": "business",
+        "status": "published",
+        "urls": [
+          "https://www.msmeda.org.eg/",
+          "https://www.msmeda.org.eg/sitemap/4030"
+        ],
+        "source_count": 2
+      },
+      {
+        "id": 131,
+        "name": "التسجيل في برامج تدريب رواد الأعمال",
+        "category": "business",
+        "status": "published",
+        "urls": [
+          "https://www.msmeda.org.eg/",
+          "https://www.msmeda.org.eg/sitemap/4030"
+        ],
+        "source_count": 2
+      },
+      {
+        "id": 132,
+        "name": "الاستفادة من خدمات تأسيس المشروعات",
+        "category": "business",
+        "status": "published",
+        "urls": [
+          "https://www.msmeda.org.eg/",
+          "https://www.msmeda.org.eg/sitemap/4030"
+        ],
+        "source_count": 2
+      },
+      {
+        "id": 133,
+        "name": "التعرف على إجراءات تراخيص المشروعات",
+        "category": "business",
+        "status": "draft",
+        "urls": [
+          "https://www.msmeda.org.eg/"
+        ],
+        "source_count": 1
+      },
+      {
+        "id": 134,
+        "name": "طلب استشارة لتطوير مشروع صغير",
+        "category": "business",
+        "status": "published",
+        "urls": [
+          "https://www.msmeda.org.eg/",
+          "https://www.msmeda.org.eg/sitemap/4030"
+        ],
+        "source_count": 2
+      },
+      {
+        "id": 135,
+        "name": "الاستفادة من خدمات تسويق المنتجات",
+        "category": "business",
+        "status": "draft",
+        "urls": [
+          "https://www.msmeda.org.eg/"
+        ],
+        "source_count": 1
+      },
+      {
+        "id": 136,
+        "name": "التعرف على فرص التصدير للمشروعات الصغيرة",
+        "category": "business",
+        "status": "draft",
+        "urls": [
+          "https://www.msmeda.org.eg/"
+        ],
+        "source_count": 1
+      },
+      {
+        "id": 137,
+        "name": "التعرف على حاضنات الأعمال",
+        "category": "business",
+        "status": "published",
+        "urls": [
+          "https://www.msmeda.org.eg/",
+          "https://www.msmeda.org.eg/sitemap/4030"
+        ],
+        "source_count": 2
+      },
+      {
+        "id": 138,
+        "name": "الحصول على أفكار استرشادية لمشروع صغير",
+        "category": "business",
+        "status": "published",
+        "urls": [
+          "https://www.msmeda.org.eg/",
+          "https://www.msmeda.org.eg/sitemap/4030"
+        ],
+        "source_count": 2
+      },
+      {
+        "id": 139,
+        "name": "طلب معلومات أعمال للمشروعات",
+        "category": "business",
+        "status": "draft",
+        "urls": [
+          "https://www.msmeda.org.eg/"
+        ],
+        "source_count": 1
+      },
+      {
+        "id": 140,
+        "name": "التعرف على وحدات تطوير الأعمال",
+        "category": "business",
+        "status": "draft",
+        "urls": [
+          "https://www.msmeda.org.eg/"
+        ],
+        "source_count": 1
+      },
+      {
+        "id": 141,
+        "name": "التعرف على خدمات الشباك الواحد",
+        "category": "business",
+        "status": "draft",
+        "urls": [
+          "https://www.msmeda.org.eg/"
+        ],
+        "source_count": 1
+      },
+      {
+        "id": 142,
+        "name": "التعرف على إجراءات تأسيس شركة",
+        "category": "business",
+        "status": "published",
+        "urls": [
+          "https://portal.gafi.gov.eg/services/eServices/departmentService?DSID=7"
+        ],
+        "source_count": 1
+      },
+      {
+        "id": 143,
+        "name": "التعرف على خدمات تأسيس الشركات إلكترونيًا",
+        "category": "business",
+        "status": "published",
+        "urls": [
+          "https://gafi.gov.eg/en/contenttemplate/ca1b9d8b-76d1-46dc-a677-eb4ba5ccaae3"
+        ],
+        "source_count": 1
+      },
+      {
+        "id": 144,
+        "name": "التعرف على خدمات السجل التجاري",
+        "category": "business",
+        "status": "published",
+        "urls": [
+          "https://www.itda.gov.eg/sgl.aspx"
+        ],
+        "source_count": 1
+      },
+      {
+        "id": 145,
+        "name": "التعرف على خدمات البطاقة الضريبية",
+        "category": "business",
+        "status": "published",
+        "urls": [
+          "https://eta.gov.eg/sites/default/files/2025-08/guide.of_.the_.egyptian.tax_.authority.services.second_edition.pdf"
+        ],
+        "source_count": 1
+      },
+      {
+        "id": 146,
+        "name": "التعرف على خدمات التسجيل الضريبي",
+        "category": "business",
+        "status": "draft",
+        "urls": [
+          "https://www.msmeda.org.eg/"
+        ],
+        "source_count": 1
+      },
+      {
+        "id": 147,
+        "name": "التعرف على منظومة الفاتورة الإلكترونية",
+        "category": "business",
+        "status": "published",
+        "urls": [
+          "https://eta.gov.eg/ar/content/e-invoice-services"
+        ],
+        "source_count": 1
+      },
+      {
+        "id": 148,
+        "name": "التعرف على خدمات التراخيص الصناعية",
+        "category": "business",
+        "status": "draft",
+        "urls": [
+          "https://www.msmeda.org.eg/"
+        ],
+        "source_count": 1
+      },
+      {
+        "id": 149,
+        "name": "التعرف على خدمات تسجيل العلامات التجارية",
+        "category": "business",
+        "status": "draft",
+        "urls": [
+          "https://www.msmeda.org.eg/"
+        ],
+        "source_count": 1
+      },
+      {
+        "id": 150,
+        "name": "التعرف على الخدمات التكنولوجية للمشروعات",
+        "category": "business",
+        "status": "draft",
+        "urls": [
+          "https://www.msmeda.org.eg/"
+        ],
+        "source_count": 1
+      },
+      {
+        "id": 151,
+        "name": "استخراج شهادة الميلاد المميكنة",
+        "category": "government",
+        "status": "draft",
+        "urls": [
+          "https://psm.gov.eg/providers/1/services"
+        ],
+        "source_count": 1
+      },
+      {
+        "id": 152,
+        "name": "استخراج بطاقة الرقم القومي",
+        "category": "government",
+        "status": "draft",
+        "urls": [
+          "https://psm.gov.eg/providers/1/services"
+        ],
+        "source_count": 1
+      },
+      {
+        "id": 153,
+        "name": "معادلة الدرجات العلمية",
+        "category": "education",
+        "status": "published",
+        "urls": [
+          "https://equ.scu.eg/"
+        ],
+        "source_count": 1
+      },
+      {
+        "id": 154,
+        "name": "الاستعلام عن معادلة الجامعات والمعاهد الخاصة",
+        "category": "education",
+        "status": "draft",
+        "urls": [
+          "https://scu.eg/students/"
+        ],
+        "source_count": 1
+      },
+      {
+        "id": 155,
+        "name": "التقدم لاختبارات الدبلومات والمعاهد الفنية",
+        "category": "education",
+        "status": "draft",
+        "urls": [
+          "https://scu.eg/خدمات-المركز/"
+        ],
+        "source_count": 1
+      },
+      {
+        "id": 156,
+        "name": "طلب الحصول على خدمات برنامج تكافل وكرامة",
+        "category": "support",
+        "status": "published",
+        "urls": [
+          "https://www.moss.gov.eg/الخدمات/الحماية-الاجتماعية/الإدارة-العامة-للدعم-النقدي-أولا-برنامج-الدعم-النقدي-المشروط-تكافل-وكرامة/"
+        ],
+        "source_count": 1
+      },
+      {
+        "id": 157,
+        "name": "الاستعلام عن برامج الدعم والمساعدات الاجتماعية",
+        "category": "support",
+        "status": "draft",
+        "urls": [
+          "https://moss.gov.eg/الاسئلة-الشائعة/"
+        ],
+        "source_count": 1
+      },
+      {
+        "id": 158,
+        "name": "التعرف على برامج المساندة والحد من الفقر",
+        "category": "support",
+        "status": "draft",
+        "urls": [
+          "https://moss.gov.eg/الاسئلة-الشائعة/"
+        ],
+        "source_count": 1
+      },
+      {
+        "id": 159,
+        "name": "إصدار بطاقة إثبات الإعاقة والخدمات المتكاملة",
+        "category": "accessibility",
+        "status": "published",
+        "urls": [
+          "https://www.moss.gov.eg/الخدمات/الأشخاص-ذوي-الاعاقة/الإدارة-العامة-للتسجيل-والتوجيه-أولا-بطاقة-إثبات-الإعاقة-والخدمات-المتكاملة/"
+        ],
+        "source_count": 1
+      },
+      {
+        "id": 160,
+        "name": "بدل فاقد أو تالف لبطاقة الخدمات المتكاملة",
+        "category": "accessibility",
+        "status": "draft",
+        "urls": [
+          "https://moss.gov.eg/الخدمات/الأشخاص-ذوي-الاعاقة/"
+        ],
+        "source_count": 1
+      },
+      {
+        "id": 161,
+        "name": "التوجيه إلى خدمات التدريب المهني",
+        "category": "opportunities",
+        "status": "draft",
+        "urls": [
+          "https://psm.gov.eg/Services/searchResult"
+        ],
+        "source_count": 1
+      },
+      {
+        "id": 162,
+        "name": "البحث عن خدمات التدريب وفرص التأهيل للعمل",
+        "category": "opportunities",
+        "status": "draft",
+        "urls": [
+          "https://psm.gov.eg/Services/searchResult"
+        ],
+        "source_count": 1
+      },
+      {
+        "id": 163,
+        "name": "استخراج شهادة تصنيف المشروع",
+        "category": "business",
+        "status": "draft",
+        "urls": [
+          "https://www.msmeda.org.eg/"
+        ],
+        "source_count": 1
+      },
+      {
+        "id": 164,
+        "name": "خدمات الشباك الواحد للمشروعات",
+        "category": "business",
+        "status": "draft",
+        "urls": [
+          "https://www.msmeda.org.eg/"
+        ],
+        "source_count": 1
+      },
+      {
+        "id": 165,
+        "name": "تأسيس منشأة فردية",
+        "category": "business",
+        "status": "draft",
+        "urls": [
+          "https://portal.gafi.gov.eg/services/eServices/departmentService?DSID=1"
+        ],
+        "source_count": 1
+      },
+      {
+        "id": 166,
+        "name": "تأسيس شركة الشخص الواحد",
+        "category": "business",
+        "status": "draft",
+        "urls": [
+          "https://portal.gafi.gov.eg/services/eServices/departmentService?DSID=7"
+        ],
+        "source_count": 1
+      },
+      {
+        "id": 167,
+        "name": "التسجيل في منظومة الفاتورة الإلكترونية",
+        "category": "business",
+        "status": "draft",
+        "urls": [
+          "https://eta.gov.eg/ar/content/altsjyl-ly-mnzwmt-alfatwrt-alalktrwnyt"
+        ],
+        "source_count": 1
+      },
+      {
+        "id": 168,
+        "name": "تجديد بطاقة إثبات الإعاقة والخدمات المتكاملة",
+        "category": "accessibility",
+        "status": "published",
+        "urls": [
+          "https://www.moss.gov.eg/الخدمات/الأشخاص-ذوي-الاعاقة/الإدارة-العامة-للتسجيل-والتوجيه-رابعا-تجديد-بطاقة-إثبات-الإعاقة-والخدمات-المتكاملة-في-حاله-صدورها-بموجب-تقرير-طبى-مميكن/"
+        ],
+        "source_count": 1
+      },
+      {
+        "id": 169,
+        "name": "التشغيل وتوفير فرصة عمل للأشخاص ذوي الإعاقة",
+        "category": "opportunities",
+        "status": "published",
+        "urls": [
+          "https://www.moss.gov.eg/الخدمات/الأشخاص-ذوي-الاعاقة/الإدارة-العامة-للتسجيل-والتوجيه-ثامن-ا-التشغيل-توفير-فرصة-عمل/"
+        ],
+        "source_count": 1
+      },
+      {
+        "id": 170,
+        "name": "خدمة التوجيه والإرشاد للأشخاص ذوي الإعاقة",
+        "category": "accessibility",
+        "status": "published",
+        "urls": [
+          "https://www.moss.gov.eg/الخدمات/الأشخاص-ذوي-الاعاقة/الإدارة-العامة-للتسجيل-والتوجيه-سادسا-خدمة-التوجيه-والإرشاد-للأشخاص-ذوي-الإعاقة-بمكاتب-التأهيل-الاجتماعي/"
+        ],
+        "source_count": 1
+      }
+    ]
   },
   "counts": {
     "missing_field_entries": 356,
     "invalid_categories": 0,
     "invalid_statuses": 0,
-    "malformed_source_urls": 1,
+    "malformed_source_urls": 0,
     "published_incomplete": 0,
     "published_missing_review_date": 0,
     "exact_duplicate_groups": 0,
-    "possible_near_duplicate_pairs": 0
+    "possible_near_duplicate_pairs": 8,
+    "repeated_detail_text_candidates": 18
   },
-  "note": "URL checks validate syntax only, not whether a website is online or whether its content supports the service. Near-duplicate pairs are review candidates, not confirmed duplicates. No database records were changed."
+  "note": "URL syntax and official-domain matching do not establish that a URL is live or that its content supports each service. Repeated detail text is a review candidate, not proof of false information. Every published service still requires individual source-content verification. This audit is read-only."
 }
