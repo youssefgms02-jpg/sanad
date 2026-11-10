@@ -17,6 +17,7 @@ from fastapi import (
 )
 from fastapi.middleware.cors import CORSMiddleware
 from sqlalchemy.orm import Session
+from sqlalchemy import inspect, text
 
 from database import Base, engine, SessionLocal
 from models import Service, ServiceReport, User, AuthSession, UserFavorite
@@ -36,6 +37,46 @@ app = FastAPI(
 )
 
 Base.metadata.create_all(bind=engine)
+
+
+def normalize_account_name(value: str) -> str:
+    return re.sub(r"\\s+", "_", str(value or "").casefold().strip())
+
+
+def ensure_username_column():
+    """Add and backfill usernames for existing SQLite accounts without deleting data."""
+    with engine.begin() as connection:
+        columns = {column["name"] for column in inspect(connection).get_columns("users")}
+        if "username" not in columns:
+            connection.execute(text("ALTER TABLE users ADD COLUMN username VARCHAR(60)"))
+
+        rows = connection.execute(text(
+            "SELECT id, username, display_name, email FROM users ORDER BY id"
+        )).mappings().all()
+        used = set()
+        for row in rows:
+            raw_name = row["username"] or row["display_name"] or ""
+            candidate = normalize_account_name(raw_name)
+            candidate = re.sub(r"[^\\w.-]", "", candidate)
+            if not candidate:
+                candidate = "user_" + str(row["id"])
+            base = candidate
+            suffix = 1
+            while candidate in used:
+                candidate = base + "_" + str(row["id"]) + "_" + str(suffix)
+                suffix += 1
+            used.add(candidate)
+            connection.execute(
+                text("UPDATE users SET username = :username WHERE id = :user_id"),
+                {"username": candidate[:60], "user_id": row["id"]},
+            )
+
+        connection.execute(text(
+            "CREATE UNIQUE INDEX IF NOT EXISTS ix_users_username_unique ON users(username)"
+        ))
+
+
+ensure_username_column()
 
 
 # =====================================
@@ -194,12 +235,23 @@ AUTH_SESSION_DAYS = 30
 
 
 def user_to_dict(user):
+    email = user.email
+    if email and email.endswith("@accounts.sanad.invalid"):
+        email = None
     return {
         "id": user.id,
         "display_name": user.display_name,
-        "email": user.email,
+        "email": email,
         "created_at": user.created_at.isoformat() if user.created_at else None,
     }
+
+
+def unique_account_name(db: Session, display_name: str) -> str:
+    base = normalize_account_name(display_name)[:48] or "sanad_user"
+    candidate = base
+    while db.query(User).filter(User.username == candidate).first():
+        candidate = base + "_" + secrets.token_hex(3)
+    return candidate[:60]
 
 
 def check_request_origin(request: Request):
@@ -269,10 +321,14 @@ def create_auth_session(user: User, db: Session, response: Response):
 @app.post("/auth/register", status_code=201)
 def register_account(data: AuthRegister, request: Request, response: Response, db: Session = Depends(get_db)):
     check_request_origin(request)
-    email = data.email.lower()
-    if db.query(User).filter(User.email == email).first():
+    username = normalize_account_name(data.display_name)
+    if db.query(User).filter(User.username == username).first():
+        raise HTTPException(status_code=409, detail="الاسم مستخدم بالفعل. جرّب إضافة جزء مميز من اسمك.")
+    email = data.email.lower() if data.email else "account-" + secrets.token_hex(12) + "@accounts.sanad.invalid"
+    if data.email and db.query(User).filter(User.email == email).first():
         raise HTTPException(status_code=409, detail="البريد الإلكتروني مسجل بالفعل")
     user = User(
+        username=username,
         email=email,
         display_name=data.display_name,
         password_hash=hash_password(data.password),
@@ -294,9 +350,13 @@ def register_account(data: AuthRegister, request: Request, response: Response, d
 @app.post("/auth/login")
 def login_account(data: AuthLogin, request: Request, response: Response, db: Session = Depends(get_db)):
     check_request_origin(request)
-    user = db.query(User).filter(User.email == data.email.lower()).first()
+    username = normalize_account_name(data.username)
+    user = db.query(User).filter(User.username == username).first()
+    # التوافق مع الحسابات القديمة التي كانت تسجل الدخول بالبريد الإلكتروني.
+    if not user and "@" in data.username:
+        user = db.query(User).filter(User.email == data.username.lower()).first()
     if not user or not verify_password(data.password, user.password_hash):
-        raise HTTPException(status_code=401, detail="البريد الإلكتروني أو كلمة المرور غير صحيحة")
+        raise HTTPException(status_code=401, detail="الاسم أو كلمة المرور غير صحيحة")
     try:
         create_auth_session(user, db, response)
         return {"user": user_to_dict(user)}
@@ -336,6 +396,7 @@ def login_with_google(data: dict, request: Request, response: Response, db: Sess
     try:
         if not user:
             user = User(
+                username=unique_account_name(db, display_name),
                 email=email,
                 display_name=display_name,
                 password_hash=hash_password(secrets.token_urlsafe(48)),
