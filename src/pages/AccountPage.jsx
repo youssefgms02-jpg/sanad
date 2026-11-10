@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Link } from "react-router-dom";
 import { UserRound, ShieldCheck, LogOut, RefreshCw, LockKeyhole, ArrowRight, Sparkles } from "lucide-react";
 import Navbar from "../components/Navbar";
@@ -20,7 +20,7 @@ function AccountPage() {
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
     const [busy, setBusy] = useState(false);
-    const [googleReady, setGoogleReady] = useState(false);
+    const googleButtonRef = useRef(null);
     const [message, setMessage] = useState("");
     const [error, setError] = useState("");
     const googleClientId = import.meta.env.VITE_GOOGLE_CLIENT_ID || "";
@@ -82,11 +82,12 @@ function AccountPage() {
         let script = document.getElementById("google-identity-services");
 
         const renderGoogleButton = () => {
-            if (cancelled) return;
+            if (cancelled || !googleButtonRef.current) return;
             if (!window.google?.accounts?.id) {
-                setError("تم تحميل صفحة Google لكن خدمة تسجيل الدخول لم تبدأ. جرّب تحديث الصفحة.");
+                setError("تعذر تحميل خدمة تسجيل الدخول من Google. حدّث الصفحة وحاول مرة أخرى.");
                 return;
             }
+
             window.google.accounts.id.initialize({
                 client_id: googleClientId,
                 callback: (response) => {
@@ -94,15 +95,24 @@ function AccountPage() {
                     else setError("لم ترسل Google بيانات الدخول. حاول مرة أخرى.");
                 },
                 ux_mode: "popup",
-                error_callback: () => setError("تعذر فتح نافذة Google. اسمح بالنوافذ المنبثقة ثم حاول مرة أخرى."),
             });
-            setGoogleReady(true);
+
+            googleButtonRef.current.innerHTML = "";
+            window.google.accounts.id.renderButton(googleButtonRef.current, {
+                type: "standard",
+                theme: "outline",
+                size: "large",
+                text: "continue_with",
+                shape: "rectangular",
+                logo_alignment: "left",
+                width: 320,
+                locale: "ar",
+            });
         };
 
         if (window.google?.accounts?.id) {
             renderGoogleButton();
         } else {
-            // لو فيه script قديم لم يحمّل GIS، أعد تحميله بدل انتظار load event فات بالفعل.
             if (script && script.dataset.sanadLoaded !== "true") {
                 script.remove();
                 script = null;
@@ -223,26 +233,8 @@ function AccountPage() {
 
                         <div className="google-login-area">
                             <div className="google-button-frame">
-                                <button
-                                    type="button"
-                                    className="google-signin-button"
-                                    disabled={!googleClientId || !googleReady || busy}
-                                    onClick={() => {
-                                        setError("");
-                                        if (window.google?.accounts?.id) {
-                                            window.google.accounts.id.prompt((notification) => {
-                                                if (notification.isNotDisplayed?.() || notification.isSkippedMoment?.()) {
-                                                    setError("تعذر عرض تسجيل Google. راجع إعداد النطاق في Google Cloud.");
-                                                }
-                                            });
-                                        } else {
-                                            setError("خدمة Google لم تجهز بعد. حدّث الصفحة وتحقق من اتصال الإنترنت.");
-                                        }
-                                    }}
-                                >
-                                    <span className="google-signin-mark" aria-hidden="true">G</span>
-                                    تسجيل الدخول باستخدام Google
-                                </button>
+                                <div ref={googleButtonRef} className="google-official-button" aria-label="تسجيل الدخول باستخدام Google" />
+                                {busy && <p className="google-explainer">جارٍ تسجيل الدخول...</p>}
                             </div>
                             {!googleClientId && (
                                 <div className="google-setup-message">
