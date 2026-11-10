@@ -417,8 +417,10 @@ def login_with_google(data: dict, request: Request, response: Response, db: Sess
 
 
 @app.get("/auth/me")
-def current_account(user: User = Depends(get_current_user)):
-    return {"user": user_to_dict(user)}
+def current_account(request: Request, db: Session = Depends(get_db)):
+    # A visitor without a session is a normal guest state, not an API error.
+    _, user = find_auth_session(request, db)
+    return {"user": user_to_dict(user) if user else None}
 
 
 @app.post("/auth/logout")
