@@ -1448,3 +1448,18 @@ html[data-theme="dark"] .home-hero .p {
         font-size: 21px;
     }
 }
+
+
+/* Keep the published-services heading aligned to the RTL page edge. */
+.home-page .popular-services { width: 100%; }
+.home-page .popular-services > .section-title {
+ width: 100%; max-width: none; margin: 18px 0; text-align: right; direction: rtl;
+}
+.google-signin-button {
+ display: inline-flex; align-items: center; justify-content: center; gap: 12px;
+ width: min(100%, 460px); min-height: 52px; padding: 12px 20px;
+ border: 1px solid #cbd5e1; border-radius: 10px; background: #fff;
+ color: #263238; font: inherit; font-size: 15px; font-weight: 700; cursor: pointer;
+}
+.google-signin-button:hover { background: #f8fafc; border-color: #94a3b8; }
+.google-signin-mark { color: #4285f4; font-family: Arial, sans-serif; font-size: 21px; font-weight: 800; }
