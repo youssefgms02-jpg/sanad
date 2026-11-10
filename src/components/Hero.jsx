@@ -54,8 +54,8 @@ function Hero() {
     }, [searchQuery, setSearchResults, setHasSearched]);
 
     return (
-        <>
-            <h1 className="h1">أهلاً بيك في سَنَد</h1>
+        <section className="home-hero" aria-labelledby="home-title">
+            <h1 className="h1" id="home-title">أهلاً بيك في سَنَد</h1>
             <p className="p">حياة أسهل للمصريين.</p>
             <div className="search-area">
               <div className="search">
@@ -93,7 +93,7 @@ function Hero() {
                 </section>
               )}
             </div>
-        </>
+        </section>
     );
 }
 
