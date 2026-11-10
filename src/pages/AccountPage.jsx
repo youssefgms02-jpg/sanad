@@ -51,8 +51,12 @@ function AccountPage() {
     async function finishLogin(data, successMessage) {
         setUser(data.user);
         setPassword("");
-        await syncFavorites();
-        setMessage(successMessage);
+        try {
+            await syncFavorites();
+            setMessage(successMessage);
+        } catch {
+            setMessage("تم تسجيل الدخول. تعذرت مزامنة المحفوظات الآن، ويمكنك المحاولة لاحقًا.");
+        }
     }
 
     async function handleGoogleCredential(credential) {
@@ -64,7 +68,7 @@ function AccountPage() {
                 body: JSON.stringify({ credential }),
             });
             const data = await readJson(response);
-            await finishLogin(data, "تم الدخول بحساب Google ومزامنة خدماتك المحفوظة.");
+            await finishLogin(data, "تم الدخول بحساب Google بنجاح.");
         } catch (err) {
             setError(err.message || "تعذر تسجيل الدخول باستخدام Google.");
         } finally {
@@ -73,38 +77,63 @@ function AccountPage() {
     }
 
     useEffect(() => {
-        if (!googleClientId || !googleButtonRef.current || user) return;
+        if (!googleClientId || !googleButtonRef.current || user) return undefined;
         let cancelled = false;
+        let script = document.getElementById("google-identity-services");
+
         const renderGoogleButton = () => {
-            if (cancelled || !window.google?.accounts?.id || !googleButtonRef.current) return;
+            if (cancelled || !googleButtonRef.current) return;
+            if (!window.google?.accounts?.id) {
+                setError("تم تحميل صفحة Google لكن خدمة تسجيل الدخول لم تبدأ. جرّب تحديث الصفحة.");
+                return;
+            }
             window.google.accounts.id.initialize({
                 client_id: googleClientId,
                 callback: (response) => {
                     if (response?.credential) handleGoogleCredential(response.credential);
-                    else setError("لم يكتمل تسجيل الدخول باستخدام Google.");
+                    else setError("لم ترسل Google بيانات الدخول. حاول مرة أخرى.");
                 },
                 ux_mode: "popup",
+                error_callback: () => setError("تعذر فتح نافذة Google. اسمح بالنوافذ المنبثقة ثم حاول مرة أخرى."),
             });
             googleButtonRef.current.innerHTML = "";
             window.google.accounts.id.renderButton(googleButtonRef.current, {
-                type: "standard", theme: "outline", size: "large",
-                text: "continue_with", shape: "rectangular",
-                width: Math.min(440, googleButtonRef.current.clientWidth || 440),
+                type: "standard",
+                theme: "outline",
+                size: "large",
+                text: "continue_with",
+                shape: "rectangular",
+                width: 400,
                 locale: "ar",
+                logo_alignment: "right",
             });
         };
-        const existing = document.getElementById("google-identity-services");
-        if (window.google?.accounts?.id) renderGoogleButton();
-        else if (existing) existing.addEventListener("load", renderGoogleButton, { once: true });
-        else {
-            const script = document.createElement("script");
-            script.id = "google-identity-services";
-            script.src = "https://accounts.google.com/gsi/client";
-            script.async = true;
-            script.defer = true;
-            script.onload = renderGoogleButton;
-            script.onerror = () => setError("تعذر تحميل خدمة Google. تحقق من اتصال الإنترنت.");
-            document.head.appendChild(script);
+
+        if (window.google?.accounts?.id) {
+            renderGoogleButton();
+        } else {
+            // لو فيه script قديم لم يحمّل GIS، أعد تحميله بدل انتظار load event فات بالفعل.
+            if (script && script.dataset.sanadLoaded !== "true") {
+                script.remove();
+                script = null;
+            }
+            if (!script) {
+                script = document.createElement("script");
+                script.id = "google-identity-services";
+                script.src = "https://accounts.google.com/gsi/client";
+                script.async = true;
+                script.defer = true;
+                script.addEventListener("load", () => {
+                    script.dataset.sanadLoaded = "true";
+                    renderGoogleButton();
+                }, { once: true });
+                script.addEventListener("error", () => {
+                    if (!cancelled) setError("تعذر تحميل تسجيل الدخول من Google. تحقق من الإنترنت أو إعدادات حظر التتبع.");
+                }, { once: true });
+                document.head.appendChild(script);
+            } else {
+                script.addEventListener("load", renderGoogleButton, { once: true });
+            }
         }
         return () => { cancelled = true; };
     }, [googleClientId, user]);
@@ -115,8 +144,8 @@ function AccountPage() {
         try {
             const endpoint = mode === "register" ? "/auth/register" : "/auth/login";
             const payload = mode === "register"
-                ? { display_name: displayName.trim(), email: email.trim(), password }
-                : { email: email.trim(), password };
+                ? { display_name: displayName.trim(), email: email.trim() || null, password }
+                : { username: displayName.trim(), password };
             const response = await fetch(`${API_BASE_URL}${endpoint}`, {
                 method: "POST", credentials: "include",
                 headers: { "Content-Type": "application/json" },
@@ -124,8 +153,8 @@ function AccountPage() {
             });
             const data = await readJson(response);
             await finishLogin(data, mode === "register"
-                ? "تم إنشاء حسابك ومزامنة خدماتك المحفوظة."
-                : "تم تسجيل الدخول ومزامنة خدماتك المحفوظة.");
+                ? "تم إنشاء حسابك بنجاح."
+                : "تم تسجيل الدخول بنجاح.");
         } catch (err) {
             setError(err.message || "حدث خطأ غير متوقع.");
         } finally {
@@ -163,7 +192,6 @@ function AccountPage() {
 
     function chooseMode(nextMode) {
         setMode(nextMode);
-        setShowPasswordForm(true);
         setError("");
         setMessage("");
     }
@@ -185,7 +213,7 @@ function AccountPage() {
                         <ShieldCheck size={34} />
                         <div className="account-user-details">
                             <h2>أهلًا، {user.display_name}</h2>
-                            <p>{user.email}</p>
+                            {user.email && <p>{user.email}</p>}
                             <p>حسابك متصل، وخدماتك المحفوظة جاهزة للمزامنة.</p>
                             <div className="account-actions">
                                 <button type="button" onClick={syncAgain} disabled={busy}><RefreshCw size={17} /> تحديث المحفوظات</button>
@@ -200,7 +228,7 @@ function AccountPage() {
                         <div className="account-welcome-copy">
                             <span className="account-welcome-mark"><Sparkles size={22} /></span>
                             <h2>أهلاً بك في سَنَد</h2>
-                            <p>ادخل بسهولة واحفظ الخدمات المهمة لك، من غير ما تحتاج تفتكر كلمة مرور جديدة.</p>
+                            <p>سجّل باسمك وكلمة مرور، أو استخدم حساب Google للدخول بسرعة.</p>
                         </div>
 
                         <div className="google-login-area">
@@ -211,7 +239,7 @@ function AccountPage() {
                             ) : (
                                 <div className="google-setup-message">
                                     <strong>تسجيل الدخول بحساب Google</strong>
-                                    <span>سيظهر زر الدخول بعد إعداد الخدمة على الموقع.</span>
+                                    <span>لم يتم إعداد VITE_GOOGLE_CLIENT_ID في واجهة الموقع.</span>
                                 </div>
                             )}
                             <p className="google-explainer">استخدم نفس الحساب الذي تفتح به YouTube أو متجر Play أو خدمات Google.</p>
@@ -224,7 +252,7 @@ function AccountPage() {
                             setError(""); setMessage("");
                         }}>
                             <LockKeyhole size={18} />
-                            {showPasswordForm ? "إخفاء الدخول بالبريد وكلمة المرور" : "الدخول بطريقة أخرى"}
+                            {showPasswordForm ? "إخفاء التسجيل بالاسم وكلمة المرور" : "الدخول بالاسم وكلمة المرور"}
                         </button>
 
                         {showPasswordForm && (
@@ -234,10 +262,26 @@ function AccountPage() {
                                     <button type="button" className={mode === "register" ? "selected" : ""} onClick={() => chooseMode("register")}>إنشاء حساب جديد</button>
                                 </div>
                                 <form className="account-form" onSubmit={submitAuth}>
-                                    {mode === "register" && <label>اسمك<input autoComplete="name" required minLength={2} maxLength={60} value={displayName} onChange={(event) => setDisplayName(event.target.value)} placeholder="اكتب اسمك" /></label>}
-                                    <label>البريد الإلكتروني<input type="email" autoComplete="email" required maxLength={254} value={email} onChange={(event) => setEmail(event.target.value)} placeholder="name@example.com" /></label>
-                                    <label>كلمة المرور<input type="password" autoComplete={mode === "register" ? "new-password" : "current-password"} required minLength={mode === "register" ? 12 : 1} maxLength={128} value={password} onChange={(event) => setPassword(event.target.value)} placeholder={mode === "register" ? "12 حرفًا على الأقل" : "اكتب كلمة المرور"} /></label>
-                                    {mode === "register" && <p className="account-form-hint">اختر كلمة مرور قوية لا تستخدمها في أي مكان آخر.</p>}
+                                    <label>{mode === "register" ? "اسمك بالكامل" : "اسم الحساب"}
+                                        <input
+                                            autoComplete="username"
+                                            required
+                                            minLength={2}
+                                            maxLength={60}
+                                            value={displayName}
+                                            onChange={(event) => setDisplayName(event.target.value)}
+                                            placeholder={mode === "register" ? "اكتب اسمك" : "اكتب الاسم الذي سجلت به"}
+                                        />
+                                    </label>
+                                    {mode === "register" && (
+                                        <label>البريد الإلكتروني <span className="account-optional-label">(اختياري)</span>
+                                            <input type="email" autoComplete="email" maxLength={254} value={email} onChange={(event) => setEmail(event.target.value)} placeholder="name@example.com" />
+                                        </label>
+                                    )}
+                                    <label>كلمة المرور
+                                        <input type="password" autoComplete={mode === "register" ? "new-password" : "current-password"} required minLength={mode === "register" ? 12 : 1} maxLength={128} value={password} onChange={(event) => setPassword(event.target.value)} placeholder={mode === "register" ? "12 حرفًا على الأقل" : "اكتب كلمة المرور"} />
+                                    </label>
+                                    {mode === "register" && <p className="account-form-hint">البريد اختياري. اختر كلمة مرور قوية لا تستخدمها في أي مكان آخر.</p>}
                                     <button className="account-submit" type="submit" disabled={busy}>{busy ? "جارٍ التنفيذ..." : mode === "register" ? "إنشاء الحساب" : "تسجيل الدخول"}</button>
                                 </form>
                             </div>
@@ -247,7 +291,7 @@ function AccountPage() {
 
                 {error && <p className="account-feedback error" role="alert">{error}</p>}
                 {message && <p className="account-feedback success" role="status">{message}</p>}
-                <p className="account-security-note"><strong>تنبيه للسلامة:</strong> حساب سَنَد ليس حسابًا بنكيًا. لا تدخل أرقام البطاقات أو كلمات مرور البنوك أو رموز التحقق هنا. تسجيل الدخول باستخدام Google يتم عبر نافذة Google الرسمية، ولا نطلب كلمة مرور حسابك من داخل سَنَد.</p>
+                <p className="account-security-note"><strong>تنبيه للسلامة:</strong> حساب سَنَد ليس حسابًا بنكيًا. لا تدخل أرقام البطاقات أو كلمات مرور البنوك أو رموز التحقق هنا. تسجيل الدخول باستخدام Google يتم عبر نافذة Google الرسمية.</p>
                 <div className="account-back-link"><Link to="/"><ArrowRight size={16} /> تصفح الخدمات بدون تسجيل دخول</Link></div>
             </main>
         </>
