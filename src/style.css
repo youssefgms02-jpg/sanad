@@ -1266,3 +1266,185 @@ html[data-theme="dark"] .account-divider::before, html[data-theme="dark"] .accou
     .google-button-frame { width: 100%; }
     .account-form label { font-size: 14px; }
 }
+
+
+/* Navigation alignment: keep the icon group exactly centered on desktop. */
+.navbar {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr);
+    align-items: center;
+    min-height: 72px;
+    padding: 10px clamp(16px, 3vw, 38px);
+    direction: rtl;
+}
+.navbar-logo {
+    grid-column: 1;
+    justify-self: start;
+    white-space: nowrap;
+}
+.navbar-links {
+    position: static;
+    grid-column: 2;
+    justify-self: center;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: clamp(5px, 1vw, 12px);
+    margin: 0;
+    padding: 0;
+    transform: none;
+}
+.navbar-tools {
+    grid-column: 3;
+    justify-self: end;
+    display: flex;
+    align-items: center;
+}
+.navbar-icon-link {
+    width: 44px;
+    height: 44px;
+    flex: 0 0 44px;
+}
+.mobile-nav {
+    justify-content: center;
+    gap: 0;
+    padding: 7px 4px calc(7px + env(safe-area-inset-bottom));
+}
+.mobile-nav-button {
+    flex: 1 1 0;
+    min-width: 0;
+    max-width: 100px;
+    min-height: 52px;
+    padding: 5px 2px;
+    border-radius: 10px;
+}
+.mobile-nav-button.is-active {
+    background: #eaf4fa;
+    color: #155d80;
+}
+.mobile-nav-label {
+    max-width: 100%;
+    margin-top: 2px;
+    font-size: 10px;
+    line-height: 1.25;
+    text-align: center;
+    overflow-wrap: anywhere;
+}
+html[data-theme="dark"] .mobile-nav {
+    background: #152536;
+    border-top: 1px solid #2c4053;
+}
+html[data-theme="dark"] .mobile-nav-button.is-active {
+    background: #263d52;
+    color: #d8edf8;
+}
+
+/* Homepage hierarchy and spacing. */
+.home-page {
+    max-width: 1320px;
+    gap: 12px;
+    padding: clamp(16px, 3vw, 34px);
+}
+.home-hero {
+    position: relative;
+    z-index: 2;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 100%;
+    margin: 8px auto 12px;
+    padding: clamp(28px, 5vw, 54px) clamp(16px, 4vw, 42px) 38px;
+    border: 1px solid #dce9f1;
+    border-radius: 26px;
+    background: linear-gradient(135deg, #f9fcff 0%, #eaf4fa 58%, #f5fbfd 100%);
+    text-align: center;
+}
+.home-hero .h1 {
+    margin: 0;
+    font-size: clamp(28px, 4vw, 42px);
+    line-height: 1.45;
+}
+.home-hero .p {
+    margin: 8px 0 0;
+    font-size: clamp(15px, 2vw, 19px);
+    line-height: 1.8;
+}
+.home-hero .search-area {
+    margin-top: 24px;
+}
+.home-page .services-header {
+    margin-top: 18px;
+    margin-bottom: 4px;
+}
+.home-page .section-title {
+    margin-top: 18px;
+    margin-bottom: 18px;
+    line-height: 1.6;
+}
+.home-page .popular-services {
+    margin-top: 12px;
+    margin-bottom: 28px;
+}
+.home-page .emergency-section {
+    width: 100%;
+    margin: 20px auto 28px;
+}
+html[data-theme="dark"] .home-hero {
+    border-color: #2c4053;
+    background: linear-gradient(135deg, #142638, #1a3042 58%, #152536);
+}
+html[data-theme="dark"] .home-hero .p {
+    color: #c0d0dd;
+}
+@media (max-width: 900px) {
+    .navbar {
+        grid-template-columns: auto minmax(0, 1fr) auto;
+        gap: 12px;
+    }
+    .navbar-links {
+        gap: 3px;
+    }
+    .navbar-icon-link {
+        width: 38px;
+        height: 40px;
+        flex-basis: 38px;
+    }
+    .home-page {
+        padding: 16px;
+    }
+}
+@media (max-width: 600px) {
+    .navbar { display: none; }
+    .mobile-nav {
+        display: flex;
+        justify-content: space-between;
+        gap: 0;
+        padding-inline: 3px;
+    }
+    .mobile-nav-button {
+        flex: 1 1 0;
+        max-width: none;
+    }
+    .mobile-nav-label {
+        font-size: 9px;
+    }
+    .home-page {
+        gap: 8px;
+        padding: 12px 12px 100px;
+    }
+    .home-hero {
+        margin-top: 4px;
+        padding: 26px 15px 24px;
+        border-radius: 20px;
+    }
+    .home-hero .h1 {
+        font-size: 26px;
+    }
+    .home-page .services-header {
+        justify-content: space-between;
+        margin-top: 14px;
+    }
+    .home-page .section-title {
+        font-size: 21px;
+    }
+}
