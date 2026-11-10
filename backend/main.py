@@ -2,6 +2,8 @@
 import os
 import secrets
 import re
+from pathlib import Path
+from dotenv import load_dotenv
 from difflib import SequenceMatcher
 
 from datetime import datetime, timezone, timedelta
@@ -24,6 +26,10 @@ from models import Service, ServiceReport, User, AuthSession, UserFavorite
 from schemas import ServiceCreate, ServiceUpdate, ServiceReportCreate, ServiceReportStatusUpdate, AuthRegister, AuthLogin, FavoriteSync
 from source_utils import extract_http_urls, valid_http_url, normalize_arabic_text
 from auth_utils import hash_password, verify_password, hash_session_token, new_session_token
+
+
+# اقرأ إعدادات backend/.env حتى عند تشغيل Uvicorn من مجلد مختلف.
+load_dotenv(Path(__file__).resolve().parent / ".env")
 
 
 # =====================================
