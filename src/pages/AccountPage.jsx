@@ -96,17 +96,7 @@ function AccountPage() {
                 ux_mode: "popup",
                 error_callback: () => setError("تعذر فتح نافذة Google. اسمح بالنوافذ المنبثقة ثم حاول مرة أخرى."),
             });
-            googleButtonRef.current.innerHTML = "";
-            window.google.accounts.id.renderButton(googleButtonRef.current, {
-                type: "standard",
-                theme: "outline",
-                size: "large",
-                text: "continue_with",
-                shape: "rectangular",
-                width: 400,
-                locale: "ar",
-                logo_alignment: "right",
-            });
+            setGoogleReady(true);
         };
 
         if (window.google?.accounts?.id) {
@@ -232,15 +222,33 @@ function AccountPage() {
                         </div>
 
                         <div className="google-login-area">
-                            {googleClientId ? (
-                                <div className="google-button-frame">
-                                    <div ref={googleButtonRef} className="google-button-slot" />
-                                </div>
-                            ) : (
-                                <button type="button" className="google-signin-button" onClick={() => setError("تسجيل Google غير مُعد بعد. أضف VITE_GOOGLE_CLIENT_ID إلى ملف .env في المجلد الرئيسي، ثم أعد تشغيل Vite.")}>
+                            <div className="google-button-frame">
+                                <button
+                                    type="button"
+                                    className="google-signin-button"
+                                    disabled={!googleClientId || !googleReady || busy}
+                                    onClick={() => {
+                                        setError("");
+                                        if (window.google?.accounts?.id) {
+                                            window.google.accounts.id.prompt((notification) => {
+                                                if (notification.isNotDisplayed?.() || notification.isSkippedMoment?.()) {
+                                                    setError("تعذر عرض تسجيل Google. راجع إعداد النطاق في Google Cloud.");
+                                                }
+                                            });
+                                        } else {
+                                            setError("خدمة Google لم تجهز بعد. حدّث الصفحة وتحقق من اتصال الإنترنت.");
+                                        }
+                                    }}
+                                >
                                     <span className="google-signin-mark" aria-hidden="true">G</span>
                                     تسجيل الدخول باستخدام Google
                                 </button>
+                            </div>
+                            {!googleClientId && (
+                                <div className="google-setup-message">
+                                    <strong>زر Google يحتاج إعدادًا</strong>
+                                    <span>أضف VITE_GOOGLE_CLIENT_ID إلى ملف .env في المجلد الرئيسي ثم أعد تشغيل Vite.</span>
+                                </div>
                             )}
                             <p className="google-explainer">استخدم نفس الحساب الذي تفتح به YouTube أو متجر Play أو خدمات Google.</p>
                         </div>
