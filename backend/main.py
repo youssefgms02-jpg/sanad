@@ -40,7 +40,7 @@ Base.metadata.create_all(bind=engine)
 
 
 def normalize_account_name(value: str) -> str:
-    return re.sub(r"\\s+", "_", str(value or "").casefold().strip())
+    return re.sub(r"\s+", "_", str(value or "").casefold().strip())
 
 
 def ensure_username_column():
@@ -57,7 +57,7 @@ def ensure_username_column():
         for row in rows:
             raw_name = row["username"] or row["display_name"] or ""
             candidate = normalize_account_name(raw_name)
-            candidate = re.sub(r"[^\\w.-]", "", candidate)
+            candidate = re.sub(r"[^\w.-]", "", candidate)
             if not candidate:
                 candidate = "user_" + str(row["id"])
             base = candidate
