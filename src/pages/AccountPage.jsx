@@ -237,10 +237,10 @@ function AccountPage() {
                                     <div ref={googleButtonRef} className="google-button-slot" />
                                 </div>
                             ) : (
-                                <div className="google-setup-message">
-                                    <strong>تسجيل الدخول بحساب Google</strong>
-                                    <span>لم يتم إعداد VITE_GOOGLE_CLIENT_ID في واجهة الموقع.</span>
-                                </div>
+                                <button type="button" className="google-signin-button" onClick={() => setError("تسجيل Google غير مُعد بعد. أضف VITE_GOOGLE_CLIENT_ID إلى ملف .env في المجلد الرئيسي، ثم أعد تشغيل Vite.")}>
+                                    <span className="google-signin-mark" aria-hidden="true">G</span>
+                                    تسجيل الدخول باستخدام Google
+                                </button>
                             )}
                             <p className="google-explainer">استخدم نفس الحساب الذي تفتح به YouTube أو متجر Play أو خدمات Google.</p>
                         </div>
