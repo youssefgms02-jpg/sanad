@@ -57,7 +57,6 @@ def ensure_username_column():
         for row in rows:
             raw_name = row["username"] or row["display_name"] or ""
             candidate = normalize_account_name(raw_name)
-            candidate = re.sub(r"[^\w.-]", "", candidate)
             if not candidate:
                 candidate = "user_" + str(row["id"])
             base = candidate
