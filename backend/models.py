@@ -1,4 +1,3 @@
-
 from sqlalchemy import Column, Integer, String, Text, DateTime, ForeignKey
 from sqlalchemy.sql import func
 
@@ -40,6 +39,7 @@ class User(Base):
     __tablename__ = "users"
 
     id = Column(Integer, primary_key=True, index=True)
+    username = Column(String(60), nullable=True)
     email = Column(String(254), nullable=False, unique=True, index=True)
     display_name = Column(String(60), nullable=False)
     password_hash = Column(String(255), nullable=False)
