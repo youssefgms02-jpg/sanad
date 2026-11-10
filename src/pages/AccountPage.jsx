@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { UserRound, ShieldCheck, LogOut, RefreshCw, LockKeyhole, ArrowRight, Sparkles } from "lucide-react";
 import Navbar from "../components/Navbar";
@@ -22,7 +22,6 @@ function AccountPage() {
     const [busy, setBusy] = useState(false);
     const [message, setMessage] = useState("");
     const [error, setError] = useState("");
-    const googleButtonRef = useRef(null);
     const googleClientId = import.meta.env.VITE_GOOGLE_CLIENT_ID || "";
 
     useEffect(() => {
@@ -77,7 +76,7 @@ function AccountPage() {
     }
 
     useEffect(() => {
-        if (!googleClientId || !googleButtonRef.current || user) return undefined;
+        if (!googleClientId || user) return undefined;
         let cancelled = false;
         let script = document.getElementById("google-identity-services");
 
