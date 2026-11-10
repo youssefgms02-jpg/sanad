@@ -305,6 +305,51 @@ def login_account(data: AuthLogin, request: Request, response: Response, db: Ses
         raise HTTPException(status_code=500, detail="تعذر تسجيل الدخول حاليًا")
 
 
+@app.post("/auth/google")
+def login_with_google(data: dict, request: Request, response: Response, db: Session = Depends(get_db)):
+    """Verify a Google Identity Services ID token before creating a SANAD session."""
+    check_request_origin(request)
+    client_id = os.getenv("GOOGLE_CLIENT_ID", "").strip()
+    credential = data.get("credential") if isinstance(data, dict) else None
+    if not client_id:
+        raise HTTPException(status_code=503, detail="تسجيل الدخول باستخدام Google غير مُعدّ بعد")
+    if not isinstance(credential, str) or not credential or len(credential) > 10000:
+        raise HTTPException(status_code=400, detail="بيانات تسجيل الدخول غير مكتملة")
+
+    try:
+        from google.oauth2 import id_token
+        from google.auth.transport import requests as google_requests
+        claims = id_token.verify_oauth2_token(
+            credential, google_requests.Request(), client_id
+        )
+    except ImportError:
+        raise HTTPException(status_code=503, detail="مكتبة التحقق من Google غير مثبتة على الخادم")
+    except Exception:
+        raise HTTPException(status_code=401, detail="تعذر التحقق من حساب Google. حاول مرة أخرى.")
+
+    email = str(claims.get("email", "")).strip().lower()
+    if not email or claims.get("email_verified") is not True:
+        raise HTTPException(status_code=401, detail="يجب استخدام حساب Google تم التحقق من بريده")
+    display_name = str(claims.get("name") or email.split("@", 1)[0]).strip()[:60] or "مستخدم سَنَد"
+
+    user = db.query(User).filter(User.email == email).first()
+    try:
+        if not user:
+            user = User(
+                email=email,
+                display_name=display_name,
+                password_hash=hash_password(secrets.token_urlsafe(48)),
+            )
+            db.add(user)
+            db.commit()
+            db.refresh(user)
+        create_auth_session(user, db, response)
+        return {"user": user_to_dict(user)}
+    except Exception:
+        db.rollback()
+        raise HTTPException(status_code=500, detail="تعذر إنشاء جلسة الحساب حاليًا")
+
+
 @app.get("/auth/me")
 def current_account(user: User = Depends(get_current_user)):
     return {"user": user_to_dict(user)}
