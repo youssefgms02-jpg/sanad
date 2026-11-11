@@ -16,15 +16,19 @@ function FavoritesPage() {
         const controller = new AbortController();
         async function load() {
             try {
-                const authResponse = await fetch(`${API_BASE_URL}/auth/me`, { credentials: "include", signal: controller.signal });
                 let ids = getFavoriteIds();
-                if (authResponse.ok) {
-                    const favoritesResponse = await fetch(`${API_BASE_URL}/me/favorites`, { credentials: "include", signal: controller.signal });
-                    if (favoritesResponse.ok) {
-                        const saved = await favoritesResponse.json();
-                        ids = saved.service_ids || [];
-                        setAccountSynced(true);
+                try {
+                    const authResponse = await fetch(`${API_BASE_URL}/auth/me`, { credentials: "include", signal: controller.signal });
+                    if (authResponse.ok) {
+                        const favoritesResponse = await fetch(`${API_BASE_URL}/me/favorites`, { credentials: "include", signal: controller.signal });
+                        if (favoritesResponse.ok) {
+                            const saved = await favoritesResponse.json();
+                            ids = saved.service_ids || [];
+                            setAccountSynced(true);
+                        }
                     }
+                } catch {
+                    // If the network is unavailable, continue with device-only favorites.
                 }
                 const data = await fetchPublicServices({}, { signal: controller.signal });
                 setOffline(Boolean(data.offline));
