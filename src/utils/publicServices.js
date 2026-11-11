@@ -61,7 +61,7 @@ function filterCachedServices(services, { query, category, authority } = {}) {
     });
 }
 
-export async function fetchPublicServices(filters = {}) {
+export async function fetchPublicServices(filters = {}, options = {}) {
     const params = new URLSearchParams();
     if (filters.category) params.set("category", filters.category);
     if (filters.query) params.set("q", filters.query);
@@ -70,7 +70,7 @@ export async function fetchPublicServices(filters = {}) {
     const url = `${API_BASE_URL}/services${queryString ? `?${queryString}` : ""}`;
 
     try {
-        const response = await fetch(url);
+        const response = await fetch(url, { signal: options.signal });
         if (!response.ok) throw new Error("تعذر تحميل الخدمات المنشورة.");
         const data = await response.json();
         if (Array.isArray(data.services)) {
@@ -90,9 +90,9 @@ export async function fetchPublicServices(filters = {}) {
     }
 }
 
-export async function fetchPublicService(serviceId) {
+export async function fetchPublicService(serviceId, options = {}) {
     try {
-        const response = await fetch(`${API_BASE_URL}/services/${encodeURIComponent(serviceId)}`);
+        const response = await fetch(`${API_BASE_URL}/services/${encodeURIComponent(serviceId)}`, { signal: options.signal });
         if (!response.ok) throw new Error("تعذر العثور على الخدمة");
         const service = await response.json();
         if (service?.id != null) writeCache([service]);
