@@ -1,6 +1,7 @@
 import { useParams, Link } from "react-router-dom";
 import { useState, useEffect } from "react";
 import Navbar from "./Navbar";
+import API_BASE_URL from "../api";
 import { fetchPublicService } from "../utils/publicServices";
 import { Heart, Share2 } from "lucide-react";
 import { isFavorite, toggleFavorite, syncFavoritesToAccount } from "../utils/favorites";
