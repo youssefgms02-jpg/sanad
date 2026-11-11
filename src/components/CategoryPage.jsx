@@ -2,7 +2,7 @@ import { useParams, Link } from "react-router-dom";
 import { useState, useEffect } from "react";
 import { WalletCards } from "lucide-react";
 import Navbar from "./Navbar";
-import API_BASE_URL from "../api";
+import { fetchPublicServices } from "../utils/publicServices";
 
 const categories = {
     government: { title: "الخدمات الحكومية", description: "اكتشف الخدمات الحكومية وطريقة الحصول عليها." },
@@ -21,6 +21,7 @@ function CategoryPage() {
     const [error, setError] = useState("");
     const [searchQuery, setSearchQuery] = useState("");
     const [authority, setAuthority] = useState("");
+    const [offline, setOffline] = useState(false);
 
     useEffect(() => {
         let cancelled = false;
@@ -28,10 +29,11 @@ function CategoryPage() {
             setLoading(true);
             setError("");
             try {
-                const response = await fetch(`${API_BASE_URL}/services?category=${encodeURIComponent(categoryId)}&q=${encodeURIComponent(searchQuery)}&authority=${encodeURIComponent(authority)}`);
-                if (!response.ok) throw new Error("فشل تحميل الخدمات");
-                const data = await response.json();
-                if (!cancelled) setServices(data.services || []);
+                const data = await fetchPublicServices({ category: categoryId, query: searchQuery, authority });
+                if (!cancelled) {
+                    setServices(data.services || []);
+                    setOffline(Boolean(data.offline));
+                }
             } catch (err) {
                 if (!cancelled) setError(err.message);
             } finally {
@@ -64,6 +66,7 @@ function CategoryPage() {
                     </div>
                     <h2>الخدمات المتاحة</h2>
                     {loading && <p role="status">جاري تحميل الخدمات...</p>}
+                    {offline && <p className="offline-data-note" role="status">أنت غير متصل. المعلومات المعروضة محفوظة سابقًا وقد تكون تغيّرت.</p>}
                     {error && <p role="alert">{error}</p>}
                     {!loading && !error && services.length === 0 && <p>لا توجد خدمات منشورة حاليًا في هذا القسم.</p>}
                     <div className="services">

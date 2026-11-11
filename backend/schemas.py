@@ -1,4 +1,3 @@
-
 from pydantic import BaseModel, Field, ConfigDict
 
 
@@ -57,7 +56,8 @@ class AuthRegister(BaseModel):
     model_config = ConfigDict(str_strip_whitespace=True, extra="forbid")
 
     display_name: str = Field(min_length=2, max_length=60)
-    email: str = Field(
+    email: str | None = Field(
+        default=None,
         min_length=6,
         max_length=254,
         pattern=r"^[^@\s]+@[^@\s]+\.[^@\s]+$",
@@ -68,7 +68,7 @@ class AuthRegister(BaseModel):
 class AuthLogin(BaseModel):
     model_config = ConfigDict(str_strip_whitespace=True, extra="forbid")
 
-    email: str = Field(min_length=6, max_length=254)
+    username: str = Field(min_length=2, max_length=60)
     password: str = Field(min_length=1, max_length=128)
 
 

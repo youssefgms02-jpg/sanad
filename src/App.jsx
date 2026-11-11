@@ -19,7 +19,7 @@ function Home() {
     return (
         <>
             <Navbar />
-            <main>
+            <main className="home-page">
                 <Hero />
                 <Services />
                 <PopularServices />

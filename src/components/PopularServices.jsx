@@ -1,24 +1,22 @@
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
-import API_BASE_URL from "../api";
+import { fetchPublicServices } from "../utils/publicServices";
 
 function PopularServices() {
     const [services, setServices] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState("");
+    const [offline, setOffline] = useState(false);
 
     useEffect(() => {
         const controller = new AbortController();
 
         async function loadServices() {
             try {
-                const response = await fetch(`${API_BASE_URL}/services`, {
-                    signal: controller.signal,
-                });
-                if (!response.ok) throw new Error("تعذر تحميل الخدمات المنشورة.");
-                const data = await response.json();
+                const data = await fetchPublicServices({}, { signal: controller.signal });
                 const latest = (data.services || []).slice().reverse().slice(0, 6);
                 setServices(latest);
+                setOffline(Boolean(data.offline));
             } catch (err) {
                 if (err.name !== "AbortError") setError(err.message);
             } finally {
@@ -37,6 +35,7 @@ function PopularServices() {
             </h2>
 
             {loading && <p className="published-services-state">جاري تحميل الخدمات...</p>}
+            {offline && <p className="offline-data-note" role="status">تعرض خدمات محفوظة على هذا الجهاز؛ قد لا تشمل آخر التحديثات.</p>}
             {error && <p className="published-services-state">{error}</p>}
             {!loading && !error && services.length === 0 && (
                 <p className="published-services-state">ستظهر هنا الخدمات بعد مراجعتها ونشرها.</p>

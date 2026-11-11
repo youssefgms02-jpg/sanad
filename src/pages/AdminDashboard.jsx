@@ -13,6 +13,7 @@ const categoryLabels = {
     accessibility: "ذوو الإعاقة وكبار السن",
     opportunities: "الفرص والمبادرات",
     business: "دعم المشروعات الصغيرة",
+    banking: "الخدمات البنكية",
 };
 
 const emptyForm = {
@@ -344,6 +345,7 @@ function AdminDashboard() {
                                     <option value="accessibility">ذوو الإعاقة وكبار السن</option>
                                     <option value="opportunities">الفرص والمبادرات</option>
                                     <option value="business">دعم المشروعات الصغيرة</option>
+                                    <option value="banking">الخدمات البنكية</option>
                                 </select>
                             </label>
                             <label className="full-width">وصف الخدمة *<textarea name="description" value={form.description} onChange={updateForm} minLength={10} required /></label>

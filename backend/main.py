@@ -2,6 +2,8 @@
 import os
 import secrets
 import re
+from pathlib import Path
+from dotenv import load_dotenv
 from difflib import SequenceMatcher
 
 from datetime import datetime, timezone, timedelta
@@ -17,12 +19,17 @@ from fastapi import (
 )
 from fastapi.middleware.cors import CORSMiddleware
 from sqlalchemy.orm import Session
+from sqlalchemy import inspect, text
 
 from database import Base, engine, SessionLocal
 from models import Service, ServiceReport, User, AuthSession, UserFavorite
 from schemas import ServiceCreate, ServiceUpdate, ServiceReportCreate, ServiceReportStatusUpdate, AuthRegister, AuthLogin, FavoriteSync
 from source_utils import extract_http_urls, valid_http_url, normalize_arabic_text
 from auth_utils import hash_password, verify_password, hash_session_token, new_session_token
+
+
+# اقرأ إعدادات backend/.env حتى عند تشغيل Uvicorn من مجلد مختلف.
+load_dotenv(Path(__file__).resolve().parent / ".env")
 
 
 # =====================================
@@ -36,6 +43,45 @@ app = FastAPI(
 )
 
 Base.metadata.create_all(bind=engine)
+
+
+def normalize_account_name(value: str) -> str:
+    return re.sub(r"\s+", "_", str(value or "").casefold().strip())
+
+
+def ensure_username_column():
+    """Add and backfill usernames for existing SQLite accounts without deleting data."""
+    with engine.begin() as connection:
+        columns = {column["name"] for column in inspect(connection).get_columns("users")}
+        if "username" not in columns:
+            connection.execute(text("ALTER TABLE users ADD COLUMN username VARCHAR(60)"))
+
+        rows = connection.execute(text(
+            "SELECT id, username, display_name, email FROM users ORDER BY id"
+        )).mappings().all()
+        used = set()
+        for row in rows:
+            raw_name = row["username"] or row["display_name"] or ""
+            candidate = normalize_account_name(raw_name)
+            if not candidate:
+                candidate = "user_" + str(row["id"])
+            base = candidate
+            suffix = 1
+            while candidate in used:
+                candidate = base + "_" + str(row["id"]) + "_" + str(suffix)
+                suffix += 1
+            used.add(candidate)
+            connection.execute(
+                text("UPDATE users SET username = :username WHERE id = :user_id"),
+                {"username": candidate[:60], "user_id": row["id"]},
+            )
+
+        connection.execute(text(
+            "CREATE UNIQUE INDEX IF NOT EXISTS ix_users_username_unique ON users(username)"
+        ))
+
+
+ensure_username_column()
 
 
 # =====================================
@@ -162,7 +208,7 @@ app.add_middleware(
     CORSMiddleware,
     allow_origins=allowed_origins,
     allow_credentials=True,
-    allow_methods=["GET", "POST", "PATCH", "DELETE"],
+    allow_methods=["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
     allow_headers=["Content-Type", "X-Admin-Token", "Authorization"],
 )
 
@@ -194,12 +240,23 @@ AUTH_SESSION_DAYS = 30
 
 
 def user_to_dict(user):
+    email = user.email
+    if email and email.endswith("@accounts.sanad.invalid"):
+        email = None
     return {
         "id": user.id,
         "display_name": user.display_name,
-        "email": user.email,
+        "email": email,
         "created_at": user.created_at.isoformat() if user.created_at else None,
     }
+
+
+def unique_account_name(db: Session, display_name: str) -> str:
+    base = normalize_account_name(display_name)[:48] or "sanad_user"
+    candidate = base
+    while db.query(User).filter(User.username == candidate).first():
+        candidate = base + "_" + secrets.token_hex(3)
+    return candidate[:60]
 
 
 def check_request_origin(request: Request):
@@ -269,10 +326,14 @@ def create_auth_session(user: User, db: Session, response: Response):
 @app.post("/auth/register", status_code=201)
 def register_account(data: AuthRegister, request: Request, response: Response, db: Session = Depends(get_db)):
     check_request_origin(request)
-    email = data.email.lower()
-    if db.query(User).filter(User.email == email).first():
+    username = normalize_account_name(data.display_name)
+    if db.query(User).filter(User.username == username).first():
+        raise HTTPException(status_code=409, detail="الاسم مستخدم بالفعل. جرّب إضافة جزء مميز من اسمك.")
+    email = data.email.lower() if data.email else "account-" + secrets.token_hex(12) + "@accounts.sanad.invalid"
+    if data.email and db.query(User).filter(User.email == email).first():
         raise HTTPException(status_code=409, detail="البريد الإلكتروني مسجل بالفعل")
     user = User(
+        username=username,
         email=email,
         display_name=data.display_name,
         password_hash=hash_password(data.password),
@@ -294,9 +355,13 @@ def register_account(data: AuthRegister, request: Request, response: Response, d
 @app.post("/auth/login")
 def login_account(data: AuthLogin, request: Request, response: Response, db: Session = Depends(get_db)):
     check_request_origin(request)
-    user = db.query(User).filter(User.email == data.email.lower()).first()
+    username = normalize_account_name(data.username)
+    user = db.query(User).filter(User.username == username).first()
+    # التوافق مع الحسابات القديمة التي كانت تسجل الدخول بالبريد الإلكتروني.
+    if not user and "@" in data.username:
+        user = db.query(User).filter(User.email == data.username.lower()).first()
     if not user or not verify_password(data.password, user.password_hash):
-        raise HTTPException(status_code=401, detail="البريد الإلكتروني أو كلمة المرور غير صحيحة")
+        raise HTTPException(status_code=401, detail="الاسم أو كلمة المرور غير صحيحة")
     try:
         create_auth_session(user, db, response)
         return {"user": user_to_dict(user)}
@@ -305,9 +370,109 @@ def login_account(data: AuthLogin, request: Request, response: Response, db: Ses
         raise HTTPException(status_code=500, detail="تعذر تسجيل الدخول حاليًا")
 
 
+
+@app.post("/auth/google")
+def login_with_google(
+    data: dict,
+    request: Request,
+    response: Response,
+    db: Session = Depends(get_db),
+):
+    """Verify a Google Identity Services ID token before creating a SANAD session."""
+    check_request_origin(request)
+
+    client_id = os.getenv("GOOGLE_CLIENT_ID", "").strip()
+    credential = data.get("credential") if isinstance(data, dict) else None
+
+    if not client_id:
+        raise HTTPException(
+            status_code=503,
+            detail="تسجيل الدخول باستخدام Google غير مُعدّ بعد",
+        )
+
+    if not isinstance(credential, str) or not credential or len(credential) > 10000:
+        raise HTTPException(
+            status_code=400,
+            detail="بيانات تسجيل الدخول غير مكتملة",
+        )
+
+    try:
+        from google.oauth2 import id_token
+        from google.auth.transport import requests as google_requests
+
+        claims = id_token.verify_oauth2_token(
+            credential,
+            google_requests.Request(),
+            client_id,
+        )
+
+    except ImportError:
+        raise HTTPException(
+            status_code=503,
+            detail="مكتبة التحقق من Google غير مثبتة على الخادم",
+        )
+
+    except Exception as exc:
+        safe_error = re.sub(
+            r"eyJ[A-Za-z0-9_-]+\.[A-Za-z0-9_-]+\.[A-Za-z0-9_-]+",
+            "[REDACTED]",
+            str(exc),
+        )
+
+        print(
+            f"[Google Auth] Verification failed: "
+            f"{type(exc).__name__}: {safe_error[:250]}",
+            flush=True,
+        )
+
+        raise HTTPException(
+            status_code=401,
+            detail="تعذر التحقق من حساب Google. حاول مرة أخرى.",
+        )
+
+    email = str(claims.get("email", "")).strip().lower()
+
+    if not email or claims.get("email_verified") is not True:
+        raise HTTPException(
+            status_code=401,
+            detail="يجب استخدام حساب Google تم التحقق من بريده",
+        )
+
+    display_name = (
+        str(claims.get("name") or email.split("@", 1)[0]).strip()[:60]
+        or "مستخدم سَنَد"
+    )
+
+    user = db.query(User).filter(User.email == email).first()
+
+    try:
+        if not user:
+            user = User(
+                username=unique_account_name(db, display_name),
+                email=email,
+                display_name=display_name,
+                password_hash=hash_password(secrets.token_urlsafe(48)),
+            )
+            db.add(user)
+            db.commit()
+            db.refresh(user)
+
+        create_auth_session(user, db, response)
+
+        return {"user": user_to_dict(user)}
+
+    except Exception:
+        db.rollback()
+        raise HTTPException(
+            status_code=500,
+            detail="تعذر إنشاء جلسة الحساب حاليًا",
+        )
+
 @app.get("/auth/me")
-def current_account(user: User = Depends(get_current_user)):
-    return {"user": user_to_dict(user)}
+def current_account(request: Request, db: Session = Depends(get_db)):
+    # A visitor without a session is a normal guest state, not an API error.
+    _, user = find_auth_session(request, db)
+    return {"user": user_to_dict(user) if user else None}
 
 
 @app.post("/auth/logout")
