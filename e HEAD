@@ -1,0 +1,20 @@
+[33m> dd19d01[m[33m ([m[1;31morigin/feature/account-name-google-navigation[m[33m)[m Keep local favorites available when offline
+[33m> 3627830[m Retain API URL for FavoritesPage.jsx actions
+[33m> 849bd4f[m Retain API URL for ServiceDetails.jsx actions
+[33m> 1dc6621[m Polish offline data support in style.css
+[33m> 482a980[m Polish offline data support in FavoritesPage.jsx
+[33m> d3d71e8[m Polish offline data support in PopularServices.jsx
+[33m> 826dfec[m Polish offline data support in Hero.jsx
+[33m> 8b97ffe[m Polish offline data support in publicServices.js
+[33m> dab3212[m Use offline service cache in FavoritesPage.jsx
+[33m> 2dd8bee[m Use offline service cache in ServiceDetails.jsx
+[33m> b4cfbea[m Use offline service cache in CategoryPage.jsx
+[33m> 5dd1c55[m Use offline service cache in PopularServices.jsx
+[33m> 9d7fdb9[m Use offline service cache in Hero.jsx
+[33m> ce1763f[m Add offline cache for public service information
+[33m> 013b611[m Preserve contrast on dark theme action links
+[33m> bd9f867[m Synchronize theme toggles across desktop and mobile
+[33m> 28cb95b[m Keep mobile theme toggle visible in light mode
+[33m> 3b16f44[m Remove standalone banking navbar shortcut
+[33m> 939e13f[m Unify dark theme across SANAD pages
+[33m< 2208bee[m[33m ([m[1;36mHEAD[m[33m -> [m[1;32mfeature/account-name-google-navigation[m[33m)[m ي
