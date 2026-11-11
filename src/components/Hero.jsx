@@ -27,7 +27,7 @@ function Hero() {
             setLoading(true);
             setSearchError("");
             try {
-                const data = await fetchPublicServices({ query });
+                const data = await fetchPublicServices({ query }, { signal: controller.signal });
                 if (!cancelled) {
                     setSearchResults(data.services || []);
                     setOffline(Boolean(data.offline));
