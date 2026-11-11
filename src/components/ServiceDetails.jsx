@@ -1,7 +1,7 @@
 import { useParams, Link } from "react-router-dom";
 import { useState, useEffect } from "react";
 import Navbar from "./Navbar";
-import API_BASE_URL from "../api";
+import { fetchPublicService } from "../utils/publicServices";
 import { Heart, Share2 } from "lucide-react";
 import { isFavorite, toggleFavorite, syncFavoritesToAccount } from "../utils/favorites";
 
@@ -30,6 +30,7 @@ function ServiceDetails() {
     const [reportSending, setReportSending] = useState(false);
     const [reportFeedback, setReportFeedback] = useState("");
     const [favorite, setFavorite] = useState(() => isFavorite(serviceId));
+    const [offline, setOffline] = useState(false);
 
     useEffect(() => {
         const syncFavorites = () => setFavorite(isFavorite(serviceId));
@@ -90,10 +91,11 @@ function ServiceDetails() {
             setLoading(true);
             setError("");
             try {
-                const response = await fetch(`${API_BASE_URL}/services/${serviceId}`);
-                if (!response.ok) throw new Error("تعذر العثور على الخدمة");
-                const data = await response.json();
-                if (!cancelled) setService(data);
+                const data = await fetchPublicService(serviceId);
+                if (!cancelled) {
+                    setService(data.service);
+                    setOffline(Boolean(data.offline));
+                }
             } catch (err) {
                 if (!cancelled) setError(err.message);
             } finally {
@@ -116,6 +118,7 @@ function ServiceDetails() {
                     </div>
                     {loading && <p>جاري تحميل تفاصيل الخدمة...</p>}
                     {error && <p role="alert">{error}</p>}
+                    {offline && <p className="offline-data-note" role="status">أنت غير متصل. تفاصيل الخدمة محفوظة سابقًا وقد تحتاج إلى مراجعة أحدث مصدر رسمي.</p>}
                     {!loading && !error && service && (
                         <>
                             <h1>{service.name}</h1>
