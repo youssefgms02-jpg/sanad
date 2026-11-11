@@ -13,7 +13,7 @@ function PopularServices() {
 
         async function loadServices() {
             try {
-                const data = await fetchPublicServices();
+                const data = await fetchPublicServices({}, { signal: controller.signal });
                 const latest = (data.services || []).slice().reverse().slice(0, 6);
                 setServices(latest);
                 setOffline(Boolean(data.offline));
