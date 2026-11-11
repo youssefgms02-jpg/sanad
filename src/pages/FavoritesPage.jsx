@@ -25,7 +25,7 @@ function FavoritesPage() {
                         setAccountSynced(true);
                     }
                 }
-                const data = await fetchPublicServices();
+                const data = await fetchPublicServices({}, { signal: controller.signal });
                 setOffline(Boolean(data.offline));
                 const selected = new Set(ids.map(Number));
                 setServices((data.services || []).filter((service) => selected.has(Number(service.id))));
