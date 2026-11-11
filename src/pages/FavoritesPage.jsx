@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import Navbar from "../components/Navbar";
+import API_BASE_URL from "../api";
 import { fetchPublicServices } from "../utils/publicServices";
 import { getFavoriteIds } from "../utils/favorites";
 
