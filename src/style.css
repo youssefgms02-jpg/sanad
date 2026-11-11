@@ -1845,3 +1845,23 @@ html[data-theme="dark"] a.service-details,
 html[data-theme="dark"] a.service-details:hover {
     color: #ffffff;
 }
+
+
+/* Offline data notice: visible, calm and consistent in both themes. */
+.offline-data-note {
+    width: 100%;
+    margin: 10px 0;
+    padding: 10px 13px;
+    border: 1px solid #e7c98c;
+    border-radius: 10px;
+    background: #fff8e8;
+    color: #79551d;
+    font-size: 13px;
+    line-height: 1.7;
+    text-align: right;
+}
+html[data-theme="dark"] .offline-data-note {
+    border-color: #735a2e;
+    background: #392f1d;
+    color: #f2d99d;
+}
