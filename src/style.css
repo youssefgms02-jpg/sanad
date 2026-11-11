@@ -1463,3 +1463,367 @@ html[data-theme="dark"] .home-hero .p {
 }
 .google-signin-button:hover { background: #f8fafc; border-color: #94a3b8; }
 .google-signin-mark { color: #4285f4; font-family: Arial, sans-serif; font-size: 21px; font-weight: 800; }
+
+
+/* =========================================================
+   SANAD unified dark theme — shared design tokens
+   Applied consistently to desktop, mobile, forms and panels.
+========================================================= */
+html[data-theme="dark"] {
+    color-scheme: dark;
+    --sanad-dark-bg: #0b1420;
+    --sanad-dark-surface: #142235;
+    --sanad-dark-elevated: #1b2d42;
+    --sanad-dark-hover: #243b52;
+    --sanad-dark-border: #30465c;
+    --sanad-dark-text: #edf4fa;
+    --sanad-dark-muted: #b4c4d3;
+    --sanad-dark-subtle: #8da2b5;
+    --sanad-dark-accent: #70c2df;
+    --sanad-dark-accent-strong: #2b7899;
+}
+
+html[data-theme="dark"] body {
+    background: radial-gradient(ellipse at top, #142638 0%, #0b1420 58%);
+    color: var(--sanad-dark-text);
+}
+
+html[data-theme="dark"] main,
+html[data-theme="dark"] .home-page,
+html[data-theme="dark"] .category-page,
+html[data-theme="dark"] .favorites-page,
+html[data-theme="dark"] .about-page {
+    background: transparent;
+    color: var(--sanad-dark-text);
+}
+
+html[data-theme="dark"] .navbar {
+    background: #101e2d;
+    border-bottom: 1px solid var(--sanad-dark-border);
+    color: var(--sanad-dark-text);
+}
+
+html[data-theme="dark"] .navbar-icon-link,
+html[data-theme="dark"] .navbar-logo {
+    color: var(--sanad-dark-text);
+}
+
+html[data-theme="dark"] .navbar-icon-link:hover,
+html[data-theme="dark"] .navbar-icon-link.is-active {
+    background: var(--sanad-dark-hover);
+    border-color: #45627a;
+}
+
+html[data-theme="dark"] .navbar-icon-tooltip {
+    background: #263d52;
+    color: var(--sanad-dark-text);
+}
+
+html[data-theme="dark"] .mobile-nav {
+    background: #142235;
+    border-top: 1px solid var(--sanad-dark-border);
+    box-shadow: 0 -5px 20px #00000035;
+}
+
+html[data-theme="dark"] .mobile-nav-button,
+html[data-theme="dark"] .mobile-nav-button.is-active {
+    color: var(--sanad-dark-accent);
+}
+
+html[data-theme="dark"] .mobile-nav-button.is-active {
+    background: var(--sanad-dark-hover);
+}
+
+html[data-theme="dark"] .theme-toggle {
+    color: var(--sanad-dark-accent);
+    border-color: var(--sanad-dark-border);
+    background: var(--sanad-dark-elevated);
+}
+
+html[data-theme="dark"] .theme-toggle:hover {
+    background: var(--sanad-dark-hover);
+}
+
+html[data-theme="dark"] .h1,
+html[data-theme="dark"] .section-title,
+html[data-theme="dark"] .category-page > h1,
+html[data-theme="dark"] .category-page > h2,
+html[data-theme="dark"] .category-page h3,
+html[data-theme="dark"] .settings-heading h1,
+html[data-theme="dark"] .settings-card h2,
+html[data-theme="dark"] .account-welcome-copy h2 {
+    color: var(--sanad-dark-text);
+}
+
+html[data-theme="dark"] .p,
+html[data-theme="dark"] .category-page > p,
+html[data-theme="dark"] .settings-heading p,
+html[data-theme="dark"] .settings-card p,
+html[data-theme="dark"] .published-services-state,
+html[data-theme="dark"] .service-card p,
+html[data-theme="dark"] .popular-service-card p,
+html[data-theme="dark"] .service-info-block p,
+html[data-theme="dark"] .service-source-note,
+html[data-theme="dark"] .account-welcome-copy p,
+html[data-theme="dark"] .google-explainer {
+    color: var(--sanad-dark-muted);
+}
+
+html[data-theme="dark"] .home-hero {
+    border-color: var(--sanad-dark-border);
+    background: linear-gradient(135deg, #142638 0%, #1a3045 58%, #152536 100%);
+}
+
+html[data-theme="dark"] .home-hero .p {
+    color: var(--sanad-dark-muted);
+}
+
+html[data-theme="dark"] .service-card,
+html[data-theme="dark"] .popular-service-card,
+html[data-theme="dark"] .settings-card,
+html[data-theme="dark"] .admin-report-card,
+html[data-theme="dark"] .admin-page .admin-services-panel,
+html[data-theme="dark"] .admin-page .admin-stat-card,
+html[data-theme="dark"] .service-info-block,
+html[data-theme="dark"] .service-source-block,
+html[data-theme="dark"] .emergency-section,
+html[data-theme="dark"] .emergency-card,
+html[data-theme="dark"] .empty-favorites {
+    background: var(--sanad-dark-surface);
+    border-color: var(--sanad-dark-border);
+    color: var(--sanad-dark-text);
+    box-shadow: 0 8px 24px #00000020;
+}
+
+html[data-theme="dark"] .service-card:hover,
+html[data-theme="dark"] .popular-service-card:hover {
+    background: var(--sanad-dark-elevated);
+    border-color: #47728d;
+}
+
+html[data-theme="dark"] .home-category-grid .service-card h3,
+html[data-theme="dark"] .service-card h3,
+html[data-theme="dark"] .popular-service-card h3,
+html[data-theme="dark"] .emergency-heading h2,
+html[data-theme="dark"] .emergency-card strong,
+html[data-theme="dark"] .admin-report-meta strong {
+    color: var(--sanad-dark-text);
+}
+
+html[data-theme="dark"] .service-category {
+    background: #203b52;
+    color: #bce7f5;
+}
+
+html[data-theme="dark"] .search {
+    background: var(--sanad-dark-surface);
+    border-color: var(--sanad-dark-border);
+    box-shadow: 0 4px 16px #00000024;
+}
+
+html[data-theme="dark"] .search:focus-within {
+    border-color: var(--sanad-dark-accent);
+    box-shadow: 0 0 0 3px #70c2df22;
+}
+
+html[data-theme="dark"] .search-input,
+html[data-theme="dark"] .search-input:focus {
+    background: transparent;
+    color: var(--sanad-dark-text);
+}
+
+html[data-theme="dark"] .search-input::placeholder {
+    color: var(--sanad-dark-subtle);
+}
+
+html[data-theme="dark"] .search-results {
+    background: var(--sanad-dark-surface);
+    border-color: var(--sanad-dark-border);
+    color: var(--sanad-dark-text);
+    box-shadow: 0 14px 34px #00000045;
+}
+
+html[data-theme="dark"] .search-results h2,
+html[data-theme="dark"] .search-results li h3 {
+    color: var(--sanad-dark-text);
+}
+
+html[data-theme="dark"] .search-results li {
+    background: var(--sanad-dark-elevated);
+    border-color: var(--sanad-dark-border);
+}
+
+html[data-theme="dark"] .search-results li p,
+html[data-theme="dark"] .search-message {
+    color: var(--sanad-dark-muted);
+}
+
+html[data-theme="dark"] .filter-button,
+html[data-theme="dark"] .filter-options,
+html[data-theme="dark"] .clear-filter-button,
+html[data-theme="dark"] .back-home,
+html[data-theme="dark"] .service-detail-actions button,
+html[data-theme="dark"] .settings-reset,
+html[data-theme="dark"] .account-alternative-button,
+html[data-theme="dark"] .service-report-actions button,
+html[data-theme="dark"] .admin-report-actions button {
+    background: var(--sanad-dark-elevated);
+    border-color: var(--sanad-dark-border);
+    color: var(--sanad-dark-text);
+}
+
+html[data-theme="dark"] .filter-options label,
+html[data-theme="dark"] .category-filters label {
+    color: var(--sanad-dark-muted);
+}
+
+html[data-theme="dark"] input,
+html[data-theme="dark"] textarea,
+html[data-theme="dark"] select,
+html[data-theme="dark"] .category-filters input,
+html[data-theme="dark"] .account-form input,
+html[data-theme="dark"] .service-report-form select,
+html[data-theme="dark"] .service-report-form textarea {
+    background: var(--sanad-dark-elevated);
+    border-color: var(--sanad-dark-border);
+    color: var(--sanad-dark-text);
+    color-scheme: dark;
+}
+
+html[data-theme="dark"] input::placeholder,
+html[data-theme="dark"] textarea::placeholder {
+    color: var(--sanad-dark-subtle);
+}
+
+html[data-theme="dark"] .service-details,
+html[data-theme="dark"] .account-submit,
+html[data-theme="dark"] .service-report-actions button[type="submit"] {
+    background: var(--sanad-dark-accent-strong);
+    border-color: var(--sanad-dark-accent-strong);
+    color: #fff;
+}
+
+html[data-theme="dark"] .service-details:hover,
+html[data-theme="dark"] .account-submit:hover {
+    background: #368cac;
+}
+
+html[data-theme="dark"] .banking-disclaimer,
+html[data-theme="dark"] .account-security-note,
+html[data-theme="dark"] .font-preview,
+html[data-theme="dark"] .service-report-form {
+    background: var(--sanad-dark-elevated);
+    border-color: var(--sanad-dark-border);
+    color: var(--sanad-dark-muted);
+}
+
+html[data-theme="dark"] .settings-card-title,
+html[data-theme="dark"] .settings-card-title h2,
+html[data-theme="dark"] .font-size-sample,
+html[data-theme="dark"] .font-preview strong {
+    color: var(--sanad-dark-text);
+}
+
+html[data-theme="dark"] .settings-saved {
+    color: #9bd5b2;
+}
+
+html[data-theme="dark"] .account-mode-switch {
+    background: var(--sanad-dark-elevated);
+}
+
+html[data-theme="dark"] .account-mode-switch button {
+    color: var(--sanad-dark-muted);
+}
+
+html[data-theme="dark"] .account-mode-switch button.selected {
+    background: #29445c;
+    color: var(--sanad-dark-text);
+}
+
+html[data-theme="dark"] .account-form label,
+html[data-theme="dark"] .service-report-form label {
+    color: var(--sanad-dark-muted);
+}
+
+html[data-theme="dark"] .account-feedback.error {
+    background: #482a31;
+    color: #ffc3c3;
+}
+
+html[data-theme="dark"] .account-feedback.success {
+    background: #1d4038;
+    color: #b9f0d6;
+}
+
+html[data-theme="dark"] .google-signin-button {
+    background: #f8fafc;
+    border-color: #cbd5e1;
+    color: #263238;
+}
+
+html[data-theme="dark"] .admin-table th {
+    background: var(--sanad-dark-elevated);
+    color: var(--sanad-dark-text);
+}
+
+html[data-theme="dark"] .admin-table td {
+    border-color: var(--sanad-dark-border);
+    color: var(--sanad-dark-muted);
+}
+
+html[data-theme="dark"] .emergency-card small,
+html[data-theme="dark"] .emergency-source,
+html[data-theme="dark"] .admin-report-meta,
+html[data-theme="dark"] .service-reviewed {
+    color: var(--sanad-dark-subtle);
+}
+
+html[data-theme="dark"] a:not(.navbar-logo):not(.navbar-icon-link):not(.mobile-nav-button):not(.google-signin-button) {
+    color: var(--sanad-dark-accent);
+}
+
+html[data-theme="dark"] a:hover {
+    color: #a5e4f5;
+}
+
+html[data-theme="dark"] :focus-visible {
+    outline-color: #f0bd5a;
+}
+
+html[data-theme="dark"] .mobile-nav .theme-toggle {
+    background: transparent;
+    border-color: var(--sanad-dark-border);
+}
+
+html[data-theme="dark"] .account-divider::before,
+html[data-theme="dark"] .account-divider::after {
+    background: var(--sanad-dark-border);
+}
+
+@media (max-width: 600px) {
+    .mobile-nav {
+        justify-content: flex-start;
+        overflow-x: auto;
+        overscroll-behavior-x: contain;
+        scrollbar-width: none;
+    }
+    .mobile-nav::-webkit-scrollbar { display: none; }
+    .mobile-nav-button {
+        flex: 0 0 58px;
+        min-width: 58px;
+    }
+    .mobile-nav .theme-toggle {
+        flex: 0 0 42px;
+        width: 42px;
+        margin-inline: 6px;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    html[data-theme="dark"] *,
+    html[data-theme="dark"] *::before,
+    html[data-theme="dark"] *::after {
+        transition-duration: 0.01ms !important;
+    }
+}
