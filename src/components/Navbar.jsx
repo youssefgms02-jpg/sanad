@@ -1,13 +1,12 @@
 import { Link, useLocation } from "react-router-dom";
 import {
-    House, Grid2X2, Heart, Info, Settings, UserRound, Landmark
+    House, Grid2X2, Heart, Info, Settings, UserRound
 } from "lucide-react";
 import ThemeToggle from "./ThemeToggle";
 
 const items = [
     { to: "/", label: "الرئيسية", Icon: House },
     { to: "/#services", label: "الأقسام", Icon: Grid2X2 },
-    { to: "/categories/banking", label: "الخدمات البنكية", Icon: Landmark },
     { to: "/favorites", label: "المفضلة", Icon: Heart },
     { to: "/account", label: "حسابي", Icon: UserRound },
     { to: "/settings", label: "الإعدادات", Icon: Settings },
@@ -39,7 +38,8 @@ function Navbar() {
     return (
         <>
             <nav className="mobile-nav" aria-label="التنقل الرئيسي">
-                {[...items.slice(0, 5), items[5]].map((item) => <NavLink key={item.to} item={item} mobile />)}
+                {items.map((item) => <NavLink key={item.to} item={item} mobile />)}
+                <ThemeToggle />
             </nav>
 
             <nav className="navbar" aria-label="التنقل الرئيسي">
