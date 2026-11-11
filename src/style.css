@@ -1838,3 +1838,10 @@ html[data-theme="dark"] .account-divider::after {
 .mobile-nav .theme-toggle:hover {
     background: #eaf4fa;
 }
+
+
+/* Preserve high contrast on primary action links above dark surfaces. */
+html[data-theme="dark"] a.service-details,
+html[data-theme="dark"] a.service-details:hover {
+    color: #ffffff;
+}
