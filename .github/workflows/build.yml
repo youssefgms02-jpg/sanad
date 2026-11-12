@@ -37,7 +37,7 @@ jobs:
         run: python -m pip install -r backend/requirements.txt
       - name: Compile backend modules
         working-directory: backend
-        run: python -m py_compile main.py models.py schemas.py auth_utils.py service_rules.py service_catalog.py assistant_context.py check_service_consistency.py
+        run: python -m py_compile main.py models.py schemas.py auth_utils.py service_rules.py service_catalog.py service_locations.py assistant_context.py check_service_consistency.py rate_limit.py
       - name: Import FastAPI application
         working-directory: backend
         run: python -c "from main import app; print('API routes:', len(app.routes))"

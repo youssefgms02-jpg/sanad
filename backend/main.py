@@ -2,7 +2,6 @@
 import os
 import secrets
 import re
-from urllib.parse import quote_plus
 from pathlib import Path
 from dotenv import load_dotenv
 
@@ -29,6 +28,7 @@ from service_rules import validate_service_for_publish
 from service_catalog import search_score, service_to_dict, normalize_search_text
 from assistant_context import build_assistant_context
 from rate_limit import limiter, client_key
+from service_locations import map_search_url
 
 
 # اقرأ إعدادات backend/.env حتى عند تشغيل Uvicorn من مجلد مختلف.
@@ -566,11 +566,11 @@ def get_service_locations(
     service_id: int,
     db: Session = Depends(get_db),
 ):
-    service_exists = db.query(Service.id).filter(
+    service = db.query(Service).filter(
         Service.id == service_id,
         Service.status == "published",
     ).first()
-    if not service_exists:
+    if not service:
         raise HTTPException(status_code=404, detail="الخدمة غير موجودة أو غير منشورة")
 
     locations = db.query(ServiceLocation).filter(
@@ -578,9 +578,7 @@ def get_service_locations(
         ServiceLocation.status == "published",
     ).order_by(ServiceLocation.id).all()
     return {
-        "map_search_url": "https://www.google.com/maps/search/?api=1&query=" + quote_plus(
-            " ".join(part for part in [service.name, service.authority] if part)
-        ),
+        "map_search_url": map_search_url(service),
         "locations": [
             {
                 "id": location.id,
