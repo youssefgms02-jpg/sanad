@@ -27,6 +27,7 @@ from auth_utils import hash_password, verify_password, hash_session_token, new_s
 from service_rules import validate_service_for_publish
 from service_catalog import search_score, service_to_dict, normalize_search_text
 from assistant_context import build_assistant_context
+from rate_limit import limiter, client_key
 
 
 # اقرأ إعدادات backend/.env حتى عند تشغيل Uvicorn من مجلد مختلف.
@@ -83,6 +84,20 @@ def ensure_username_column():
 
 
 ensure_username_column()
+
+
+def enforce_rate_limit(request: Request, bucket: str, limit: int):
+    allowed, retry_after = limiter.allow(
+        client_key(request, bucket),
+        limit=limit,
+        window_seconds=60,
+    )
+    if not allowed:
+        raise HTTPException(
+            status_code=429,
+            detail="محاولات كثيرة خلال وقت قصير. حاول مرة أخرى بعد قليل.",
+            headers={"Retry-After": str(retry_after)},
+        )
 
 
 # =====================================
@@ -258,6 +273,7 @@ def create_auth_session(user: User, db: Session, response: Response):
 @app.post("/auth/register", status_code=201)
 def register_account(data: AuthRegister, request: Request, response: Response, db: Session = Depends(get_db)):
     check_request_origin(request)
+    enforce_rate_limit(request, "auth-register", 5)
     username = normalize_account_name(data.display_name)
     if db.query(User).filter(User.username == username).first():
         raise HTTPException(status_code=409, detail="الاسم مستخدم بالفعل. جرّب إضافة جزء مميز من اسمك.")
@@ -287,6 +303,7 @@ def register_account(data: AuthRegister, request: Request, response: Response, d
 @app.post("/auth/login")
 def login_account(data: AuthLogin, request: Request, response: Response, db: Session = Depends(get_db)):
     check_request_origin(request)
+    enforce_rate_limit(request, "auth-login", 10)
     username = normalize_account_name(data.username)
     user = db.query(User).filter(User.username == username).first()
     # التوافق مع الحسابات القديمة التي كانت تسجل الدخول بالبريد الإلكتروني.
@@ -312,6 +329,7 @@ def login_with_google(
 ):
     """Verify a Google Identity Services ID token before creating a SANAD session."""
     check_request_origin(request)
+    enforce_rate_limit(request, "auth-google", 10)
 
     client_id = os.getenv("GOOGLE_CLIENT_ID", "").strip()
     credential = data.get("credential") if isinstance(data, dict) else None
@@ -600,8 +618,10 @@ def report_to_dict(report):
 @app.post("/reports", status_code=201)
 def create_service_report(
     report_data: ServiceReportCreate,
+    request: Request,
     db: Session = Depends(get_db),
 ):
+    enforce_rate_limit(request, "reports", 5)
     if report_data.service_id is not None:
         service = db.query(Service).filter(
             Service.id == report_data.service_id,
