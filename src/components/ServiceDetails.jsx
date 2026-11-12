@@ -128,6 +128,9 @@ function ServiceDetails() {
                     {loading && <p>جاري تحميل تفاصيل الخدمة...</p>}
                     {error && <p role="alert">{error}</p>}
                     {offline && <p className="offline-data-note" role="status">أنت غير متصل. تفاصيل الخدمة محفوظة سابقًا وقد تحتاج إلى مراجعة أحدث مصدر رسمي.</p>}
+                    {!loading && !error && service?.freshness?.status === "stale" && (
+                        <p className="offline-data-note" role="status">مرّ أكثر من {service.freshness.max_age_days} يومًا على آخر مراجعة مسجلة. راجع المصدر الرسمي قبل التقديم.</p>
+                    )}
                     {!loading && !error && service && (
                         <>
                             <h1>{service.name}</h1>

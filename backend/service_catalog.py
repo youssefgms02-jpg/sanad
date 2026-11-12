@@ -1,5 +1,6 @@
 """Pure service formatting and search helpers used by public catalog endpoints."""
 from difflib import SequenceMatcher
+from datetime import datetime, timezone
 
 from source_utils import extract_http_urls, normalize_arabic_text
 
@@ -20,6 +21,21 @@ def service_to_dict(service):
         "last_reviewed": service.last_reviewed.isoformat() if service.last_reviewed else None,
         "status": service.status,
         "created_at": service.created_at.isoformat() if service.created_at else None,
+        "freshness": freshness_metadata(service.last_reviewed),
+    }
+
+
+def freshness_metadata(last_reviewed, max_age_days=20):
+    if not last_reviewed:
+        return {"status": "unknown", "age_days": None, "max_age_days": max_age_days}
+    reviewed = last_reviewed
+    if reviewed.tzinfo is None:
+        reviewed = reviewed.replace(tzinfo=timezone.utc)
+    age_days = max(0, (datetime.now(timezone.utc) - reviewed).days)
+    return {
+        "status": "stale" if age_days > max_age_days else "fresh",
+        "age_days": age_days,
+        "max_age_days": max_age_days,
     }
 
 

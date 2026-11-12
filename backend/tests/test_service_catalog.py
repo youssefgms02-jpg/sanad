@@ -33,6 +33,11 @@ class ServiceCatalogTests(unittest.TestCase):
         self.assertGreater(search_score(self.service, "بدل فاقد"), 0)
         self.assertEqual(search_score(self.service, "سيارة"), 0)
 
+    def test_serialization_includes_freshness_metadata(self):
+        data = service_to_dict(self.service)
+        self.assertIn(data["freshness"]["status"], {"fresh", "stale"})
+        self.assertEqual(data["freshness"]["max_age_days"], 20)
+
 
 if __name__ == "__main__":
     unittest.main()
