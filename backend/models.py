@@ -21,7 +21,24 @@ class Service(Base):
     last_reviewed = Column(DateTime(timezone=True))
     status = Column(String(50), default="draft")
 
-    created_at = Column(DateTime(timezone=True), server_default=func.now())
+    created_at = Column(DateTime, server_default=func.now())
+
+
+class ServiceLocation(Base):
+    __tablename__ = "service_locations"
+
+    id = Column(Integer, primary_key=True, index=True)
+    service_id = Column(Integer, ForeignKey("services.id", ondelete="CASCADE"), nullable=False, index=True)
+    name = Column(String(255), nullable=False)
+    address = Column(Text, nullable=False)
+    governorate = Column(String(100), nullable=True)
+    latitude = Column(String(40), nullable=True)
+    longitude = Column(String(40), nullable=True)
+    phone = Column(String(80), nullable=True)
+    working_hours = Column(Text, nullable=True)
+    official_source = Column(String(1000), nullable=False)
+    last_verified = Column(DateTime(timezone=True), nullable=True)
+    status = Column(String(50), default="draft")
 
 
 class ServiceReport(Base):

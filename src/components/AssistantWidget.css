@@ -1,0 +1,111 @@
+.assistant-widget {
+    position: fixed;
+    inset-inline-end: 22px;
+    bottom: 22px;
+    z-index: 1000;
+    direction: rtl;
+}
+
+.assistant-launcher {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 12px 16px;
+    border: 0;
+    border-radius: 999px;
+    background: #163b5c;
+    color: white;
+    box-shadow: 0 8px 26px #163b5c35;
+    cursor: pointer;
+    font: inherit;
+}
+
+.assistant-launcher:hover { background: #247ba0; }
+
+.assistant-panel {
+    display: flex;
+    flex-direction: column;
+    width: min(360px, calc(100vw - 32px));
+    height: min(500px, calc(100vh - 100px));
+    overflow: hidden;
+    border: 1px solid #d9e7ef;
+    border-radius: 18px;
+    background: white;
+    box-shadow: 0 14px 45px #163b5c35;
+}
+
+.assistant-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    padding: 14px 16px;
+    background: #163b5c;
+    color: white;
+}
+
+.assistant-header div { display: grid; gap: 2px; }
+.assistant-header small { color: #d7eef6; font-size: .75rem; }
+.assistant-header button { border: 0; background: transparent; color: inherit; cursor: pointer; }
+
+.assistant-messages {
+    display: flex;
+    flex: 1;
+    flex-direction: column;
+    gap: 8px;
+    overflow-y: auto;
+    padding: 14px;
+    background: #f5f9fc;
+}
+
+.assistant-empty,
+.assistant-message {
+    max-width: 90%;
+    margin: 0;
+    padding: 10px 12px;
+    border-radius: 12px;
+    white-space: pre-line;
+    line-height: 1.6;
+    font-size: .9rem;
+}
+
+.assistant-empty,
+.assistant-message.assistant { align-self: flex-start; background: white; color: #24435c; }
+.assistant-message.user { align-self: flex-end; background: #d9f0f4; color: #163b5c; }
+
+.assistant-form {
+    display: flex;
+    gap: 8px;
+    padding: 10px;
+    border-top: 1px solid #e3edf3;
+    background: white;
+}
+
+.assistant-form input {
+    min-width: 0;
+    flex: 1;
+    padding: 10px;
+    border: 1px solid #c7d9e8;
+    border-radius: 10px;
+    outline: none;
+    font: inherit;
+}
+
+.assistant-form button {
+    display: grid;
+    place-items: center;
+    width: 42px;
+    border: 0;
+    border-radius: 10px;
+    background: #247ba0;
+    color: white;
+    cursor: pointer;
+}
+
+.assistant-form button:disabled { opacity: .5; cursor: not-allowed; }
+.assistant-disclaimer { padding: 0 12px 12px; color: #6c7f8c; font-size: .7rem; line-height: 1.5; background: white; }
+
+@media (max-width: 520px) {
+    .assistant-widget { inset-inline-end: 12px; bottom: 12px; }
+    .assistant-panel { height: min(470px, calc(100vh - 80px)); }
+}

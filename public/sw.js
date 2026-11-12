@@ -1,5 +1,5 @@
-const CACHE_NAME = "sanad-shell-v1";
-const APP_SHELL = ["/", "/manifest.webmanifest", "/icon.svg"];
+const CACHE_NAME = "sanad-shell-v2";
+const APP_SHELL = ["/", "/manifest.webmanifest", "/manus-routes.json", "/icon.svg"];
 
 self.addEventListener("install", (event) => {
   event.waitUntil(

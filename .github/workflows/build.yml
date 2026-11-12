@@ -21,6 +21,8 @@ jobs:
         run: npm ci
       - name: Build application
         run: npm run build
+      - name: Validate static route manifest
+        run: node --input-type=module -e 'import fs from "node:fs"; const r=JSON.parse(fs.readFileSync("public/manus-routes.json", "utf8")); if (Array.isArray(r.routes) === false || r.routes.length === 0) process.exit(1); for (const x of r.routes) { if (x.path.startsWith("/") === false) process.exit(1); } console.log("ROUTES:", r.routes.length);'
 
   backend:
     runs-on: ubuntu-latest
@@ -35,7 +37,7 @@ jobs:
         run: python -m pip install -r backend/requirements.txt
       - name: Compile backend modules
         working-directory: backend
-        run: python -m py_compile main.py models.py schemas.py auth_utils.py seed_banking_services.py
+        run: python -m py_compile main.py models.py schemas.py auth_utils.py service_rules.py service_catalog.py assistant_context.py check_service_consistency.py
       - name: Import FastAPI application
         working-directory: backend
         run: python -c "from main import app; print('API routes:', len(app.routes))"

@@ -23,6 +23,7 @@ function getSourceUrls(value) {
 function ServiceDetails() {
     const { serviceId } = useParams();
     const [service, setService] = useState(null);
+    const [locations, setLocations] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState("");
     const [reportOpen, setReportOpen] = useState(false);
@@ -97,6 +98,13 @@ function ServiceDetails() {
                     setService(data.service);
                     setOffline(Boolean(data.offline));
                 }
+                const locationsResponse = await fetch(`${API_BASE_URL}/services/${serviceId}/locations`);
+                if (locationsResponse.ok) {
+                    const locationsData = await locationsResponse.json();
+                    if (!cancelled) setLocations(locationsData.locations || []);
+                } else if (!cancelled) {
+                    setLocations([]);
+                }
             } catch (err) {
                 if (!cancelled) setError(err.message);
             } finally {
@@ -149,6 +157,27 @@ function ServiceDetails() {
                                 <section className="service-info-block">
                                     <h3>خطوات الحصول على الخدمة</h3>
                                     <p>{displayText(service.steps) || "يرجى اتباع التعليمات المنشورة لدى الجهة الرسمية."}</p>
+                                </section>
+                                <section className="service-locations-block">
+                                    <h3>أماكن الحصول على الخدمة</h3>
+                                    {locations.length > 0 ? (
+                                        <div className="service-locations-list">
+                                            {locations.map((location) => (
+                                                <article className="service-location-card" key={location.id}>
+                                                    <strong>{location.name}</strong>
+                                                    <p>{location.address}</p>
+                                                    {location.working_hours && <p>مواعيد العمل: {location.working_hours}</p>}
+                                                    {location.phone && <p>الهاتف: {location.phone}</p>}
+                                                    <div className="service-location-actions">
+                                                        <a href={location.official_source} target="_blank" rel="noopener noreferrer">المصدر الرسمي</a>
+                                                        {location.map_url && <a href={location.map_url} target="_blank" rel="noopener noreferrer">فتح الخريطة</a>}
+                                                    </div>
+                                                </article>
+                                            ))}
+                                        </div>
+                                    ) : (
+                                        <p>لا توجد فروع موثقة منشورة لهذه الخدمة حاليًا. لا تعتمد على عنوان غير صادر من الجهة الرسمية.</p>
+                                    )}
                                 </section>
                                 {reportOpen && (
                                     <form className="service-report-form" onSubmit={submitReport}>

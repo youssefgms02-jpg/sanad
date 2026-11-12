@@ -4,10 +4,8 @@ import secrets
 import re
 from pathlib import Path
 from dotenv import load_dotenv
-from difflib import SequenceMatcher
 
 from datetime import datetime, timezone, timedelta
-from urllib.parse import urlparse
 
 from fastapi import (
     FastAPI,
@@ -22,10 +20,13 @@ from sqlalchemy.orm import Session
 from sqlalchemy import inspect, text
 
 from database import Base, engine, SessionLocal
-from models import Service, ServiceReport, User, AuthSession, UserFavorite
+from models import Service, ServiceLocation, ServiceReport, User, AuthSession, UserFavorite
 from schemas import ServiceCreate, ServiceUpdate, ServiceReportCreate, ServiceReportStatusUpdate, AuthRegister, AuthLogin, FavoriteSync
-from source_utils import extract_http_urls, valid_http_url, normalize_arabic_text
+from source_utils import extract_http_urls, normalize_arabic_text
 from auth_utils import hash_password, verify_password, hash_session_token, new_session_token
+from service_rules import validate_service_for_publish
+from service_catalog import search_score, service_to_dict, normalize_search_text
+from assistant_context import build_assistant_context
 
 
 # اقرأ إعدادات backend/.env حتى عند تشغيل Uvicorn من مجلد مختلف.
@@ -123,76 +124,7 @@ def verify_admin_token(
 
 
 # =====================================
-# تحويل الخدمة إلى JSON
-# =====================================
-
-def service_to_dict(service):
-    return {
-        "id": service.id,
-        "name": service.name,
-        "description": service.description,
-        "category": service.category,
-        "authority": service.authority,
-        "eligibility": service.eligibility,
-        "documents": service.documents,
-        "steps": service.steps,
-        "official_source": service.official_source,
-        "source_urls": extract_http_urls(service.official_source),
-        "last_reviewed": (
-            service.last_reviewed.isoformat()
-            if service.last_reviewed
-            else None
-        ),
-        "status": service.status,
-        "created_at": (
-            service.created_at.isoformat()
-            if service.created_at
-            else None
-        ),
-    }
-
-
-# =====================================
 # التحقق من المصدر الرسمي
-# =====================================
-
-def validate_official_source(source):
-    urls = extract_http_urls(source)
-    if not urls:
-        raise HTTPException(
-            status_code=400,
-            detail="أضف رابطًا رسميًا كاملًا يبدأ بـ https:// قبل النشر",
-        )
-
-    invalid_urls = [
-        url for url in urls
-        if not valid_http_url(url) or urlparse(url).scheme.lower() != "https"
-    ]
-    if invalid_urls:
-        raise HTTPException(
-            status_code=400,
-            detail="كل روابط المصادر يجب أن تكون روابط HTTPS صالحة",
-        )
-
-
-def validate_service_for_publish(service):
-    required = {
-        "authority": "الجهة المسؤولة",
-        "eligibility": "شروط الاستفادة",
-        "documents": "المستندات أو توضيح أن المتطلبات تختلف حسب الحالة",
-        "steps": "خطوات الحصول على الخدمة",
-    }
-    missing = [label for field, label in required.items() if not str(getattr(service, field, "") or "").strip()]
-    if missing:
-        raise HTTPException(
-            status_code=400,
-            detail="لا يمكن نشر الخدمة قبل استكمال: " + "، ".join(missing),
-        )
-    validate_official_source(service.official_source)
-
-
-# =====================================
-# إعدادات CORS
 # =====================================
 
 allowed_origins = [
@@ -520,46 +452,6 @@ def sync_account_favorites(data: FavoriteSync, request: Request, user: User = De
 
 
 
-def normalize_search_text(value: str | None) -> str:
-    return normalize_arabic_text(value)
-
-
-def search_score(service, normalized_query: str) -> int:
-    name = normalize_search_text(service.name)
-    description = normalize_search_text(service.description)
-    authority = normalize_search_text(service.authority)
-    eligibility = normalize_search_text(service.eligibility)
-    documents = normalize_search_text(service.documents)
-    steps = normalize_search_text(service.steps)
-    searchable = f"{name} {description} {authority} {eligibility} {documents} {steps}"
-
-    score = 100 if normalized_query in name else (45 if normalized_query in searchable else 0)
-    query_words = normalized_query.split()
-    matched_words = 0
-    candidates = [part for part in searchable.split() if len(part) >= 3]
-
-    for word in query_words:
-        if len(word) < 2:
-            continue
-        if word in name:
-            score += 24
-            matched_words += 1
-        elif word in searchable:
-            score += 10
-            matched_words += 1
-        elif len(word) >= 3 and any(
-            SequenceMatcher(None, word, part).ratio() >= 0.82
-            for part in candidates
-        ):
-            score += 5
-            matched_words += 1
-
-    meaningful_words = [word for word in query_words if len(word) >= 2]
-    if meaningful_words and matched_words == len(meaningful_words):
-        score += 12
-    return score
-
-
 # عرض الخدمات المنشورة مع بحث عربي فوري ونتائج مرتبة حسب الصلة
 @app.get("/services")
 def get_services(
@@ -614,6 +506,80 @@ def get_service(
         )
 
     return service_to_dict(service)
+
+
+@app.get("/assistant/context")
+def get_assistant_context(
+    service_id: int | None = None,
+    category: str | None = None,
+    db: Session = Depends(get_db),
+):
+    """Return safe page context; generation is intentionally a separate layer."""
+    if service_id is not None:
+        service = db.query(Service).filter(
+            Service.id == service_id,
+            Service.status == "published",
+        ).first()
+        if not service:
+            raise HTTPException(status_code=404, detail="الخدمة غير موجودة أو غير منشورة")
+        related = db.query(Service).filter(
+            Service.category == service.category,
+            Service.status == "published",
+            Service.id != service.id,
+        ).order_by(Service.id).limit(5).all()
+        return build_assistant_context(service=service, related_services=related)
+
+    if category:
+        related = db.query(Service).filter(
+            Service.category.ilike(category.strip()),
+            Service.status == "published",
+        ).order_by(Service.id).limit(8).all()
+        return build_assistant_context(category=category.strip(), related_services=related)
+
+    related = db.query(Service).filter(
+        Service.status == "published",
+    ).order_by(Service.id).limit(8).all()
+    return build_assistant_context(related_services=related)
+
+
+@app.get("/services/{service_id}/locations")
+def get_service_locations(
+    service_id: int,
+    db: Session = Depends(get_db),
+):
+    service_exists = db.query(Service.id).filter(
+        Service.id == service_id,
+        Service.status == "published",
+    ).first()
+    if not service_exists:
+        raise HTTPException(status_code=404, detail="الخدمة غير موجودة أو غير منشورة")
+
+    locations = db.query(ServiceLocation).filter(
+        ServiceLocation.service_id == service_id,
+        ServiceLocation.status == "published",
+    ).order_by(ServiceLocation.id).all()
+    return {
+        "locations": [
+            {
+                "id": location.id,
+                "name": location.name,
+                "address": location.address,
+                "governorate": location.governorate,
+                "latitude": location.latitude,
+                "longitude": location.longitude,
+                "phone": location.phone,
+                "working_hours": location.working_hours,
+                "official_source": location.official_source,
+                "last_verified": location.last_verified.isoformat() if location.last_verified else None,
+                "map_url": (
+                    f"https://www.google.com/maps/search/?api=1&query={location.latitude},{location.longitude}"
+                    if location.latitude and location.longitude else None
+                ),
+            }
+            for location in locations
+        ],
+        "total": len(locations),
+    }
 
 
 # =====================================
@@ -915,7 +881,7 @@ def unpublish_service(
 
 
 # =====================================
-# لوحة الإدارة - حذف خدمة
+# لوحة الإدارة - أرشفة آمنة بدل الحذف النهائي
 # =====================================
 
 @app.delete("/admin/services/{service_id}")
@@ -935,12 +901,15 @@ def delete_service(
         )
 
     try:
-        db.delete(service)
+        # Keep the record and its relationships for auditability and recovery.
+        service.status = "draft"
+        service.last_reviewed = None
         db.commit()
 
         return {
-            "message": "تم حذف الخدمة بنجاح",
+            "message": "تم إخفاء الخدمة وتحويلها إلى مسودة. لم يتم حذف السجل.",
             "service_id": service_id,
+            "status": service.status,
         }
 
     except Exception:

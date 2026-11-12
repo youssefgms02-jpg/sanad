@@ -1,6 +1,6 @@
 import { useState } from "react";
 import {
-    LayoutDashboard, Plus, RefreshCw, Search, LogOut, Pencil, Trash2,
+    LayoutDashboard, Plus, RefreshCw, Search, LogOut, Pencil, Archive,
     Eye, EyeOff, X, CheckCircle2, FileText,
 } from "lucide-react";
 import API_BASE_URL from "../api";
@@ -153,7 +153,7 @@ function AdminDashboard() {
         const messages = {
             publish: "هل راجعت بيانات الخدمة ومصدرها الرسمي وتريد نشرها؟",
             unpublish: "هل تريد إلغاء نشر هذه الخدمة؟",
-            delete: "هل أنت متأكد من حذف الخدمة نهائيًا؟",
+            delete: "سيتم إخفاء الخدمة وتحويلها إلى مسودة دون حذف سجلها. هل تريد المتابعة؟",
         };
         if (!window.confirm(messages[action])) return;
         setError("");
@@ -284,7 +284,7 @@ function AdminDashboard() {
                                                     {service.status === "published"
                                                         ? <button title="إلغاء النشر" onClick={() => changeStatus(service, "unpublish")}><EyeOff size={17} /></button>
                                                         : <button title="نشر" onClick={() => changeStatus(service, "publish")}><Eye size={17} /></button>}
-                                                    <button className="delete-action" title="حذف" onClick={() => changeStatus(service, "delete")}><Trash2 size={17} /></button>
+                                                    <button className="delete-action" title="إخفاء وأرشفة" onClick={() => changeStatus(service, "delete")}><Archive size={17} /></button>
                                                 </div>
                                             </td>
                                         </tr>

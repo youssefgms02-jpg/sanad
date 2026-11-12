@@ -60,6 +60,22 @@ main {
     direction: rtl;
 }
 
+.service-locations-block {
+    width: 100%;
+    margin-top: 22px;
+    padding: 16px;
+    border: 1px solid #d9e7ef;
+    border-radius: 14px;
+    background: #f7fbfd;
+}
+
+.service-locations-block h3 { margin-top: 0; color: #163b5c; }
+.service-locations-list { display: grid; gap: 12px; }
+.service-location-card { padding: 14px; border: 1px solid #e1eaf2; border-radius: 12px; background: white; }
+.service-location-card p { margin: 6px 0; color: #526b80; }
+.service-location-actions { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 10px; }
+.service-location-actions a { color: #247ba0; font-weight: 700; }
+
 @keyframes float {
     0%, 100% {
         transform: translateY(0);
