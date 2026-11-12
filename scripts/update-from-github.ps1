@@ -13,10 +13,16 @@ if (-not (Test-Path (Join-Path $root ".git"))) {
 }
 
 $dirty = git status --porcelain
-if ($dirty) {
+$blockingDirty = @($dirty | Where-Object { $_ -and ($_ -notmatch "backend/sanad\.db$") })
+if ($blockingDirty) {
     Write-Host "Local changes detected. Commit or stash them before updating:" -ForegroundColor Yellow
-    $dirty
+    $blockingDirty
     exit 2
+}
+
+if ($dirty | Where-Object { $_ -match "backend/sanad\.db$" }) {
+    Write-Host "Ignoring local backend/sanad.db changes; GitHub version will be used." -ForegroundColor Yellow
+    git restore --staged --worktree -- backend/sanad.db
 }
 
 git fetch $Remote $Branch
