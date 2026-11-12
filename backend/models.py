@@ -52,6 +52,17 @@ class ServiceReport(Base):
     created_at = Column(DateTime(timezone=True), server_default=func.now())
 
 
+class AdminAuditLog(Base):
+    __tablename__ = "admin_audit_logs"
+
+    id = Column(Integer, primary_key=True, index=True)
+    action = Column(String(60), nullable=False, index=True)
+    service_id = Column(Integer, nullable=True, index=True)
+    service_name = Column(String(255), nullable=True)
+    details = Column(Text, nullable=True)
+    created_at = Column(DateTime, server_default=func.now(), index=True)
+
+
 class User(Base):
     __tablename__ = "users"
 

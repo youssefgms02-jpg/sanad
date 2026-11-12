@@ -20,7 +20,7 @@ from sqlalchemy.orm import Session
 from sqlalchemy import inspect, text
 
 from database import Base, engine, SessionLocal
-from models import Service, ServiceLocation, ServiceReport, User, AuthSession, UserFavorite
+from models import AdminAuditLog, Service, ServiceLocation, ServiceReport, User, AuthSession, UserFavorite
 from schemas import ServiceCreate, ServiceUpdate, ServiceReportCreate, ServiceReportStatusUpdate, AuthRegister, AuthLogin, FavoriteSync
 from source_utils import extract_http_urls, normalize_arabic_text
 from auth_utils import hash_password, verify_password, hash_session_token, new_session_token
@@ -135,6 +135,15 @@ def verify_admin_token(
             status_code=401,
             detail="Unauthorized",
         )
+
+
+def record_admin_event(db, action, service=None, details=None):
+    db.add(AdminAuditLog(
+        action=action,
+        service_id=service.id if service else None,
+        service_name=service.name if service else None,
+        details=details,
+    ))
 
     return True
 
@@ -668,9 +677,29 @@ def update_service_report(
     if not report:
         raise HTTPException(status_code=404, detail="البلاغ غير موجود")
     report.status = status_data.status
+    record_admin_event(db, "report_status_updated", details=f"report_id={report.id};status={report.status}")
     db.commit()
     db.refresh(report)
     return report_to_dict(report)
+
+
+@app.get("/admin/audit-logs")
+def get_admin_audit_logs(
+    db: Session = Depends(get_db),
+    admin: bool = Depends(verify_admin_token),
+):
+    logs = db.query(AdminAuditLog).order_by(AdminAuditLog.id.desc()).limit(100).all()
+    return {"logs": [
+        {
+            "id": log.id,
+            "action": log.action,
+            "service_id": log.service_id,
+            "service_name": log.service_name,
+            "details": log.details,
+            "created_at": log.created_at.isoformat() if log.created_at else None,
+        }
+        for log in logs
+    ]}
 
 
 # =====================================
@@ -772,6 +801,8 @@ def create_service(
 
     try:
         db.add(new_service)
+        db.flush()
+        record_admin_event(db, "service_created", new_service, "saved_as=draft")
         db.commit()
         db.refresh(new_service)
 
@@ -822,12 +853,14 @@ def update_service(
             )
 
     try:
+        previous_status = service.status
         for field, value in updates.items():
             setattr(service, field, value)
 
         # أي تعديل يحتاج مراجعة جديدة قبل إعادة النشر
         service.status = "draft"
         service.last_reviewed = None
+        record_admin_event(db, "service_updated", service, f"fields={','.join(sorted(updates))};previous_status={previous_status}")
 
         db.commit()
         db.refresh(service)
@@ -866,6 +899,7 @@ def publish_service(
 
     service.status = "published"
     service.last_reviewed = datetime.now(timezone.utc)
+    record_admin_event(db, "service_published", service)
 
     db.commit()
     db.refresh(service)
@@ -895,6 +929,7 @@ def unpublish_service(
 
     service.status = "draft"
     service.last_reviewed = None
+    record_admin_event(db, "service_unpublished", service)
 
     db.commit()
     db.refresh(service)
@@ -926,6 +961,7 @@ def delete_service(
         # Keep the record and its relationships for auditability and recovery.
         service.status = "draft"
         service.last_reviewed = None
+        record_admin_event(db, "service_archived", service)
         db.commit()
 
         return {

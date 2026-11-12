@@ -35,6 +35,7 @@ function AdminDashboard() {
     const [dashboard, setDashboard] = useState(null);
     const [services, setServices] = useState([]);
     const [reports, setReports] = useState([]);
+    const [auditLogs, setAuditLogs] = useState([]);
     const [filter, setFilter] = useState("all");
     const [search, setSearch] = useState("");
     const [showForm, setShowForm] = useState(false);
@@ -56,14 +57,16 @@ function AdminDashboard() {
         setLoading(true);
         setError("");
         try {
-            const [stats, result, reportResult] = await Promise.all([
+            const [stats, result, reportResult, auditResult] = await Promise.all([
                 apiRequest("/admin/dashboard"),
                 apiRequest(currentFilter === "all" ? "/admin/services" : `/admin/services?status=${currentFilter}`),
                 apiRequest("/admin/reports"),
+                apiRequest("/admin/audit-logs"),
             ]);
             setDashboard(stats);
             setServices(result.services || []);
             setReports(reportResult.reports || []);
+            setAuditLogs(auditResult.logs || []);
             setAuthenticated(true);
         } catch (err) {
             setError(err.message);
@@ -89,6 +92,7 @@ function AdminDashboard() {
         setDashboard(null);
         setServices([]);
         setReports([]);
+        setAuditLogs([]);
         setError("");
     }
 
@@ -172,6 +176,15 @@ function AdminDashboard() {
     const visibleServices = services.filter((service) =>
         `${service.name} ${service.description} ${service.category}`.toLowerCase().includes(search.toLowerCase())
     );
+
+    const auditLabels = {
+        service_created: "إضافة خدمة",
+        service_updated: "تعديل خدمة",
+        service_published: "نشر خدمة",
+        service_unpublished: "إلغاء نشر خدمة",
+        service_archived: "إخفاء وأرشفة خدمة",
+        report_status_updated: "تحديث حالة بلاغ",
+    };
 
     async function updateReportStatus(reportId, status) {
         setError("");
@@ -318,6 +331,25 @@ function AdminDashboard() {
                                     <button onClick={() => updateReportStatus(report.id, "resolved")}>تمت المعالجة</button>
                                     <button onClick={() => updateReportStatus(report.id, "dismissed")}>إغلاق البلاغ</button>
                                 </div>
+                            </article>
+                        ))}
+                    </div>
+                )}
+            </section>
+
+            <section className="admin-services-panel admin-audit-panel">
+                <div className="admin-panel-heading">
+                    <div><h2>سجل التغييرات</h2><p>آخر العمليات الإدارية على الخدمات والبلاغات</p></div>
+                </div>
+                {auditLogs.length === 0 ? (
+                    <div className="admin-empty"><p>لا توجد عمليات مسجلة بعد.</p></div>
+                ) : (
+                    <div className="admin-audit-list">
+                        {auditLogs.map((log) => (
+                            <article className="admin-audit-item" key={log.id}>
+                                <strong>{auditLabels[log.action] || log.action}</strong>
+                                <span>{log.service_name ? `${log.service_name} (#${log.service_id})` : log.details}</span>
+                                <time dateTime={log.created_at || undefined}>{log.created_at ? new Date(log.created_at).toLocaleString("ar-EG") : "الآن"}</time>
                             </article>
                         ))}
                     </div>
