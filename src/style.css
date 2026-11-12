@@ -75,6 +75,7 @@ main {
 .service-location-card p { margin: 6px 0; color: #526b80; }
 .service-location-actions { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 10px; }
 .service-location-actions a { color: #247ba0; font-weight: 700; }
+.service-map-search-link { display: inline-block; margin: 4px 0 8px; color: #247ba0; font-weight: 700; }
 
 @keyframes float {
     0%, 100% {

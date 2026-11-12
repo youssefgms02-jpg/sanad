@@ -2,6 +2,7 @@
 import os
 import secrets
 import re
+from urllib.parse import quote_plus
 from pathlib import Path
 from dotenv import load_dotenv
 
@@ -577,6 +578,9 @@ def get_service_locations(
         ServiceLocation.status == "published",
     ).order_by(ServiceLocation.id).all()
     return {
+        "map_search_url": "https://www.google.com/maps/search/?api=1&query=" + quote_plus(
+            " ".join(part for part in [service.name, service.authority] if part)
+        ),
         "locations": [
             {
                 "id": location.id,

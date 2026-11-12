@@ -24,6 +24,7 @@ function ServiceDetails() {
     const { serviceId } = useParams();
     const [service, setService] = useState(null);
     const [locations, setLocations] = useState([]);
+    const [mapSearchUrl, setMapSearchUrl] = useState(null);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState("");
     const [reportOpen, setReportOpen] = useState(false);
@@ -101,9 +102,13 @@ function ServiceDetails() {
                 const locationsResponse = await fetch(`${API_BASE_URL}/services/${serviceId}/locations`);
                 if (locationsResponse.ok) {
                     const locationsData = await locationsResponse.json();
-                    if (!cancelled) setLocations(locationsData.locations || []);
+                    if (!cancelled) {
+                        setLocations(locationsData.locations || []);
+                        setMapSearchUrl(locationsData.map_search_url || null);
+                    }
                 } else if (!cancelled) {
                     setLocations([]);
+                    setMapSearchUrl(null);
                 }
             } catch (err) {
                 if (!cancelled) setError(err.message);
@@ -179,7 +184,11 @@ function ServiceDetails() {
                                             ))}
                                         </div>
                                     ) : (
-                                        <p>لا توجد فروع موثقة منشورة لهذه الخدمة حاليًا. لا تعتمد على عنوان غير صادر من الجهة الرسمية.</p>
+                                        <>
+                                            <p>لا توجد فروع موثقة منشورة لهذه الخدمة حاليًا.</p>
+                                            {mapSearchUrl && <a className="service-map-search-link" href={mapSearchUrl} target="_blank" rel="noopener noreferrer">البحث عن أماكن قريبة في الخريطة</a>}
+                                            <p className="service-source-note">نتيجة الخريطة بحث عام وليست إثباتًا لعنوان رسمي؛ تأكد من الجهة قبل الذهاب.</p>
+                                        </>
                                     )}
                                 </section>
                                 {reportOpen && (
