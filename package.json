@@ -8,6 +8,7 @@
     "build": "node scripts/write-build-version.mjs && vite build",
     "preview": "vite preview",
     "cap:sync": "npm run build && cap sync android",
+    "tauri": "tauri",
     "tauri:build": "tauri build"
   },
   "dependencies": {
