@@ -9,6 +9,7 @@ import PopularServices from "./components/PopularServices";
 import EmergencyInfo from "./components/EmergencyInfo";
 import AssistantWidget from "./components/AssistantWidget";
 import "./components/AssistantWidget.css";
+import UpdateNotice from "./components/UpdateNotice";
 
 import AdminDashboard from "./pages/AdminDashboard";
 import FavoritesPage from "./pages/FavoritesPage";
@@ -46,6 +47,7 @@ function App() {
                 <Route path="*" element={<NotFoundPage />} />
             </Routes>
             <AssistantWidget />
+            <UpdateNotice />
         </>
     );
 }

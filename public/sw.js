@@ -1,4 +1,4 @@
-const CACHE_NAME = "sanad-shell-v2";
+const CACHE_NAME = "sanad-shell-v3";
 const APP_SHELL = ["/", "/manifest.webmanifest", "/manus-routes.json", "/icon.svg"];
 
 self.addEventListener("install", (event) => {
@@ -15,6 +15,10 @@ self.addEventListener("activate", (event) => {
     )
   );
   self.clients.claim();
+});
+
+self.addEventListener("message", (event) => {
+  if (event.data?.type === "SKIP_WAITING") self.skipWaiting();
 });
 
 self.addEventListener("fetch", (event) => {
