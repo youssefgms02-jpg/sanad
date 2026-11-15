@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { Bell, Download, X } from "lucide-react";
-import { applyAvailableUpdate, startUpdateMonitor } from "../utils/updateManager";
+import { applyAvailableUpdate, installNativeUpdate, startUpdateMonitor } from "../utils/updateManager";
 import "./UpdateNotice.css";
 
 function notifyUser(title, body) {
@@ -12,6 +12,7 @@ function notifyUser(title, body) {
 export default function UpdateNotice() {
     const [update, setUpdate] = useState(null);
     const [dismissed, setDismissed] = useState(false);
+    const [installing, setInstalling] = useState(false);
     const [notificationsEnabled, setNotificationsEnabled] = useState(
         typeof Notification !== "undefined" && Notification.permission === "granted"
     );
@@ -20,7 +21,7 @@ export default function UpdateNotice() {
         onUpdate: (payload) => {
             setDismissed(false);
             setUpdate(payload);
-            notifyUser("تحديث جديد في سَنَد", "يوجد إصدار أحدث متاح. أعد تحميل التطبيق لتطبيقه.");
+            notifyUser("تحديث جديد في سَنَد", "يوجد إصدار أحدث متاح ويمكن تثبيته الآن.");
         },
     }), []);
 
@@ -33,7 +34,16 @@ export default function UpdateNotice() {
     if (!update || dismissed) return null;
 
     const latestVersion = update.latest?.version;
-    const openRelease = () => {
+    const openRelease = async () => {
+        if (update.kind === "native") {
+            setInstalling(true);
+            try {
+                await installNativeUpdate(update.nativeUpdate);
+            } finally {
+                setInstalling(false);
+            }
+            return;
+        }
         if (update.latest?.url) {
             window.open(update.latest.url, "_blank", "noopener,noreferrer");
             return;
@@ -49,11 +59,11 @@ export default function UpdateNotice() {
                 <strong>في تحديث جديد لسَنَد</strong>
                 <p>
                     {latestVersion ? `الإصدار ${latestVersion} متاح الآن.` : "تم تجهيز نسخة أحدث من التطبيق."}
-                    {" "}أعد التحميل للحصول على التحسينات.
+                    {" "}{update.kind === "native" ? "يمكن تنزيله وتثبيته تلقائيًا." : "أعد التحميل للحصول على التحسينات."}
                 </p>
                 <div className="update-notice-actions">
                     <button type="button" onClick={openRelease}>
-                        {update.latest?.url ? "فتح صفحة التحديث" : "تحديث الآن"}
+                        {installing ? "جارٍ التثبيت..." : update.kind === "native" ? "تنزيل وتثبيت" : update.latest?.url ? "فتح صفحة التحديث" : "تحديث الآن"}
                     </button>
                     {!notificationsEnabled && typeof Notification !== "undefined" && (
                         <button type="button" className="update-notice-secondary" onClick={enableNotifications}>

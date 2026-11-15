@@ -28,6 +28,7 @@
   "bundle": {
     "active": true,
     "targets": "all",
+    "createUpdaterArtifacts": true,
     "category": "Utility",
     "shortDescription": "منصة عربية للوصول إلى الخدمات والمعلومات الرسمية",
     "longDescription": "سَنَد يساعد المستخدم على فهم الخدمات المصرية والوصول إلى مصادرها الرسمية.",
@@ -40,6 +41,17 @@
     ],
     "android": {
       "debugApplicationIdSuffix": ".debug"
+    }
+  },
+  "plugins": {
+    "updater": {
+      "pubkey": "untrusted comment: minisign public key: 5569C30267547280\nRWSAclRnAsNpVZ+sHX2Zk7+9LILTneQrDu3mNSS2iqJJ3HOai8fD/w9H",
+      "endpoints": [
+        "https://github.com/youssefgms02-jpg/sanad/releases/latest/download/latest.json"
+      ],
+      "windows": {
+        "installMode": "passive"
+      }
     }
   }
 }

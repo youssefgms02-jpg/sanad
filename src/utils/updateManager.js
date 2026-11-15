@@ -24,6 +24,21 @@ async function readVersion() {
     return data;
 }
 
+function isTauriShell() {
+    return typeof window !== "undefined" && Boolean(window.__TAURI_INTERNALS__);
+}
+
+async function checkTauriUpdate() {
+    if (!isTauriShell()) return null;
+    try {
+        const { check } = await import("@tauri-apps/plugin-updater");
+        const update = await check();
+        return update ? { kind: "native", nativeUpdate: update, latest: { version: update.version } } : null;
+    } catch {
+        return null;
+    }
+}
+
 export function startUpdateMonitor({ onUpdate }) {
     let disposed = false;
     let intervalId;
@@ -34,6 +49,11 @@ export function startUpdateMonitor({ onUpdate }) {
     };
 
     const checkVersion = async () => {
+        const nativeUpdate = await checkTauriUpdate();
+        if (nativeUpdate) {
+            announce(nativeUpdate);
+            return;
+        }
         try {
             const latest = await readVersion();
             const current = getCurrentBuild();
@@ -87,4 +107,14 @@ export async function applyAvailableUpdate() {
     } finally {
         window.location.reload();
     }
+}
+
+export async function installNativeUpdate(update, onProgress) {
+    if (!update?.downloadAndInstall) return false;
+    await update.downloadAndInstall((event) => {
+        if (event.event === "Progress") onProgress?.(event.data?.chunkLength || 0);
+    });
+    const { relaunch } = await import("@tauri-apps/plugin-process");
+    await relaunch();
+    return true;
 }
