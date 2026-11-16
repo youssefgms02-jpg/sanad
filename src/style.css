@@ -771,6 +771,11 @@ main {
     font-weight: 800;
     text-decoration: none;
 }
+.navbar .brand-logo { color: #fff; }
+.navbar .brand-logo-wordmark small { color: #d8f1f5; }
+.navbar .brand-logo img { box-shadow: 0 2px 8px #09233840; }
+.spin { animation: sanad-spin .9s linear infinite; }
+@keyframes sanad-spin { to { transform: rotate(360deg); } }
 .mobile-nav-button {
     color: #247ba0;
     text-decoration: none;

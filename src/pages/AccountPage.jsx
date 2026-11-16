@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { UserRound, ShieldCheck, LogOut, RefreshCw, LockKeyhole, ArrowRight, Sparkles } from "lucide-react";
 import Navbar from "../components/Navbar";
@@ -20,10 +20,8 @@ function AccountPage() {
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
     const [busy, setBusy] = useState(false);
-    const googleButtonRef = useRef(null);
     const [message, setMessage] = useState("");
     const [error, setError] = useState("");
-    const googleClientId = import.meta.env.VITE_GOOGLE_CLIENT_ID || "";
 
     useEffect(() => {
         let cancelled = false;
@@ -58,85 +56,6 @@ function AccountPage() {
             setMessage("تم تسجيل الدخول. تعذرت مزامنة المحفوظات الآن، ويمكنك المحاولة لاحقًا.");
         }
     }
-
-    async function handleGoogleCredential(credential) {
-        setBusy(true); setError(""); setMessage("");
-        try {
-            const response = await fetch(`${API_BASE_URL}/auth/google`, {
-                method: "POST", credentials: "include",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ credential }),
-            });
-            const data = await readJson(response);
-            await finishLogin(data, "تم الدخول بحساب Google بنجاح.");
-        } catch (err) {
-            setError(err.message || "تعذر تسجيل الدخول باستخدام Google.");
-        } finally {
-            setBusy(false);
-        }
-    }
-
-    useEffect(() => {
-        if (!googleClientId || user) return undefined;
-        let cancelled = false;
-        let script = document.getElementById("google-identity-services");
-
-        const renderGoogleButton = () => {
-            if (cancelled || !googleButtonRef.current) return;
-            if (!window.google?.accounts?.id) {
-                setError("تعذر تحميل خدمة تسجيل الدخول من Google. حدّث الصفحة وحاول مرة أخرى.");
-                return;
-            }
-
-            window.google.accounts.id.initialize({
-                client_id: googleClientId,
-                callback: (response) => {
-                    if (response?.credential) handleGoogleCredential(response.credential);
-                    else setError("لم ترسل Google بيانات الدخول. حاول مرة أخرى.");
-                },
-                ux_mode: "popup",
-            });
-
-            googleButtonRef.current.innerHTML = "";
-            window.google.accounts.id.renderButton(googleButtonRef.current, {
-                type: "standard",
-                theme: "outline",
-                size: "large",
-                text: "continue_with",
-                shape: "rectangular",
-                logo_alignment: "left",
-                width: 320,
-                locale: "ar",
-            });
-        };
-
-        if (window.google?.accounts?.id) {
-            renderGoogleButton();
-        } else {
-            if (script && script.dataset.sanadLoaded !== "true") {
-                script.remove();
-                script = null;
-            }
-            if (!script) {
-                script = document.createElement("script");
-                script.id = "google-identity-services";
-                script.src = "https://accounts.google.com/gsi/client";
-                script.async = true;
-                script.defer = true;
-                script.addEventListener("load", () => {
-                    script.dataset.sanadLoaded = "true";
-                    renderGoogleButton();
-                }, { once: true });
-                script.addEventListener("error", () => {
-                    if (!cancelled) setError("تعذر تحميل تسجيل الدخول من Google. تحقق من الإنترنت أو إعدادات حظر التتبع.");
-                }, { once: true });
-                document.head.appendChild(script);
-            } else {
-                script.addEventListener("load", renderGoogleButton, { once: true });
-            }
-        }
-        return () => { cancelled = true; };
-    }, [googleClientId, user]);
 
     async function submitAuth(event) {
         event.preventDefault();
@@ -228,24 +147,8 @@ function AccountPage() {
                         <div className="account-welcome-copy">
                             <span className="account-welcome-mark"><Sparkles size={22} /></span>
                             <h2>أهلاً بك في سَنَد</h2>
-                            <p>سجّل باسمك وكلمة مرور، أو استخدم حساب Google للدخول بسرعة.</p>
+                            <p>أنشئ حسابًا محليًا باسم وكلمة مرور لمزامنة خدماتك المحفوظة.</p>
                         </div>
-
-                        <div className="google-login-area">
-                            <div className="google-button-frame">
-                                <div ref={googleButtonRef} className="google-official-button" aria-label="تسجيل الدخول باستخدام Google" />
-                                {busy && <p className="google-explainer">جارٍ تسجيل الدخول...</p>}
-                            </div>
-                            {!googleClientId && (
-                                <div className="google-setup-message">
-                                    <strong>زر Google يحتاج إعدادًا</strong>
-                                    <span>أضف VITE_GOOGLE_CLIENT_ID إلى ملف .env في المجلد الرئيسي ثم أعد تشغيل Vite.</span>
-                                </div>
-                            )}
-                            <p className="google-explainer">استخدم نفس الحساب الذي تفتح به YouTube أو متجر Play أو خدمات Google.</p>
-                        </div>
-
-                        <div className="account-divider"><span>أو</span></div>
 
                         <button type="button" className="account-alternative-button" onClick={() => {
                             setShowPasswordForm((value) => !value);
@@ -291,7 +194,7 @@ function AccountPage() {
 
                 {error && <p className="account-feedback error" role="alert">{error}</p>}
                 {message && <p className="account-feedback success" role="status">{message}</p>}
-                <p className="account-security-note"><strong>تنبيه للسلامة:</strong> حساب سَنَد ليس حسابًا بنكيًا. لا تدخل أرقام البطاقات أو كلمات مرور البنوك أو رموز التحقق هنا. تسجيل الدخول باستخدام Google يتم عبر نافذة Google الرسمية.</p>
+                <p className="account-security-note"><strong>تنبيه للسلامة:</strong> حساب سَنَد ليس حسابًا بنكيًا. لا تدخل أرقام البطاقات أو كلمات مرور البنوك أو رموز التحقق هنا.</p>
                 <div className="account-back-link"><Link to="/"><ArrowRight size={16} /> تصفح الخدمات بدون تسجيل دخول</Link></div>
             </main>
         </>

@@ -39,6 +39,17 @@ async function checkTauriUpdate() {
     }
 }
 
+export async function checkForUpdates() {
+    const nativeUpdate = await checkTauriUpdate();
+    if (nativeUpdate) return nativeUpdate;
+    const latest = await readVersion();
+    const current = getCurrentBuild();
+    if (latest.version && current.version !== "dev" && latest.version !== current.version) {
+        return { kind: "release", latest };
+    }
+    return null;
+}
+
 export function startUpdateMonitor({ onUpdate }) {
     let disposed = false;
     let intervalId;
@@ -49,17 +60,9 @@ export function startUpdateMonitor({ onUpdate }) {
     };
 
     const checkVersion = async () => {
-        const nativeUpdate = await checkTauriUpdate();
-        if (nativeUpdate) {
-            announce(nativeUpdate);
-            return;
-        }
         try {
-            const latest = await readVersion();
-            const current = getCurrentBuild();
-            if (latest.version && current.version !== "dev" && latest.version !== current.version) {
-                announce({ kind: "release", latest });
-            }
+            const update = await checkForUpdates();
+            if (update) announce(update);
         } catch {
             // An update check must never make the application unusable offline.
         }

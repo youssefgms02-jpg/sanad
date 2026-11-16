@@ -1,7 +1,8 @@
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
-import { Type, RotateCcw, Check } from "lucide-react";
+import { Type, RotateCcw, Check, RefreshCw, ShieldCheck } from "lucide-react";
 import Navbar from "../components/Navbar";
+import { checkForUpdates, getCurrentBuild } from "../utils/updateManager";
 
 const DEFAULT_SIZE = 16;
 const MIN_SIZE = 14;
@@ -17,10 +18,31 @@ function SettingsPage() {
         const saved = Number(localStorage.getItem("sanad-font-size"));
         return Number.isFinite(saved) && saved >= MIN_SIZE && saved <= MAX_SIZE ? saved : DEFAULT_SIZE;
     });
+    const [updateState, setUpdateState] = useState("idle");
+    const [updateMessage, setUpdateMessage] = useState("");
 
     useEffect(() => { applyFontSize(fontSize); }, [fontSize]);
 
     function reset() { setFontSize(DEFAULT_SIZE); }
+
+    async function checkUpdates() {
+        setUpdateState("checking");
+        setUpdateMessage("");
+        try {
+            const update = await checkForUpdates();
+            if (update) {
+                setUpdateState("available");
+                setUpdateMessage(`يتوفر الإصدار ${update.latest?.version || "الجديد"}. سيظهر إشعار التحديث الآن.`);
+                window.dispatchEvent(new CustomEvent("sanad:update-available", { detail: update }));
+            } else {
+                setUpdateState("current");
+                setUpdateMessage(`أنت تستخدم أحدث إصدار (${getCurrentBuild().version}).`);
+            }
+        } catch {
+            setUpdateState("error");
+            setUpdateMessage("تعذر التحقق الآن. تأكد من اتصال الإنترنت وحاول مرة أخرى.");
+        }
+    }
 
     return (
         <>
@@ -45,6 +67,16 @@ function SettingsPage() {
                 <section className="settings-card settings-account-card">
                     <div><h2>حسابك في سَنَد</h2><p>تسجيل الدخول يتيح ربط المفضلة والإعدادات بأكثر من جهاز عند تفعيل مزامنة الحساب.</p></div>
                     <Link className="service-details" to="/account">إدارة الحساب ←</Link>
+                </section>
+                <section className="settings-card settings-account-card" aria-labelledby="updates-title">
+                    <div className="settings-card-title"><ShieldCheck size={21} /><div><h2 id="updates-title">تحديثات سَنَد</h2><p>تحقق يدويًا من وجود إصدار أحدث للتطبيق.</p></div></div>
+                    <div className="settings-actions">
+                        <button type="button" className="settings-reset" onClick={checkUpdates} disabled={updateState === "checking"}>
+                            <RefreshCw size={16} className={updateState === "checking" ? "spin" : ""} />
+                            {updateState === "checking" ? "جارٍ التحقق..." : "التحقق من التحديثات"}
+                        </button>
+                        {updateMessage && <span className="settings-saved" role="status">{updateMessage}</span>}
+                    </div>
                 </section>
             </main>
         </>

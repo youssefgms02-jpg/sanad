@@ -17,13 +17,20 @@ export default function UpdateNotice() {
         typeof Notification !== "undefined" && Notification.permission === "granted"
     );
 
-    useEffect(() => startUpdateMonitor({
-        onUpdate: (payload) => {
+    useEffect(() => {
+        const announce = (payload) => {
             setDismissed(false);
             setUpdate(payload);
             notifyUser("تحديث جديد في سَنَد", "يوجد إصدار أحدث متاح ويمكن تثبيته الآن.");
-        },
-    }), []);
+        };
+        const stop = startUpdateMonitor({ onUpdate: announce });
+        const handleManualCheck = (event) => announce(event.detail);
+        window.addEventListener("sanad:update-available", handleManualCheck);
+        return () => {
+            stop?.();
+            window.removeEventListener("sanad:update-available", handleManualCheck);
+        };
+    }, []);
 
     const enableNotifications = async () => {
         if (typeof Notification === "undefined") return;

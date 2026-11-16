@@ -66,6 +66,7 @@ python -m venv .venv
 
 ## إعداد متغيرات البيئة
 - الواجهة: انسخ `.env.example` إلى `.env.local` واضبط `VITE_API_URL`.
+- للإصدار المنشور، يجب أن تكون `VITE_API_URL` رابط HTTPS عام للـ API، وليس `localhost`. راجع `docs/backend-deployment.md`.
 - الباك إند: استخدم `backend/.env.example` كمرجع، واضبط المتغيرات في جلسة التشغيل أو إعدادات الاستضافة.
 - لا تضع `SANAD_ADMIN_TOKEN` في الواجهة الأمامية أو أي ملف يُرفع إلى GitHub.
 - في الإنتاج، اضبط `SANAD_ALLOWED_ORIGINS` على أصل الواجهة المنشورة فقط، واستخدم HTTPS للواجهة والـAPI.

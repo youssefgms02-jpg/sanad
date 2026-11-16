@@ -1,0 +1,18 @@
+.brand-logo {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    color: #163b5c;
+    text-decoration: none;
+    direction: rtl;
+}
+
+.brand-logo img { display: block; width: 42px; height: 42px; border-radius: 12px; }
+.brand-logo-wordmark { display: grid; gap: 1px; text-align: right; }
+.brand-logo-wordmark strong { font-size: 1.25rem; line-height: 1.1; letter-spacing: .02em; }
+.brand-logo-wordmark small { color: #688196; font-size: .68rem; line-height: 1.2; white-space: nowrap; }
+.brand-logo-compact img { width: 34px; height: 34px; border-radius: 10px; }
+.brand-logo-compact .brand-logo-wordmark strong { font-size: 1.05rem; }
+
+html[data-theme="dark"] .brand-logo { color: #e5f4f7; }
+html[data-theme="dark"] .brand-logo-wordmark small { color: #a9c4cf; }

@@ -3,6 +3,7 @@ import {
     House, Grid2X2, Heart, Info, Settings, UserRound
 } from "lucide-react";
 import ThemeToggle from "./ThemeToggle";
+import BrandLogo from "./BrandLogo";
 
 const items = [
     { to: "/", label: "الرئيسية", Icon: House },
@@ -43,7 +44,7 @@ function Navbar() {
             </nav>
 
             <nav className="navbar" aria-label="التنقل الرئيسي">
-                <Link className="navbar-logo" to="/" aria-label="سَنَد - الرئيسية">سَنَد</Link>
+                <BrandLogo />
                 <div className="navbar-links" aria-label="روابط الموقع">
                     {items.map((item) => <NavLink key={item.to} item={item} />)}
                 </div>

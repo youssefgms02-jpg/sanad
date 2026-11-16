@@ -41,6 +41,7 @@ jobs:
           TAURI_SIGNING_PRIVATE_KEY_PASSWORD: ${{ secrets.TAURI_SIGNING_PRIVATE_KEY_PASSWORD }}
           SANAD_BUILD_VERSION: ${{ github.ref_name }}
           SANAD_BUILD_COMMIT: ${{ github.sha }}
+          VITE_API_URL: ${{ secrets.VITE_API_URL }}
           VITE_UPDATE_MANIFEST_URL: https://api.github.com/repos/youssefgms02-jpg/sanad/releases/latest
         with:
           tagName: ${{ github.ref_name }}
