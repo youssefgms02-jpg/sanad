@@ -45,7 +45,7 @@
   },
   "plugins": {
     "updater": {
-      "pubkey": "RWSAclRnAsNpVZ+sHX2Zk7+9LILTneQrDu3mNSS2iqJJ3HOai8fD/w9H",
+      "pubkey": "dW50cnVzdGVkIGNvbW1lbnQ6IG1pbmlzaWduIHB1YmxpYyBrZXk6IDU1NjlDMzAyNjc1NDcyODAKUldTQWNsUm5Bc05wVlorc0hYMlprNys5TElMVG5lUXJEdTNtTlNTMmlxSkozSE9haThmRC93OUgK",
       "endpoints": [
         "https://github.com/youssefgms02-jpg/sanad/releases/latest/download/latest.json"
       ],
