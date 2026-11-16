@@ -45,7 +45,7 @@
   },
   "plugins": {
     "updater": {
-      "pubkey": "untrusted comment: minisign public key: 5569C30267547280\nRWSAclRnAsNpVZ+sHX2Zk7+9LILTneQrDu3mNSS2iqJJ3HOai8fD/w9H",
+      "pubkey": "RWSAclRnAsNpVZ+sHX2Zk7+9LILTneQrDu3mNSS2iqJJ3HOai8fD/w9H",
       "endpoints": [
         "https://github.com/youssefgms02-jpg/sanad/releases/latest/download/latest.json"
       ],
