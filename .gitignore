@@ -1,4 +1,4 @@
-# Python
+﻿# Python
 __pycache__/
 *.py[cod]
 .venv/
@@ -11,15 +11,22 @@ dist/
 android/
 public/version.json
 
+# Local databases and SQLite sidecar files
+*.db
+*.sqlite
+*.sqlite3
+*-journal
+*-wal
+*-shm
+
 # Secrets
 .env
 .env.*
 !.env.example
+backend/.env
 
 # Editors and OS
 .vscode/
 .idea/
 .DS_Store
 Thumbs.db
-.env
-backend/.env

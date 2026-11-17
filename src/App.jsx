@@ -1,7 +1,7 @@
 import { Routes, Route } from "react-router-dom";
 
-import CategoryPage from "./components/CategoryPage";
-import ServiceDetails from "./components/ServiceDetails";
+import CategoryPage from "./pages/CategoryPage";
+import ServiceDetails from "./pages/ServiceDetails";
 import Navbar from "./components/Navbar";
 import Services from "./components/Services";
 import Hero from "./components/Hero";
