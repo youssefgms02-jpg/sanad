@@ -1,7 +1,7 @@
 import { useParams, Link } from "react-router-dom";
 import { useState, useEffect } from "react";
 import { WalletCards } from "lucide-react";
-import Navbar from "./Navbar";
+import Navbar from "../components/Navbar";
 import { fetchPublicServices } from "../utils/publicServices";
 
 const categories = {
