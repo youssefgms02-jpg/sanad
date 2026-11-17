@@ -9,6 +9,14 @@ venv/
 node_modules/
 dist/
 
+# Local databases and SQLite sidecar files
+*.db
+*.sqlite
+*.sqlite3
+*-journal
+*-wal
+*-shm
+
 # Secrets
 .env
 .env.*
@@ -19,5 +27,3 @@ dist/
 .idea/
 .DS_Store
 Thumbs.db
-.env
-backend/.env

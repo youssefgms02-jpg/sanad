@@ -19,12 +19,38 @@ function ThemeToggle() {
         }
     }, [theme]);
 
+    useEffect(() => {
+        const syncTheme = (event) => {
+            if (event.detail === "dark" || event.detail === "light") {
+                setTheme(event.detail);
+            }
+        };
+        const syncOtherTab = (event) => {
+            if (event.key === "sanad-theme" && (event.newValue === "dark" || event.newValue === "light")) {
+                setTheme(event.newValue);
+            }
+        };
+
+        window.addEventListener("sanad-theme-change", syncTheme);
+        window.addEventListener("storage", syncOtherTab);
+        return () => {
+            window.removeEventListener("sanad-theme-change", syncTheme);
+            window.removeEventListener("storage", syncOtherTab);
+        };
+    }, []);
+
     const dark = theme === "dark";
+    function toggleTheme() {
+        const nextTheme = dark ? "light" : "dark";
+        setTheme(nextTheme);
+        window.dispatchEvent(new CustomEvent("sanad-theme-change", { detail: nextTheme }));
+    }
+
     return (
         <button
             className="theme-toggle"
             type="button"
-            onClick={() => setTheme(dark ? "light" : "dark")}
+            onClick={toggleTheme}
             aria-label={dark ? "تفعيل الوضع الفاتح" : "تفعيل الوضع الداكن"}
             title={dark ? "الوضع الفاتح" : "الوضع الداكن"}
         >
