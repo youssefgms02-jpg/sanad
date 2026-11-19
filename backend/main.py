@@ -156,7 +156,7 @@ allowed_origins = [
     origin.strip()
     for origin in os.getenv(
         "SANAD_ALLOWED_ORIGINS",
-        "http://localhost:5173,http://127.0.0.1:5173",
+        "http://localhost:5173,http://127.0.0.1:5173,https://localhost,capacitor://localhost,http://localhost",
     ).split(",")
     if origin.strip()
 ]
