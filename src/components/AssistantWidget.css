@@ -105,7 +105,15 @@
 .assistant-form button:disabled { opacity: .5; cursor: not-allowed; }
 .assistant-disclaimer { padding: 0 12px 12px; color: #6c7f8c; font-size: .7rem; line-height: 1.5; background: white; }
 
-@media (max-width: 520px) {
-    .assistant-widget { inset-inline-end: 12px; bottom: 12px; }
-    .assistant-panel { height: min(470px, calc(100vh - 80px)); }
+@media (max-width: 600px) {
+    /* Keep the assistant clear of the fixed mobile navigation and safe area. */
+    .assistant-widget {
+        inset-inline-end: 12px;
+        bottom: calc(88px + env(safe-area-inset-bottom, 0px));
+        z-index: 900;
+    }
+
+    .assistant-panel {
+        height: min(470px, calc(100dvh - 120px - env(safe-area-inset-bottom, 0px)));
+    }
 }
