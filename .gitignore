@@ -31,3 +31,5 @@ backend/.env
 .idea/
 .DS_Store
 Thumbs.db
+
+sanad-release.jks
