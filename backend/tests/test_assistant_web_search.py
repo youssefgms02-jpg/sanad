@@ -2,13 +2,17 @@ import os
 import unittest
 from unittest.mock import patch
 
-from assistant_web_search import search_web
+from assistant_web_search import search_web, is_official_hint
 
 
 class AssistantWebSearchTests(unittest.TestCase):
     def test_returns_empty_when_api_key_is_not_configured(self):
-        with patch.dict(os.environ, {"SANAD_BRAVE_SEARCH_API_KEY": ""}):
+        with patch.dict(os.environ, {"SANAD_TAVILY_API_KEY": ""}):
             self.assertEqual(search_web("تكافل وكرامة"), [])
+
+    def test_official_domain_hint_checks_hostname_boundary(self):
+        self.assertTrue(is_official_hint("https://www.moss.gov.eg/page"))
+        self.assertFalse(is_official_hint("https://moss.gov.eg.example.com/page"))
 
     @patch("assistant_web_search.urlopen")
     def test_prioritizes_official_egyptian_domains(self, mocked_urlopen):
@@ -20,13 +24,13 @@ class AssistantWebSearchTests(unittest.TestCase):
                 return False
 
             def read(self):
-                return """{"web":{"results":[
-                    {"title":"مقال عام","url":"https://example.com/info","description":"عام"},
-                    {"title":"وزارة التضامن","url":"https://www.moss.gov.eg/page","description":"رسمي"}
-                ]}}""".encode("utf-8")
+                return """{"results":[
+                    {"title":"مقال عام","url":"https://example.com/info","content":"عام"},
+                    {"title":"وزارة التضامن","url":"https://www.moss.gov.eg/page","content":"رسمي"}
+                ]}""".encode("utf-8")
 
         mocked_urlopen.return_value = FakeResponse()
-        with patch.dict(os.environ, {"SANAD_BRAVE_SEARCH_API_KEY": "test-key"}):
+        with patch.dict(os.environ, {"SANAD_TAVILY_API_KEY": "test-key"}):
             results = search_web("تكافل وكرامة", count=2)
 
         self.assertEqual(results[0]["title"], "وزارة التضامن")
