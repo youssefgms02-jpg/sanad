@@ -4,7 +4,7 @@ on:
   pull_request:
     branches: ["work/sanad-phase-1-foundation"]
   push:
-    branches: ["fix/search-result-click"]
+    branches: ["fix/search-result-click", "feature/richer-services-web-assistant"]
 
 jobs:
   frontend-build:
