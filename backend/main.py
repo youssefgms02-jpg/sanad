@@ -21,7 +21,7 @@ from sqlalchemy import inspect, text
 
 from database import Base, engine, SessionLocal
 from models import AdminAuditLog, Service, ServiceLocation, ServiceReport, User, AuthSession, UserFavorite
-from schemas import ServiceCreate, ServiceUpdate, ServiceReportCreate, ServiceReportStatusUpdate, AuthRegister, AuthLogin, FavoriteSync
+from schemas import ServiceCreate, ServiceUpdate, ServiceReportCreate, ServiceReportStatusUpdate, AuthRegister, AuthLogin, FavoriteSync, AssistantAsk
 from source_utils import extract_http_urls, normalize_arabic_text
 from auth_utils import hash_password, verify_password, hash_session_token, new_session_token
 from service_rules import validate_service_for_publish
@@ -470,6 +470,94 @@ def get_assistant_context(
         Service.status == "published",
     ).order_by(Service.id).limit(8).all()
     return build_assistant_context(related_services=related)
+
+
+@app.post("/assistant/ask")
+def ask_assistant(
+    data: AssistantAsk,
+    request: Request,
+    db: Session = Depends(get_db),
+):
+    """Answer using published SANAD records only; never invent missing facts."""
+    enforce_rate_limit(request, "assistant-ask", 20)
+    question = normalize_search_text(data.question)
+    services = db.query(Service).filter(Service.status == "published").all()
+
+    selected = None
+    if data.service_id is not None:
+        selected = next((item for item in services if item.id == data.service_id), None)
+        if selected is None:
+            raise HTTPException(status_code=404, detail="الخدمة غير موجودة أو غير منشورة")
+
+    # Remove common conversational words so the remaining phrase identifies the service.
+    stop_words = {
+        "عايز", "عاوزه", "عاوز", "محتاج", "محتاجه", "لو", "سمحت", "من", "فضلك",
+        "ايه", "ما", "هو", "هي", "عن", "في", "على", "ازاي", "كيف", "اعمل",
+        "اعرف", "ممكن", "هل", "ينفع", "اي", "كل", "تفاصيل", "معلومات",
+        "المطلوبه", "المطلوب", "مطلوب", "الخاصه", "الخاصة", "خدمه", "خدمة",
+        "الاوراق", "الورق", "المستندات", "خطوات", "شروط", "شرط",
+    }
+    terms = [word for word in question.split() if len(word) > 1 and word not in stop_words]
+    search_phrase = " ".join(terms) or question
+
+    if selected is None:
+        ranked = [
+            (search_score(item, search_phrase), item)
+            for item in services
+        ]
+        ranked = [(score, item) for score, item in ranked if score > 0]
+        ranked.sort(key=lambda pair: (-pair[0], pair[1].id))
+        if ranked:
+            selected = ranked[0][1]
+
+    if selected is None:
+        return {
+            "answer": "مش قادر أحدد الخدمة المقصودة من سؤالك في الخدمات المنشورة حاليًا. جرّب تكتب اسم الخدمة أو الجهة الحكومية، مثل: بطاقة الرقم القومي أو شهادة الميلاد.",
+            "service": None,
+            "suggestions": [],
+            "disclaimer": "الإجابة مبنية على الخدمات المنشورة في سَنَد فقط. راجع المصدر الرسمي قبل اتخاذ أي إجراء.",
+        }
+
+    normalized = question
+    def has_any(*words):
+        return any(normalize_search_text(word) in normalized for word in words)
+
+    if has_any("ورق", "اوراق", "مستند", "وثائق"):
+        focus = "المستندات المطلوبة"
+        value = selected.documents
+    elif has_any("خطو", "ازاي", "كيف", "اعمل", "استخراج", "اطلع", "تقديم"):
+        focus = "خطوات الحصول على الخدمة"
+        value = selected.steps
+    elif has_any("شرط", "شروط", "ينفع", "مؤهل", "استحقاق", "مين يقدر"):
+        focus = "شروط الاستفادة"
+        value = selected.eligibility
+    elif has_any("مصدر", "رابط", "موقع", "جهة", "مسؤول", "تابع"):
+        focus = "الجهة والمصدر الرسمي"
+        value = selected.official_source
+    else:
+        focus = "ملخص الخدمة"
+        value = selected.description
+
+    value = (value or "").strip()
+    answer = (
+        f"{selected.name}\n"
+        f"{focus}:\n{value if value else 'المعلومة دي مش متوفرة بشكل مؤكد في سجل سَنَد الحالي، ومش هخمنها.'}\n\n"
+        f"الجهة المسؤولة: {selected.authority or 'غير محددة في السجل'}\n"
+        f"المصدر الرسمي: {selected.official_source or 'غير مضاف في السجل'}"
+    )
+    related = [
+        item for item in services
+        if item.category == selected.category and item.id != selected.id
+    ][:4]
+    return {
+        "answer": answer,
+        "service": service_to_dict(selected),
+        "suggestions": [
+            {"id": item.id, "name": item.name, "description": item.description}
+            for item in related
+        ],
+        "disclaimer": "الإجابة مبنية على المعلومات المنشورة في سَنَد فقط، وقد تكون بعض البيانات غير مكتملة. راجع المصدر الرسمي قبل اتخاذ أي إجراء.",
+    }
 
 
 @app.get("/services/{service_id}/locations")
