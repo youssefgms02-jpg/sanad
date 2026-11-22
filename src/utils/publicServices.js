@@ -56,6 +56,13 @@ function filterCachedServices(services, { query, category, authority } = {}) {
             service.eligibility,
             service.documents,
             service.steps,
+            service.fees,
+            service.processing_time,
+            service.application_methods,
+            service.follow_up,
+            service.appeals,
+            service.faqs,
+            service.practical_tips,
         ].filter(Boolean).join(" "));
         return searchable.includes(normalizedQuery);
     });
