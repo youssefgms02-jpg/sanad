@@ -76,3 +76,10 @@ class FavoriteSync(BaseModel):
     model_config = ConfigDict(extra="forbid")
 
     service_ids: list[int] = Field(default_factory=list, max_length=500)
+
+
+class AssistantAsk(BaseModel):
+    model_config = ConfigDict(str_strip_whitespace=True, extra="forbid")
+
+    question: str = Field(min_length=2, max_length=1000)
+    service_id: int | None = Field(default=None, ge=1)
