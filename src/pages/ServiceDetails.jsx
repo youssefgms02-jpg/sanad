@@ -2,7 +2,7 @@ import { useParams, Link } from "react-router-dom";
 import { useState, useEffect } from "react";
 import Navbar from "../components/Navbar";
 import API_BASE_URL from "../api";
-import { fetchPublicService } from "../utils/publicServices";
+import { fetchPublicService, fetchPublicServiceLocations } from "../utils/publicServices";
 import { Heart, Share2 } from "lucide-react";
 import { isFavorite, toggleFavorite, syncFavoritesToAccount } from "../utils/favorites";
 
@@ -99,16 +99,18 @@ function ServiceDetails() {
                     setService(data.service);
                     setOffline(Boolean(data.offline));
                 }
-                const locationsResponse = await fetch(`${API_BASE_URL}/services/${serviceId}/locations`);
-                if (locationsResponse.ok) {
-                    const locationsData = await locationsResponse.json();
+                try {
+                    const locationsData = await fetchPublicServiceLocations(serviceId);
                     if (!cancelled) {
                         setLocations(locationsData.locations || []);
                         setMapSearchUrl(locationsData.map_search_url || null);
+                        if (locationsData.offline) setOffline(true);
                     }
-                } else if (!cancelled) {
-                    setLocations([]);
-                    setMapSearchUrl(null);
+                } catch {
+                    if (!cancelled) {
+                        setLocations([]);
+                        setMapSearchUrl(null);
+                    }
                 }
             } catch (err) {
                 if (!cancelled) setError(err.message);
