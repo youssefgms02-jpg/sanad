@@ -15,6 +15,13 @@ class ServiceCreate(BaseModel):
     eligibility: str | None = None
     documents: str | None = None
     steps: str | None = None
+    fees: str | None = None
+    processing_time: str | None = None
+    application_methods: str | None = None
+    follow_up: str | None = None
+    appeals: str | None = None
+    faqs: str | None = None
+    practical_tips: str | None = None
     official_source: str | None = None
 
 
