@@ -20,12 +20,10 @@ class AssistantWebSearchTests(unittest.TestCase):
                 return False
 
             def read(self):
-                return (
-                    b'{"web":{"results":['
-                    b'{"title":"مقال عام","url":"https://example.com/info","description":"عام"},'
-                    b'{"title":"وزارة التضامن","url":"https://www.moss.gov.eg/page","description":"رسمي"}'
-                    b']}}'
-                )
+                return """{"web":{"results":[
+                    {"title":"مقال عام","url":"https://example.com/info","description":"عام"},
+                    {"title":"وزارة التضامن","url":"https://www.moss.gov.eg/page","description":"رسمي"}
+                ]}}""".encode("utf-8")
 
         mocked_urlopen.return_value = FakeResponse()
         with patch.dict(os.environ, {"SANAD_BRAVE_SEARCH_API_KEY": "test-key"}):
