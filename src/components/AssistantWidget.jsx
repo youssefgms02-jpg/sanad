@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from "react";
-import { useLocation } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import { MessageCircle, Send, X } from "lucide-react";
 import API_BASE_URL from "../api";
 
