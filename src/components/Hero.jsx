@@ -83,9 +83,15 @@ function Hero() {
                         <ul>
                             {searchResults.map((service) => (
                                 <li key={service.id}>
-                                    <h3>{service.name}</h3>
-                                    <p>{service.description}</p>
-                                    <Link to={`/services/${service.id}`}>عرض تفاصيل الخدمة</Link>
+                                    <Link
+                                        to={`/services/${service.id}`}
+                                        className="search-result-link"
+                                        aria-label={`عرض تفاصيل خدمة ${service.name}`}
+                                    >
+                                        <h3>{service.name}</h3>
+                                        <p>{service.description}</p>
+                                        <span className="search-result-hint">اضغط لعرض التفاصيل ←</span>
+                                    </Link>
                                 </li>
                             ))}
                         </ul>
