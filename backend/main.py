@@ -29,6 +29,7 @@ from service_catalog import search_score, service_to_dict, normalize_search_text
 from assistant_context import build_assistant_context
 from rate_limit import limiter, client_key
 from service_locations import map_search_url
+from assistant_web_search import search_web
 
 
 # اقرأ إعدادات backend/.env حتى عند تشغيل Uvicorn من مجلد مختلف.
@@ -46,6 +47,27 @@ app = FastAPI(
 )
 
 Base.metadata.create_all(bind=engine)
+
+
+def ensure_service_detail_columns():
+    """Add richer service fields to existing databases without dropping data."""
+    required = {
+        "fees": "TEXT",
+        "processing_time": "TEXT",
+        "application_methods": "TEXT",
+        "follow_up": "TEXT",
+        "appeals": "TEXT",
+        "faqs": "TEXT",
+        "practical_tips": "TEXT",
+    }
+    with engine.begin() as connection:
+        existing = {column["name"] for column in inspect(connection).get_columns("services")}
+        for name, sql_type in required.items():
+            if name not in existing:
+                connection.execute(text(f"ALTER TABLE services ADD COLUMN {name} {sql_type}"))
+
+
+ensure_service_detail_columns()
 
 
 def normalize_account_name(value: str) -> str:
@@ -478,7 +500,7 @@ def ask_assistant(
     request: Request,
     db: Session = Depends(get_db),
 ):
-    """Answer using published SANAD records only; never invent missing facts."""
+    """Answer from reviewed SANAD data and optionally attach current web sources."""
     enforce_rate_limit(request, "assistant-ask", 20)
     question = normalize_search_text(data.question)
     services = db.query(Service).filter(Service.status == "published").all()
@@ -489,7 +511,6 @@ def ask_assistant(
         if selected is None:
             raise HTTPException(status_code=404, detail="الخدمة غير موجودة أو غير منشورة")
 
-    # Remove common conversational words so the remaining phrase identifies the service.
     stop_words = {
         "عايز", "عاوزه", "عاوز", "محتاج", "محتاجه", "لو", "سمحت", "من", "فضلك",
         "ايه", "ما", "هو", "هي", "عن", "في", "على", "ازاي", "كيف", "اعمل",
@@ -501,49 +522,66 @@ def ask_assistant(
     search_phrase = " ".join(terms) or question
 
     if selected is None:
-        ranked = [
-            (search_score(item, search_phrase), item)
-            for item in services
-        ]
+        ranked = [(search_score(item, search_phrase), item) for item in services]
         ranked = [(score, item) for score, item in ranked if score > 0]
         ranked.sort(key=lambda pair: (-pair[0], pair[1].id))
         if ranked:
             selected = ranked[0][1]
 
     if selected is None:
+        web_results = search_web(f"{data.question} مصر الموقع الرسمي", count=5)
         return {
-            "answer": "مش قادر أحدد الخدمة المقصودة من سؤالك في الخدمات المنشورة حاليًا. جرّب تكتب اسم الخدمة أو الجهة الحكومية، مثل: بطاقة الرقم القومي أو شهادة الميلاد.",
+            "answer": (
+                "مش قادر أحدد خدمة منشورة في سَنَد تطابق سؤالك. "
+                "أرفقت نتائج بحث خارجية إن توفرت؛ اعتبرها نقاط بداية وافتح المصدر بنفسك، "
+                "ولا تعتمد على نتيجة غير رسمية لإتمام إجراء حكومي."
+            ),
             "service": None,
             "suggestions": [],
-            "disclaimer": "الإجابة مبنية على الخدمات المنشورة في سَنَد فقط. راجع المصدر الرسمي قبل اتخاذ أي إجراء.",
+            "sources": web_results,
+            "web_search_enabled": bool(os.getenv("SANAD_BRAVE_SEARCH_API_KEY", "").strip()),
+            "disclaimer": "نتائج الإنترنت قد تتغير أو تكون غير رسمية. تحقق من الجهة الحكومية صاحبة الخدمة.",
         }
 
-    normalized = question
-    def has_any(*words):
-        return any(normalize_search_text(word) in normalized for word in words)
+    details = [
+        ("نبذة عن الخدمة", selected.description),
+        ("الجهة المسؤولة", selected.authority),
+        ("شروط الاستفادة", selected.eligibility),
+        ("المستندات المطلوبة", selected.documents),
+        ("خطوات الحصول على الخدمة", selected.steps),
+        ("الرسوم والتكلفة", selected.fees),
+        ("المدة المتوقعة", selected.processing_time),
+        ("طرق التقديم", selected.application_methods),
+        ("متابعة الطلب", selected.follow_up),
+        ("التظلمات والشكاوى", selected.appeals),
+        ("نصائح مهمة قبل التقديم", selected.practical_tips),
+        ("أسئلة شائعة", selected.faqs),
+    ]
+    sections = []
+    missing = []
+    for label, value in details:
+        value = (value or "").strip()
+        if value:
+            sections.append(f"{label}:\n{value}")
+        else:
+            missing.append(label)
 
-    if has_any("ورق", "اوراق", "مستند", "وثائق"):
-        focus = "المستندات المطلوبة"
-        value = selected.documents
-    elif has_any("خطو", "ازاي", "كيف", "اعمل", "استخراج", "اطلع", "تقديم"):
-        focus = "خطوات الحصول على الخدمة"
-        value = selected.steps
-    elif has_any("شرط", "شروط", "ينفع", "مؤهل", "استحقاق", "مين يقدر"):
-        focus = "شروط الاستفادة"
-        value = selected.eligibility
-    elif has_any("مصدر", "رابط", "موقع", "جهة", "مسؤول", "تابع"):
-        focus = "الجهة والمصدر الرسمي"
-        value = selected.official_source
-    else:
-        focus = "ملخص الخدمة"
-        value = selected.description
+    answer = f"{selected.name}\n\n" + "\n\n".join(sections)
+    if missing:
+        answer += (
+            "\n\nمعلومات لم تُستكمل أو لم يتم توثيقها في سجل سَنَد: "
+            + "، ".join(missing)
+            + ". لن أفترض تفاصيل غير مؤكدة."
+        )
+    answer += (
+        "\n\nالمصدر المسجل للخدمة: "
+        + (selected.official_source or "لم يُضف رابط مصدر في السجل")
+    )
 
-    value = (value or "").strip()
-    answer = (
-        f"{selected.name}\n"
-        f"{focus}:\n{value if value else 'المعلومة دي مش متوفرة بشكل مؤكد في سجل سَنَد الحالي، ومش هخمنها.'}\n\n"
-        f"الجهة المسؤولة: {selected.authority or 'غير محددة في السجل'}\n"
-        f"المصدر الرسمي: {selected.official_source or 'غير مضاف في السجل'}"
+    # Search the web for the named service and the user's specific question.
+    web_results = search_web(
+        f"{selected.name} {data.question} مصر الموقع الرسمي",
+        count=5,
     )
     related = [
         item for item in services
@@ -556,7 +594,12 @@ def ask_assistant(
             {"id": item.id, "name": item.name, "description": item.description}
             for item in related
         ],
-        "disclaimer": "الإجابة مبنية على المعلومات المنشورة في سَنَد فقط، وقد تكون بعض البيانات غير مكتملة. راجع المصدر الرسمي قبل اتخاذ أي إجراء.",
+        "sources": web_results,
+        "web_search_enabled": bool(os.getenv("SANAD_BRAVE_SEARCH_API_KEY", "").strip()),
+        "disclaimer": (
+            "معلومات سَنَد المنشورة منفصلة عن نتائج البحث الخارجي. "
+            "الأولوية للموقع الرسمي، وتأكد من تاريخ القرار وشروط الجهة قبل التقديم."
+        ),
     }
 
 
