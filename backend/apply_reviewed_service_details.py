@@ -5,6 +5,7 @@ id and name match. It never changes publication status or core service text.
 Run only after the database migration has added the extended columns.
 """
 import json
+import sys
 from datetime import datetime, timezone
 from pathlib import Path
 
@@ -14,7 +15,7 @@ from database import SessionLocal
 from models import Service
 
 
-DATA_FILE = Path(__file__).resolve().parent / "data" / "reviewed_service_details_support.json"
+DEFAULT_DATA_FILE = Path(__file__).resolve().parent / "data" / "reviewed_service_details_support.json"
 EXTENDED_FIELDS = (
     "fees",
     "processing_time",
@@ -27,7 +28,10 @@ EXTENDED_FIELDS = (
 
 
 def main():
-    payload = json.loads(DATA_FILE.read_text(encoding="utf-8"))
+    data_file = Path(sys.argv[1]).resolve() if len(sys.argv) > 1 else DEFAULT_DATA_FILE
+    if not data_file.is_file():
+        raise SystemExit(f"Reviewed data file not found: {data_file}")
+    payload = json.loads(data_file.read_text(encoding="utf-8"))
     records = payload.get("services", [])
     if not records:
         raise SystemExit("No reviewed service records found.")
