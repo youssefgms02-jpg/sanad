@@ -18,7 +18,7 @@ const categoryLabels = {
 
 const emptyForm = {
     name: "", description: "", category: "government", authority: "",
-    eligibility: "", documents: "", steps: "", official_source: "",
+    eligibility: "", documents: "", steps: "", fees: "", processing_time: "", application_methods: "", follow_up: "", appeals: "", faqs: "", practical_tips: "", official_source: "",
 };
 
 function getSourceUrls(value) {
@@ -113,6 +113,13 @@ function AdminDashboard() {
             eligibility: service.eligibility || "",
             documents: service.documents || "",
             steps: service.steps || "",
+            fees: service.fees || "",
+            processing_time: service.processing_time || "",
+            application_methods: service.application_methods || "",
+            follow_up: service.follow_up || "",
+            appeals: service.appeals || "",
+            faqs: service.faqs || "",
+            practical_tips: service.practical_tips || "",
             official_source: service.official_source || "",
         });
         setShowForm(true);
@@ -135,6 +142,13 @@ function AdminDashboard() {
                 eligibility: form.eligibility || null,
                 documents: form.documents || null,
                 steps: form.steps || null,
+                fees: form.fees || null,
+                processing_time: form.processing_time || null,
+                application_methods: form.application_methods || null,
+                follow_up: form.follow_up || null,
+                appeals: form.appeals || null,
+                faqs: form.faqs || null,
+                practical_tips: form.practical_tips || null,
                 official_source: form.official_source || null,
             };
             if (editingId) {
@@ -384,7 +398,14 @@ function AdminDashboard() {
                             <label>الجهة المسؤولة<input name="authority" value={form.authority} onChange={updateForm} /></label>
                             <label>شروط الاستفادة<textarea name="eligibility" value={form.eligibility} onChange={updateForm} /></label>
                             <label>الأوراق المطلوبة<textarea name="documents" value={form.documents} onChange={updateForm} /></label>
-                            <label>خطوات الحصول على الخدمة<textarea name="steps" value={form.steps} onChange={updateForm} /></label>
+                            <label className="full-width">خطوات الحصول على الخدمة بالتفصيل<textarea name="steps" value={form.steps} onChange={updateForm} /></label>
+                            <label>الرسوم والتكلفة<textarea name="fees" value={form.fees} onChange={updateForm} placeholder="اكتب القيمة أو وضّح أنها مجانية بمصدر..." /></label>
+                            <label>المدة المتوقعة<textarea name="processing_time" value={form.processing_time} onChange={updateForm} /></label>
+                            <label>طرق التقديم المتاحة<textarea name="application_methods" value={form.application_methods} onChange={updateForm} /></label>
+                            <label>متابعة الطلب<textarea name="follow_up" value={form.follow_up} onChange={updateForm} /></label>
+                            <label>التظلمات والشكاوى<textarea name="appeals" value={form.appeals} onChange={updateForm} /></label>
+                            <label>نصائح عملية<textarea name="practical_tips" value={form.practical_tips} onChange={updateForm} /></label>
+                            <label className="full-width">أسئلة شائعة وإجاباتها<textarea name="faqs" value={form.faqs} onChange={updateForm} /></label>
                             <label className="full-width">روابط المصادر الرسمية (رابط في كل سطر)<textarea name="official_source" value={form.official_source} onChange={updateForm} placeholder="https://..." dir="ltr" /></label>
                         </div>
 
