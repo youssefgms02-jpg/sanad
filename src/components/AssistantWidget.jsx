@@ -3,27 +3,6 @@ import { useLocation } from "react-router-dom";
 import { MessageCircle, Send, X } from "lucide-react";
 import API_BASE_URL from "../api";
 
-function answerFromContext(question, context) {
-    const service = context?.service;
-    if (!service) {
-        return "افتح صفحة خدمة محددة وسأشرح لك الجهة والشروط والمستندات والخطوات المتاحة في سَنَد.";
-    }
-    const text = String(question || "").toLowerCase();
-    if (text.includes("مستند") || text.includes("ورق") || text.includes("اوراق")) {
-        return `المستندات المنشورة لهذه الخدمة:\n${service.documents || "لا توجد قائمة مؤكدة منشورة حاليًا."}`;
-    }
-    if (text.includes("خطو") || text.includes("اعمل") || text.includes("ازاي") || text.includes("كيف")) {
-        return `الخطوات المنشورة:\n${service.steps || "لا توجد خطوات مؤكدة منشورة حاليًا."}`;
-    }
-    if (text.includes("مين") || text.includes("شرط") || text.includes("ينفع")) {
-        return `شروط الاستفادة:\n${service.eligibility || "لا توجد شروط مؤكدة منشورة حاليًا."}`;
-    }
-    if (text.includes("مصدر") || text.includes("رابط") || text.includes("جهة")) {
-        return `الجهة المسؤولة: ${service.authority || "غير محددة في السجل"}\nالمصدر: ${service.official_source || "غير متاح"}`;
-    }
-    return `${service.name}\n${service.description || "لا يوجد وصف مؤكد منشور حاليًا."}\n\nيمكنك سؤالي عن المستندات أو الخطوات أو شروط الاستفادة.`;
-}
-
 function AssistantWidget() {
     const location = useLocation();
     const [open, setOpen] = useState(false);
@@ -40,9 +19,9 @@ function AssistantWidget() {
     useEffect(() => {
         let cancelled = false;
         async function loadContext() {
-            const query = serviceId ? `?service_id=${serviceId}` : "";
+            const query = serviceId ? \`?service_id=\${serviceId}\` : "";
             try {
-                const response = await fetch(`${API_BASE_URL}/assistant/context${query}`);
+                const response = await fetch(\`\${API_BASE_URL}/assistant/context\${query}\`);
                 if (!response.ok) throw new Error("context unavailable");
                 const data = await response.json();
                 if (!cancelled) setContext(data);
@@ -54,39 +33,88 @@ function AssistantWidget() {
         return () => { cancelled = true; };
     }, [serviceId, location.pathname]);
 
-    function submitQuestion(event) {
+    async function submitQuestion(event) {
         event.preventDefault();
         const trimmed = question.trim();
         if (!trimmed || loading) return;
-        setLoading(true);
-        const answer = answerFromContext(trimmed, context);
-        setMessages((items) => [...items, { role: "user", text: trimmed }, { role: "assistant", text: answer }]);
+
+        setMessages((items) => [...items, { role: "user", text: trimmed }]);
         setQuestion("");
-        setLoading(false);
+        setLoading(true);
+
+        try {
+            const response = await fetch(\`\${API_BASE_URL}/assistant/ask\`, {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({
+                    question: trimmed,
+                    service_id: serviceId ? Number(serviceId) : undefined,
+                }),
+            });
+            const data = await response.json().catch(() => ({}));
+            if (!response.ok) {
+                throw new Error(data.detail || "تعذر الحصول على إجابة حاليًا. حاول مرة أخرى.");
+            }
+            setMessages((items) => [...items, {
+                role: "assistant",
+                text: data.answer || "لم أتمكن من تكوين إجابة واضحة من المعلومات المتاحة.",
+                suggestions: data.suggestions || [],
+            }]);
+        } catch (error) {
+            setMessages((items) => [...items, {
+                role: "assistant",
+                text: error.message || "في مشكلة في الاتصال. تأكد من الإنترنت وحاول مرة أخرى.",
+            }]);
+        } finally {
+            setLoading(false);
+        }
     }
 
     return (
-        <aside className={`assistant-widget ${open ? "is-open" : ""}`} dir="rtl" aria-label="مساعد سَنَد">
+        <aside className={\`assistant-widget \${open ? "is-open" : ""}\`} dir="rtl" aria-label="مساعد سَنَد">
             {open && (
                 <div className="assistant-panel">
                     <header className="assistant-header">
                         <div>
                             <strong>مساعد سَنَد</strong>
-                            <small>شرح مبني على المعلومات المنشورة</small>
+                            <small>{serviceId ? "مساعدك في فهم الخدمة المفتوحة" : "اسأل عن الخدمات الحكومية والمعلومات المنشورة"}</small>
                         </div>
                         <button type="button" onClick={() => setOpen(false)} aria-label="إغلاق المساعد"><X size={18} /></button>
                     </header>
                     <div className="assistant-messages" aria-live="polite">
-                        {messages.length === 0 && <p className="assistant-empty">اسألني عن الخدمة المفتوحة أو افتح صفحة خدمة لأشرحها لك.</p>}
+                        {messages.length === 0 && (
+                            <p className="assistant-empty">
+                                {context?.service
+                                    ? \`أهلًا بيك! أقدر أشرح لك خدمة \${context.service.name}. اسأل عن الأوراق أو الشروط أو الخطوات.\`
+                                    : "أهلًا بيك! اكتب اسم الخدمة أو اسألني عن الأوراق والشروط والخطوات."}
+                            </p>
+                        )}
                         {messages.map((message, index) => (
-                            <p key={`${message.role}-${index}`} className={`assistant-message ${message.role}`}>{message.text}</p>
+                            <div key={\`\${message.role}-\${index}\`} className={\`assistant-message-wrap \${message.role}\`}>
+                                <p className={\`assistant-message \${message.role}\`}>{message.text}</p>
+                                {message.suggestions?.length > 0 && (
+                                    <div className="assistant-suggestions">
+                                        <strong>خدمات مرتبطة:</strong>
+                                        {message.suggestions.map((item) => (
+                                            <a key={item.id} href={\`/services/\${item.id}\`}>{item.name}</a>
+                                        ))}
+                                    </div>
+                                )}
+                            </div>
                         ))}
+                        {loading && <p className="assistant-message assistant" role="status">سَنَد بيراجع المعلومات المنشورة...</p>}
                     </div>
                     <form className="assistant-form" onSubmit={submitQuestion}>
-                        <input value={question} onChange={(event) => setQuestion(event.target.value)} placeholder="اسأل عن المستندات أو الخطوات..." aria-label="سؤال للمساعد" />
+                        <input
+                            value={question}
+                            onChange={(event) => setQuestion(event.target.value)}
+                            placeholder="مثال: عايز أطلع بطاقة، أحتاج إيه؟"
+                            aria-label="سؤال للمساعد"
+                            maxLength={1000}
+                        />
                         <button type="submit" disabled={!question.trim() || loading} aria-label="إرسال السؤال"><Send size={17} /></button>
                     </form>
-                    <small className="assistant-disclaimer">{context?.disclaimer || "راجع المصدر الرسمي دائمًا؛ المساعد ليس جهة حكومية."}</small>
+                    <small className="assistant-disclaimer">{context?.disclaimer || "الإجابات من المعلومات المنشورة فقط؛ راجع المصدر الرسمي دائمًا."}</small>
                 </div>
             )}
             {!open && <button type="button" className="assistant-launcher" onClick={() => setOpen(true)} aria-label="فتح مساعد سَنَد"><MessageCircle size={23} /><span>اسأل سَنَد</span></button>}
