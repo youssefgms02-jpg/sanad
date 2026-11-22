@@ -59,6 +59,9 @@ function AssistantWidget() {
                 role: "assistant",
                 text: data.answer || "لم أتمكن من تكوين إجابة واضحة من المعلومات المتاحة.",
                 suggestions: data.suggestions || [],
+                sources: data.sources || [],
+                webSearchEnabled: Boolean(data.web_search_enabled),
+                disclaimer: data.disclaimer || "",
             }]);
         } catch (error) {
             setMessages((items) => [...items, {
@@ -92,6 +95,20 @@ function AssistantWidget() {
                         {messages.map((message, index) => (
                             <div key={`${message.role}-${index}`} className={`assistant-message-wrap ${message.role}`}>
                                 <p className={`assistant-message ${message.role}`}>{message.text}</p>
+                                {message.sources?.length > 0 && (
+                                    <div className="assistant-suggestions assistant-sources">
+                                        <strong>مصادر من الإنترنت:</strong>
+                                        {message.sources.map((source, sourceIndex) => (
+                                            <a key={source.url || sourceIndex} href={source.url} target="_blank" rel="noopener noreferrer">
+                                                {source.official_hint ? "مصدر حكومي محتمل: " : ""}{source.title}
+                                            </a>
+                                        ))}
+                                    </div>
+                                )}
+                                {message.webSearchEnabled && message.sources?.length === 0 && (
+                                    <small className="assistant-source-status">لم تظهر نتائج ويب مناسبة لهذا السؤال.</small>
+                                )}
+                                {message.disclaimer && <small className="assistant-source-status">{message.disclaimer}</small>}
                                 {message.suggestions?.length > 0 && (
                                     <div className="assistant-suggestions">
                                         <strong>خدمات مرتبطة:</strong>
