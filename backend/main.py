@@ -539,7 +539,7 @@ def ask_assistant(
             "service": None,
             "suggestions": [],
             "sources": web_results,
-            "web_search_enabled": bool(os.getenv("SANAD_BRAVE_SEARCH_API_KEY", "").strip()),
+            "web_search_enabled": bool(os.getenv("SANAD_TAVILY_API_KEY", "").strip()),
             "disclaimer": "نتائج الإنترنت قد تتغير أو تكون غير رسمية. تحقق من الجهة الحكومية صاحبة الخدمة.",
         }
 
@@ -595,7 +595,7 @@ def ask_assistant(
             for item in related
         ],
         "sources": web_results,
-        "web_search_enabled": bool(os.getenv("SANAD_BRAVE_SEARCH_API_KEY", "").strip()),
+        "web_search_enabled": bool(os.getenv("SANAD_TAVILY_API_KEY", "").strip()),
         "disclaimer": (
             "معلومات سَنَد المنشورة منفصلة عن نتائج البحث الخارجي. "
             "الأولوية للموقع الرسمي، وتأكد من تاريخ القرار وشروط الجهة قبل التقديم."
