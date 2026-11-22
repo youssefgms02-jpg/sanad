@@ -104,3 +104,34 @@ export async function fetchPublicService(serviceId, options = {}) {
         return { service, offline: true, cachedAt: cached.updatedAt || null };
     }
 }
+
+const LOCATION_CACHE_PREFIX = "sanad-service-locations-v1:";
+
+export async function fetchPublicServiceLocations(serviceId, options = {}) {
+    const cacheKey = LOCATION_CACHE_PREFIX + serviceId;
+    try {
+        const response = await fetch(
+            API_BASE_URL + "/services/" + encodeURIComponent(serviceId) + "/locations",
+            { signal: options.signal }
+        );
+        if (!response.ok) throw new Error("تعذر تحميل أماكن الحصول على الخدمة.");
+        const data = await response.json();
+        try {
+            localStorage.setItem(cacheKey, JSON.stringify({
+                locations: Array.isArray(data.locations) ? data.locations : [],
+                map_search_url: data.map_search_url || null,
+                updatedAt: new Date().toISOString(),
+            }));
+        } catch {}
+        return { ...data, offline: false };
+    } catch (error) {
+        if (error.name === "AbortError") throw error;
+        try {
+            const cached = JSON.parse(localStorage.getItem(cacheKey) || "null");
+            if (cached && Array.isArray(cached.locations)) {
+                return { ...cached, offline: true, cachedAt: cached.updatedAt || null };
+            }
+        } catch {}
+        throw error;
+    }
+}
