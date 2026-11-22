@@ -58,7 +58,11 @@ def search_score(service, normalized_query):
     eligibility = normalize_search_text(service.eligibility)
     documents = normalize_search_text(service.documents)
     steps = normalize_search_text(service.steps)
-    searchable = f"{name} {description} {authority} {eligibility} {documents} {steps}"
+    extended = " ".join(normalize_search_text(getattr(service, field, "")) for field in (
+        "fees", "processing_time", "application_methods", "follow_up",
+        "appeals", "faqs", "practical_tips",
+    ))
+    searchable = f"{name} {description} {authority} {eligibility} {documents} {steps} {extended}"
 
     score = 100 if normalized_query in name else (45 if normalized_query in searchable else 0)
     query_words = normalized_query.split()
