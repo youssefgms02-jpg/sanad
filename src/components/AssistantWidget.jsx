@@ -19,9 +19,9 @@ function AssistantWidget() {
     useEffect(() => {
         let cancelled = false;
         async function loadContext() {
-            const query = serviceId ? \`?service_id=\${serviceId}\` : "";
+            const query = serviceId ? `?service_id=${serviceId}` : "";
             try {
-                const response = await fetch(\`\${API_BASE_URL}/assistant/context\${query}\`);
+                const response = await fetch(`${API_BASE_URL}/assistant/context${query}`);
                 if (!response.ok) throw new Error("context unavailable");
                 const data = await response.json();
                 if (!cancelled) setContext(data);
@@ -43,7 +43,7 @@ function AssistantWidget() {
         setLoading(true);
 
         try {
-            const response = await fetch(\`\${API_BASE_URL}/assistant/ask\`, {
+            const response = await fetch(`${API_BASE_URL}/assistant/ask`, {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({
@@ -71,7 +71,7 @@ function AssistantWidget() {
     }
 
     return (
-        <aside className={\`assistant-widget \${open ? "is-open" : ""}\`} dir="rtl" aria-label="مساعد سَنَد">
+        <aside className={`assistant-widget ${open ? "is-open" : ""}`} dir="rtl" aria-label="مساعد سَنَد">
             {open && (
                 <div className="assistant-panel">
                     <header className="assistant-header">
@@ -85,18 +85,18 @@ function AssistantWidget() {
                         {messages.length === 0 && (
                             <p className="assistant-empty">
                                 {context?.service
-                                    ? \`أهلًا بيك! أقدر أشرح لك خدمة \${context.service.name}. اسأل عن الأوراق أو الشروط أو الخطوات.\`
+                                    ? `أهلًا بيك! أقدر أشرح لك خدمة ${context.service.name}. اسأل عن الأوراق أو الشروط أو الخطوات.`
                                     : "أهلًا بيك! اكتب اسم الخدمة أو اسألني عن الأوراق والشروط والخطوات."}
                             </p>
                         )}
                         {messages.map((message, index) => (
-                            <div key={\`\${message.role}-\${index}\`} className={\`assistant-message-wrap \${message.role}\`}>
-                                <p className={\`assistant-message \${message.role}\`}>{message.text}</p>
+                            <div key={`${message.role}-${index}`} className={`assistant-message-wrap ${message.role}`}>
+                                <p className={`assistant-message ${message.role}`}>{message.text}</p>
                                 {message.suggestions?.length > 0 && (
                                     <div className="assistant-suggestions">
                                         <strong>خدمات مرتبطة:</strong>
                                         {message.suggestions.map((item) => (
-                                            <a key={item.id} href={\`/services/\${item.id}\`}>{item.name}</a>
+                                            <a key={item.id} href={`/services/${item.id}`}>{item.name}</a>
                                         ))}
                                     </div>
                                 )}
