@@ -1,15 +1,14 @@
 """Apply reviewed extended guidance to existing published services.
 
-This script is intentionally explicit and idempotent. It updates only the
-extended guidance fields and source URLs for records whose id and name match.
-It never changes publication status or core service text.
-Run only after the matching database migration has added the extended columns.
+Updates only extended guidance fields and official source URLs for records whose
+id and name match. It never changes publication status or core service text.
+Run only after the database migration has added the extended columns.
 """
 import json
 from datetime import datetime, timezone
 from pathlib import Path
 
-from sqlalchemy import inspect
+from sqlalchemy import text
 
 from database import SessionLocal
 from models import Service
@@ -33,21 +32,20 @@ def main():
     if not records:
         raise SystemExit("No reviewed service records found.")
 
-    inspector = inspect(Service.__table__.metadata.bind) if Service.__table__.metadata.bind else None
-    # The migration must have been applied before this script is run.
     db = SessionLocal()
     try:
-        columns = {column["name"] for column in db.connection().execute(
-            __import__("sqlalchemy").text(
-                "SELECT column_name AS name FROM information_schema.columns "
-                "WHERE table_name = 'services' AND table_schema = current_schema()"
-            )
-        ).mappings().all()}
+        columns = {
+            column["name"]
+            for column in db.connection().execute(
+                text(
+                    "SELECT column_name AS name FROM information_schema.columns "
+                    "WHERE table_name = 'services' AND table_schema = current_schema()"
+                )
+            ).mappings().all()
+        }
         missing = [field for field in EXTENDED_FIELDS if field not in columns]
         if missing:
-            raise SystemExit(
-                "Database migration is missing columns: " + ", ".join(missing)
-            )
+            raise SystemExit("Database migration is missing columns: " + ", ".join(missing))
 
         updated = []
         for item in records:
@@ -55,20 +53,16 @@ def main():
             if service is None:
                 raise SystemExit(f"Service id {item['service_id']} does not exist.")
             if service.name != item["service_name"]:
-                raise SystemExit(
-                    f"Service id {item['service_id']} name mismatch: {service.name!r}"
-                )
+                raise SystemExit(f"Service id {item['service_id']} name mismatch: {service.name!r}")
             if service.status != "published":
-                raise SystemExit(
-                    f"Service id {item['service_id']} is not published; refusing update."
-                )
+                raise SystemExit(f"Service id {item['service_id']} is not published; refusing update.")
 
             for field in EXTENDED_FIELDS:
                 value = item.get(field)
+                if isinstance(value, (list, dict)):
+                    value = json.dumps(value, ensure_ascii=False, indent=2)
                 if not isinstance(value, str) or not value.strip():
-                    raise SystemExit(
-                        f"Service id {item['service_id']} has an empty {field} field."
-                    )
+                    raise SystemExit(f"Service id {item['service_id']} has an empty {field} field.")
                 setattr(service, field, value.strip())
 
             existing_urls = [
