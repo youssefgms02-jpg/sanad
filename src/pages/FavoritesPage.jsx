@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import Navbar from "../components/Navbar";
 import API_BASE_URL from "../api";
+import { fetchPublicServices } from "../utils/publicServices";
 import { getFavoriteIds } from "../utils/favorites";
 
 function FavoritesPage() {
@@ -9,24 +10,28 @@ function FavoritesPage() {
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState("");
     const [accountSynced, setAccountSynced] = useState(false);
+    const [offline, setOffline] = useState(false);
 
     useEffect(() => {
         const controller = new AbortController();
         async function load() {
             try {
-                const authResponse = await fetch(`${API_BASE_URL}/auth/me`, { credentials: "include", signal: controller.signal });
                 let ids = getFavoriteIds();
-                if (authResponse.ok) {
-                    const favoritesResponse = await fetch(`${API_BASE_URL}/me/favorites`, { credentials: "include", signal: controller.signal });
-                    if (favoritesResponse.ok) {
-                        const saved = await favoritesResponse.json();
-                        ids = saved.service_ids || [];
-                        setAccountSynced(true);
+                try {
+                    const authResponse = await fetch(`${API_BASE_URL}/auth/me`, { credentials: "include", signal: controller.signal });
+                    if (authResponse.ok) {
+                        const favoritesResponse = await fetch(`${API_BASE_URL}/me/favorites`, { credentials: "include", signal: controller.signal });
+                        if (favoritesResponse.ok) {
+                            const saved = await favoritesResponse.json();
+                            ids = saved.service_ids || [];
+                            setAccountSynced(true);
+                        }
                     }
+                } catch {
+                    // If the network is unavailable, continue with device-only favorites.
                 }
-                const response = await fetch(`${API_BASE_URL}/services`, { signal: controller.signal });
-                if (!response.ok) throw new Error("تعذر تحميل الخدمات المحفوظة.");
-                const data = await response.json();
+                const data = await fetchPublicServices({}, { signal: controller.signal });
+                setOffline(Boolean(data.offline));
                 const selected = new Set(ids.map(Number));
                 setServices((data.services || []).filter((service) => selected.has(Number(service.id))));
             } catch (err) {
@@ -48,6 +53,7 @@ function FavoritesPage() {
                 <p>{accountSynced ? "هذه المفضلة متزامنة مع حسابك ويمكن الوصول إليها بعد تسجيل الدخول من جهاز آخر." : "الخدمات المحفوظة على هذا الجهاز فقط. سجّل الدخول لمزامنتها بين أجهزتك."}</p>
                 {loading && <p role="status">جاري تحميل المفضلة...</p>}
                 {error && <p role="alert">{error}</p>}
+                {offline && <p className="offline-data-note" role="status">أنت غير متصل. المفضلة تعرض الخدمات التي سبق حفظ بياناتها على هذا الجهاز.</p>}
                 {!loading && !error && services.length === 0 && (
                     <div className="empty-favorites"><h2>لسه ما حفظتش خدمات</h2><p>افتح أي خدمة واضغط «حفظ في المفضلة» للرجوع إليها بسهولة.</p><Link to="/">استكشف الخدمات</Link></div>
                 )}

@@ -1,7 +1,8 @@
 import { useParams, Link } from "react-router-dom";
 import { useState, useEffect } from "react";
-import Navbar from "./Navbar";
+import Navbar from "../components/Navbar";
 import API_BASE_URL from "../api";
+import { fetchPublicService, fetchPublicServiceLocations } from "../utils/publicServices";
 import { Heart, Share2 } from "lucide-react";
 import { isFavorite, toggleFavorite, syncFavoritesToAccount } from "../utils/favorites";
 
@@ -19,9 +20,24 @@ function getSourceUrls(value) {
     return [...new Set(matches.map((url) => url.replace(/[.,،؛:!?)}\]»]+$/g, "")))];
 }
 
+function parseFaqs(value) {
+    const raw = displayText(value).trim();
+    if (!raw) return [];
+    try {
+        const parsed = JSON.parse(raw);
+        return Array.isArray(parsed)
+            ? parsed.filter((item) => item && typeof item === "object" && (item.question || item.answer))
+            : [];
+    } catch {
+        return [];
+    }
+}
+
 function ServiceDetails() {
     const { serviceId } = useParams();
     const [service, setService] = useState(null);
+    const [locations, setLocations] = useState([]);
+    const [mapSearchUrl, setMapSearchUrl] = useState(null);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState("");
     const [reportOpen, setReportOpen] = useState(false);
@@ -30,6 +46,7 @@ function ServiceDetails() {
     const [reportSending, setReportSending] = useState(false);
     const [reportFeedback, setReportFeedback] = useState("");
     const [favorite, setFavorite] = useState(() => isFavorite(serviceId));
+    const [offline, setOffline] = useState(false);
 
     useEffect(() => {
         const syncFavorites = () => setFavorite(isFavorite(serviceId));
@@ -90,10 +107,24 @@ function ServiceDetails() {
             setLoading(true);
             setError("");
             try {
-                const response = await fetch(`${API_BASE_URL}/services/${serviceId}`);
-                if (!response.ok) throw new Error("تعذر العثور على الخدمة");
-                const data = await response.json();
-                if (!cancelled) setService(data);
+                const data = await fetchPublicService(serviceId);
+                if (!cancelled) {
+                    setService(data.service);
+                    setOffline(Boolean(data.offline));
+                }
+                try {
+                    const locationsData = await fetchPublicServiceLocations(serviceId);
+                    if (!cancelled) {
+                        setLocations(locationsData.locations || []);
+                        setMapSearchUrl(locationsData.map_search_url || null);
+                        if (locationsData.offline) setOffline(true);
+                    }
+                } catch {
+                    if (!cancelled) {
+                        setLocations([]);
+                        setMapSearchUrl(null);
+                    }
+                }
             } catch (err) {
                 if (!cancelled) setError(err.message);
             } finally {
@@ -105,6 +136,7 @@ function ServiceDetails() {
     }, [serviceId]);
 
     const sources = service ? getSourceUrls(service.official_source) : [];
+    const faqItems = service ? parseFaqs(service.faqs) : [];
 
     return (
         <>
@@ -116,6 +148,10 @@ function ServiceDetails() {
                     </div>
                     {loading && <p>جاري تحميل تفاصيل الخدمة...</p>}
                     {error && <p role="alert">{error}</p>}
+                    {offline && <p className="offline-data-note" role="status">أنت غير متصل. تفاصيل الخدمة محفوظة سابقًا وقد تحتاج إلى مراجعة أحدث مصدر رسمي.</p>}
+                    {!loading && !error && service?.freshness?.status === "stale" && (
+                        <p className="offline-data-note" role="status">مرّ أكثر من {service.freshness.max_age_days} يومًا على آخر مراجعة مسجلة. راجع المصدر الرسمي قبل التقديم.</p>
+                    )}
                     {!loading && !error && service && (
                         <>
                             <h1>{service.name}</h1>
@@ -145,6 +181,57 @@ function ServiceDetails() {
                                 <section className="service-info-block">
                                     <h3>خطوات الحصول على الخدمة</h3>
                                     <p>{displayText(service.steps) || "يرجى اتباع التعليمات المنشورة لدى الجهة الرسمية."}</p>
+                                </section>
+                                {[
+                                    ["الرسوم والتكلفة", service.fees],
+                                    ["المدة المتوقعة", service.processing_time],
+                                    ["طرق التقديم", service.application_methods],
+                                    ["متابعة الطلب", service.follow_up],
+                                    ["التظلمات والشكاوى", service.appeals],
+                                    ["نصائح مهمة قبل التقديم", service.practical_tips],
+                                ].filter(([, value]) => value && String(value).trim()).map(([heading, value]) => (
+                                    <section className="service-info-block" key={heading}>
+                                        <h3>{heading}</h3>
+                                        <p>{displayText(value)}</p>
+                                    </section>
+                                ))}
+                                {faqItems.length > 0 && (
+                                    <section className="service-info-block service-faq-block">
+                                        <h3>أسئلة شائعة</h3>
+                                        <div className="service-faq-list">
+                                            {faqItems.map((faq, index) => (
+                                                <article className="service-faq-item" key={index}>
+                                                    {faq.question && <h4>{displayText(faq.question)}</h4>}
+                                                    {faq.answer && <p>{displayText(faq.answer)}</p>}
+                                                </article>
+                                            ))}
+                                        </div>
+                                    </section>
+                                )}
+                                <section className="service-locations-block">
+                                    <h3>أماكن الحصول على الخدمة</h3>
+                                    {locations.length > 0 ? (
+                                        <div className="service-locations-list">
+                                            {locations.map((location) => (
+                                                <article className="service-location-card" key={location.id}>
+                                                    <strong>{location.name}</strong>
+                                                    <p>{location.address}</p>
+                                                    {location.working_hours && <p>مواعيد العمل: {location.working_hours}</p>}
+                                                    {location.phone && <p>الهاتف: {location.phone}</p>}
+                                                    <div className="service-location-actions">
+                                                        <a href={location.official_source} target="_blank" rel="noopener noreferrer">المصدر الرسمي</a>
+                                                        {location.map_url && <a href={location.map_url} target="_blank" rel="noopener noreferrer">فتح الخريطة</a>}
+                                                    </div>
+                                                </article>
+                                            ))}
+                                        </div>
+                                    ) : (
+                                        <>
+                                            <p>لا توجد فروع موثقة منشورة لهذه الخدمة حاليًا.</p>
+                                            {mapSearchUrl && <a className="service-map-search-link" href={mapSearchUrl} target="_blank" rel="noopener noreferrer">البحث عن أماكن قريبة في الخريطة</a>}
+                                            <p className="service-source-note">نتيجة الخريطة بحث عام وليست إثباتًا لعنوان رسمي؛ تأكد من الجهة قبل الذهاب.</p>
+                                        </>
+                                    )}
                                 </section>
                                 {reportOpen && (
                                     <form className="service-report-form" onSubmit={submitReport}>

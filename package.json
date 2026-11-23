@@ -1,21 +1,32 @@
 {
   "name": "sanad",
   "private": true,
-  "version": "0.2.0",
+  "version": "1.0.0",
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "build": "vite build",
-    "preview": "vite preview"
+    "build": "node scripts/write-build-version.mjs && vite build",
+    "preview": "vite preview",
+    "cap:sync": "npm run build && cap sync android",
+    "tauri": "tauri",
+    "tauri:build": "tauri build"
   },
   "dependencies": {
+    "@capacitor/android": "^8.6.0",
+    "@capacitor/core": "^8.6.0",
+    "@tauri-apps/api": "^2.12.4",
+    "@tauri-apps/plugin-process": "^2.4.0",
+    "@tauri-apps/plugin-updater": "^2.14.1",
     "lucide-react": "^0.468.0",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
     "react-router-dom": "^7.18.5"
   },
   "devDependencies": {
+    "@capacitor/cli": "^8.6.0",
+    "@tauri-apps/cli": "^2.12.4",
     "@vitejs/plugin-react": "^4.3.4",
+    "typescript": "^7.0.2",
     "vite": "^6.0.7"
   }
 }

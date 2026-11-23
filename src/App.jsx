@@ -1,12 +1,15 @@
 import { Routes, Route } from "react-router-dom";
 
-import CategoryPage from "./components/CategoryPage";
-import ServiceDetails from "./components/ServiceDetails";
+import CategoryPage from "./pages/CategoryPage";
+import ServiceDetails from "./pages/ServiceDetails";
 import Navbar from "./components/Navbar";
 import Services from "./components/Services";
 import Hero from "./components/Hero";
 import PopularServices from "./components/PopularServices";
 import EmergencyInfo from "./components/EmergencyInfo";
+import AssistantWidget from "./components/AssistantWidget";
+import "./components/AssistantWidget.css";
+import UpdateNotice from "./components/UpdateNotice";
 
 import AdminDashboard from "./pages/AdminDashboard";
 import FavoritesPage from "./pages/FavoritesPage";
@@ -19,7 +22,7 @@ function Home() {
     return (
         <>
             <Navbar />
-            <main>
+            <main className="home-page">
                 <Hero />
                 <Services />
                 <PopularServices />
@@ -31,17 +34,21 @@ function Home() {
 
 function App() {
     return (
-        <Routes>
-            <Route path="/" element={<Home />} />
-            <Route path="/categories/:categoryId" element={<CategoryPage />} />
-            <Route path="/services/:serviceId" element={<ServiceDetails />} />
-            <Route path="/favorites" element={<FavoritesPage />} />
-            <Route path="/about" element={<AboutPage />} />
-            <Route path="/settings" element={<SettingsPage />} />
-            <Route path="/account" element={<AccountPage />} />
-            <Route path="/admin" element={<AdminDashboard />} />
-            <Route path="*" element={<NotFoundPage />} />
-        </Routes>
+        <>
+            <Routes>
+                <Route path="/" element={<Home />} />
+                <Route path="/categories/:categoryId" element={<CategoryPage />} />
+                <Route path="/services/:serviceId" element={<ServiceDetails />} />
+                <Route path="/favorites" element={<FavoritesPage />} />
+                <Route path="/about" element={<AboutPage />} />
+                <Route path="/settings" element={<SettingsPage />} />
+                <Route path="/account" element={<AccountPage />} />
+                <Route path="/admin" element={<AdminDashboard />} />
+                <Route path="*" element={<NotFoundPage />} />
+            </Routes>
+            <AssistantWidget />
+            <UpdateNotice />
+        </>
     );
 }
 

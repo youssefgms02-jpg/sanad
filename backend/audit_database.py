@@ -21,7 +21,7 @@ REPORT_PATH = Path(__file__).resolve().parent / "service_audit_report.json"
 
 VALID_CATEGORIES = {
     "government", "education", "support",
-    "accessibility", "opportunities", "business",
+    "accessibility", "opportunities", "business", "banking",
 }
 VALID_STATUSES = {"draft", "published"}
 REQUIRED_FIELDS = ("name", "description", "category")

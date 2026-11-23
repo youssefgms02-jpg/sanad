@@ -1,6 +1,6 @@
 import { useState } from "react";
 import {
-    LayoutDashboard, Plus, RefreshCw, Search, LogOut, Pencil, Trash2,
+    LayoutDashboard, Plus, RefreshCw, Search, LogOut, Pencil, Archive,
     Eye, EyeOff, X, CheckCircle2, FileText,
 } from "lucide-react";
 import API_BASE_URL from "../api";
@@ -13,11 +13,12 @@ const categoryLabels = {
     accessibility: "ذوو الإعاقة وكبار السن",
     opportunities: "الفرص والمبادرات",
     business: "دعم المشروعات الصغيرة",
+    banking: "الخدمات البنكية",
 };
 
 const emptyForm = {
     name: "", description: "", category: "government", authority: "",
-    eligibility: "", documents: "", steps: "", official_source: "",
+    eligibility: "", documents: "", steps: "", fees: "", processing_time: "", application_methods: "", follow_up: "", appeals: "", faqs: "", practical_tips: "", official_source: "",
 };
 
 function getSourceUrls(value) {
@@ -34,6 +35,7 @@ function AdminDashboard() {
     const [dashboard, setDashboard] = useState(null);
     const [services, setServices] = useState([]);
     const [reports, setReports] = useState([]);
+    const [auditLogs, setAuditLogs] = useState([]);
     const [filter, setFilter] = useState("all");
     const [search, setSearch] = useState("");
     const [showForm, setShowForm] = useState(false);
@@ -55,14 +57,16 @@ function AdminDashboard() {
         setLoading(true);
         setError("");
         try {
-            const [stats, result, reportResult] = await Promise.all([
+            const [stats, result, reportResult, auditResult] = await Promise.all([
                 apiRequest("/admin/dashboard"),
                 apiRequest(currentFilter === "all" ? "/admin/services" : `/admin/services?status=${currentFilter}`),
                 apiRequest("/admin/reports"),
+                apiRequest("/admin/audit-logs"),
             ]);
             setDashboard(stats);
             setServices(result.services || []);
             setReports(reportResult.reports || []);
+            setAuditLogs(auditResult.logs || []);
             setAuthenticated(true);
         } catch (err) {
             setError(err.message);
@@ -88,6 +92,7 @@ function AdminDashboard() {
         setDashboard(null);
         setServices([]);
         setReports([]);
+        setAuditLogs([]);
         setError("");
     }
 
@@ -108,6 +113,13 @@ function AdminDashboard() {
             eligibility: service.eligibility || "",
             documents: service.documents || "",
             steps: service.steps || "",
+            fees: service.fees || "",
+            processing_time: service.processing_time || "",
+            application_methods: service.application_methods || "",
+            follow_up: service.follow_up || "",
+            appeals: service.appeals || "",
+            faqs: service.faqs || "",
+            practical_tips: service.practical_tips || "",
             official_source: service.official_source || "",
         });
         setShowForm(true);
@@ -130,6 +142,13 @@ function AdminDashboard() {
                 eligibility: form.eligibility || null,
                 documents: form.documents || null,
                 steps: form.steps || null,
+                fees: form.fees || null,
+                processing_time: form.processing_time || null,
+                application_methods: form.application_methods || null,
+                follow_up: form.follow_up || null,
+                appeals: form.appeals || null,
+                faqs: form.faqs || null,
+                practical_tips: form.practical_tips || null,
                 official_source: form.official_source || null,
             };
             if (editingId) {
@@ -152,7 +171,7 @@ function AdminDashboard() {
         const messages = {
             publish: "هل راجعت بيانات الخدمة ومصدرها الرسمي وتريد نشرها؟",
             unpublish: "هل تريد إلغاء نشر هذه الخدمة؟",
-            delete: "هل أنت متأكد من حذف الخدمة نهائيًا؟",
+            delete: "سيتم إخفاء الخدمة وتحويلها إلى مسودة دون حذف سجلها. هل تريد المتابعة؟",
         };
         if (!window.confirm(messages[action])) return;
         setError("");
@@ -171,6 +190,15 @@ function AdminDashboard() {
     const visibleServices = services.filter((service) =>
         `${service.name} ${service.description} ${service.category}`.toLowerCase().includes(search.toLowerCase())
     );
+
+    const auditLabels = {
+        service_created: "إضافة خدمة",
+        service_updated: "تعديل خدمة",
+        service_published: "نشر خدمة",
+        service_unpublished: "إلغاء نشر خدمة",
+        service_archived: "إخفاء وأرشفة خدمة",
+        report_status_updated: "تحديث حالة بلاغ",
+    };
 
     async function updateReportStatus(reportId, status) {
         setError("");
@@ -283,7 +311,7 @@ function AdminDashboard() {
                                                     {service.status === "published"
                                                         ? <button title="إلغاء النشر" onClick={() => changeStatus(service, "unpublish")}><EyeOff size={17} /></button>
                                                         : <button title="نشر" onClick={() => changeStatus(service, "publish")}><Eye size={17} /></button>}
-                                                    <button className="delete-action" title="حذف" onClick={() => changeStatus(service, "delete")}><Trash2 size={17} /></button>
+                                                    <button className="delete-action" title="إخفاء وأرشفة" onClick={() => changeStatus(service, "delete")}><Archive size={17} /></button>
                                                 </div>
                                             </td>
                                         </tr>
@@ -323,6 +351,25 @@ function AdminDashboard() {
                 )}
             </section>
 
+            <section className="admin-services-panel admin-audit-panel">
+                <div className="admin-panel-heading">
+                    <div><h2>سجل التغييرات</h2><p>آخر العمليات الإدارية على الخدمات والبلاغات</p></div>
+                </div>
+                {auditLogs.length === 0 ? (
+                    <div className="admin-empty"><p>لا توجد عمليات مسجلة بعد.</p></div>
+                ) : (
+                    <div className="admin-audit-list">
+                        {auditLogs.map((log) => (
+                            <article className="admin-audit-item" key={log.id}>
+                                <strong>{auditLabels[log.action] || log.action}</strong>
+                                <span>{log.service_name ? `${log.service_name} (#${log.service_id})` : log.details}</span>
+                                <time dateTime={log.created_at || undefined}>{log.created_at ? new Date(log.created_at).toLocaleString("ar-EG") : "الآن"}</time>
+                            </article>
+                        ))}
+                    </div>
+                )}
+            </section>
+
             {showForm && (
                 <div className="admin-modal-backdrop">
                     <form className="admin-form-modal" onSubmit={saveService}>
@@ -344,13 +391,21 @@ function AdminDashboard() {
                                     <option value="accessibility">ذوو الإعاقة وكبار السن</option>
                                     <option value="opportunities">الفرص والمبادرات</option>
                                     <option value="business">دعم المشروعات الصغيرة</option>
+                                    <option value="banking">الخدمات البنكية</option>
                                 </select>
                             </label>
                             <label className="full-width">وصف الخدمة *<textarea name="description" value={form.description} onChange={updateForm} minLength={10} required /></label>
                             <label>الجهة المسؤولة<input name="authority" value={form.authority} onChange={updateForm} /></label>
                             <label>شروط الاستفادة<textarea name="eligibility" value={form.eligibility} onChange={updateForm} /></label>
                             <label>الأوراق المطلوبة<textarea name="documents" value={form.documents} onChange={updateForm} /></label>
-                            <label>خطوات الحصول على الخدمة<textarea name="steps" value={form.steps} onChange={updateForm} /></label>
+                            <label className="full-width">خطوات الحصول على الخدمة بالتفصيل<textarea name="steps" value={form.steps} onChange={updateForm} /></label>
+                            <label>الرسوم والتكلفة<textarea name="fees" value={form.fees} onChange={updateForm} placeholder="اكتب القيمة أو وضّح أنها مجانية بمصدر..." /></label>
+                            <label>المدة المتوقعة<textarea name="processing_time" value={form.processing_time} onChange={updateForm} /></label>
+                            <label>طرق التقديم المتاحة<textarea name="application_methods" value={form.application_methods} onChange={updateForm} /></label>
+                            <label>متابعة الطلب<textarea name="follow_up" value={form.follow_up} onChange={updateForm} /></label>
+                            <label>التظلمات والشكاوى<textarea name="appeals" value={form.appeals} onChange={updateForm} /></label>
+                            <label>نصائح عملية<textarea name="practical_tips" value={form.practical_tips} onChange={updateForm} /></label>
+                            <label className="full-width">أسئلة شائعة وإجاباتها<textarea name="faqs" value={form.faqs} onChange={updateForm} /></label>
                             <label className="full-width">روابط المصادر الرسمية (رابط في كل سطر)<textarea name="official_source" value={form.official_source} onChange={updateForm} placeholder="https://..." dir="ltr" /></label>
                         </div>
 

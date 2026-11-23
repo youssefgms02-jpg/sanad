@@ -410,6 +410,36 @@
     border-top: 1px solid #edf2f7;
 }
 
+.admin-audit-list {
+    display: grid;
+    gap: 8px;
+}
+
+.admin-audit-item {
+    display: grid;
+    grid-template-columns: minmax(150px, .7fr) 1fr auto;
+    gap: 12px;
+    align-items: center;
+    padding: 12px 14px;
+    border: 1px solid #e1eaf2;
+    border-radius: 12px;
+    background: #f7fafc;
+}
+
+.admin-audit-item span,
+.admin-audit-item time {
+    color: #718096;
+}
+
+.admin-audit-item span {
+    overflow-wrap: anywhere;
+}
+
+.admin-audit-item time {
+    font-size: .85rem;
+    white-space: nowrap;
+}
+
 @media (max-width: 700px) {
     .admin-page {
         padding: 22px 14px;
@@ -461,5 +491,14 @@
 
     .admin-form-modal {
         padding: 18px;
+    }
+
+    .admin-audit-item {
+        grid-template-columns: 1fr;
+        gap: 5px;
+    }
+
+    .admin-audit-item time {
+        white-space: normal;
     }
 }

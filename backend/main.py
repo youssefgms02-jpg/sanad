@@ -2,10 +2,10 @@
 import os
 import secrets
 import re
-from difflib import SequenceMatcher
+from pathlib import Path
+from dotenv import load_dotenv
 
 from datetime import datetime, timezone, timedelta
-from urllib.parse import urlparse
 
 from fastapi import (
     FastAPI,
@@ -17,12 +17,23 @@ from fastapi import (
 )
 from fastapi.middleware.cors import CORSMiddleware
 from sqlalchemy.orm import Session
+from sqlalchemy import inspect, text
 
 from database import Base, engine, SessionLocal
-from models import Service, ServiceReport, User, AuthSession, UserFavorite
-from schemas import ServiceCreate, ServiceUpdate, ServiceReportCreate, ServiceReportStatusUpdate, AuthRegister, AuthLogin, FavoriteSync
-from source_utils import extract_http_urls, valid_http_url, normalize_arabic_text
+from models import AdminAuditLog, Service, ServiceLocation, ServiceReport, User, AuthSession, UserFavorite
+from schemas import ServiceCreate, ServiceUpdate, ServiceReportCreate, ServiceReportStatusUpdate, AuthRegister, AuthLogin, FavoriteSync, AssistantAsk
+from source_utils import extract_http_urls, normalize_arabic_text
 from auth_utils import hash_password, verify_password, hash_session_token, new_session_token
+from service_rules import validate_service_for_publish
+from service_catalog import search_score, service_to_dict, normalize_search_text
+from assistant_context import build_assistant_context
+from rate_limit import limiter, client_key
+from service_locations import map_search_url
+from assistant_web_search import search_web
+
+
+# اقرأ إعدادات backend/.env حتى عند تشغيل Uvicorn من مجلد مختلف.
+load_dotenv(Path(__file__).resolve().parent / ".env")
 
 
 # =====================================
@@ -36,6 +47,80 @@ app = FastAPI(
 )
 
 Base.metadata.create_all(bind=engine)
+
+
+def ensure_service_detail_columns():
+    """Add richer service fields to existing databases without dropping data."""
+    required = {
+        "fees": "TEXT",
+        "processing_time": "TEXT",
+        "application_methods": "TEXT",
+        "follow_up": "TEXT",
+        "appeals": "TEXT",
+        "faqs": "TEXT",
+        "practical_tips": "TEXT",
+    }
+    with engine.begin() as connection:
+        existing = {column["name"] for column in inspect(connection).get_columns("services")}
+        for name, sql_type in required.items():
+            if name not in existing:
+                connection.execute(text(f"ALTER TABLE services ADD COLUMN {name} {sql_type}"))
+
+
+ensure_service_detail_columns()
+
+
+def normalize_account_name(value: str) -> str:
+    return re.sub(r"\s+", "_", str(value or "").casefold().strip())
+
+
+def ensure_username_column():
+    """Add and backfill usernames for existing SQLite accounts without deleting data."""
+    with engine.begin() as connection:
+        columns = {column["name"] for column in inspect(connection).get_columns("users")}
+        if "username" not in columns:
+            connection.execute(text("ALTER TABLE users ADD COLUMN username VARCHAR(60)"))
+
+        rows = connection.execute(text(
+            "SELECT id, username, display_name, email FROM users ORDER BY id"
+        )).mappings().all()
+        used = set()
+        for row in rows:
+            raw_name = row["username"] or row["display_name"] or ""
+            candidate = normalize_account_name(raw_name)
+            if not candidate:
+                candidate = "user_" + str(row["id"])
+            base = candidate
+            suffix = 1
+            while candidate in used:
+                candidate = base + "_" + str(row["id"]) + "_" + str(suffix)
+                suffix += 1
+            used.add(candidate)
+            connection.execute(
+                text("UPDATE users SET username = :username WHERE id = :user_id"),
+                {"username": candidate[:60], "user_id": row["id"]},
+            )
+
+        connection.execute(text(
+            "CREATE UNIQUE INDEX IF NOT EXISTS ix_users_username_unique ON users(username)"
+        ))
+
+
+ensure_username_column()
+
+
+def enforce_rate_limit(request: Request, bucket: str, limit: int):
+    allowed, retry_after = limiter.allow(
+        client_key(request, bucket),
+        limit=limit,
+        window_seconds=60,
+    )
+    if not allowed:
+        raise HTTPException(
+            status_code=429,
+            detail="محاولات كثيرة خلال وقت قصير. حاول مرة أخرى بعد قليل.",
+            headers={"Retry-After": str(retry_after)},
+        )
 
 
 # =====================================
@@ -73,87 +158,27 @@ def verify_admin_token(
             detail="Unauthorized",
         )
 
+
+def record_admin_event(db, action, service=None, details=None):
+    db.add(AdminAuditLog(
+        action=action,
+        service_id=service.id if service else None,
+        service_name=service.name if service else None,
+        details=details,
+    ))
+
     return True
-
-
-# =====================================
-# تحويل الخدمة إلى JSON
-# =====================================
-
-def service_to_dict(service):
-    return {
-        "id": service.id,
-        "name": service.name,
-        "description": service.description,
-        "category": service.category,
-        "authority": service.authority,
-        "eligibility": service.eligibility,
-        "documents": service.documents,
-        "steps": service.steps,
-        "official_source": service.official_source,
-        "source_urls": extract_http_urls(service.official_source),
-        "last_reviewed": (
-            service.last_reviewed.isoformat()
-            if service.last_reviewed
-            else None
-        ),
-        "status": service.status,
-        "created_at": (
-            service.created_at.isoformat()
-            if service.created_at
-            else None
-        ),
-    }
 
 
 # =====================================
 # التحقق من المصدر الرسمي
 # =====================================
 
-def validate_official_source(source):
-    urls = extract_http_urls(source)
-    if not urls:
-        raise HTTPException(
-            status_code=400,
-            detail="أضف رابطًا رسميًا كاملًا يبدأ بـ https:// قبل النشر",
-        )
-
-    invalid_urls = [
-        url for url in urls
-        if not valid_http_url(url) or urlparse(url).scheme.lower() != "https"
-    ]
-    if invalid_urls:
-        raise HTTPException(
-            status_code=400,
-            detail="كل روابط المصادر يجب أن تكون روابط HTTPS صالحة",
-        )
-
-
-def validate_service_for_publish(service):
-    required = {
-        "authority": "الجهة المسؤولة",
-        "eligibility": "شروط الاستفادة",
-        "documents": "المستندات أو توضيح أن المتطلبات تختلف حسب الحالة",
-        "steps": "خطوات الحصول على الخدمة",
-    }
-    missing = [label for field, label in required.items() if not str(getattr(service, field, "") or "").strip()]
-    if missing:
-        raise HTTPException(
-            status_code=400,
-            detail="لا يمكن نشر الخدمة قبل استكمال: " + "، ".join(missing),
-        )
-    validate_official_source(service.official_source)
-
-
-# =====================================
-# إعدادات CORS
-# =====================================
-
 allowed_origins = [
     origin.strip()
     for origin in os.getenv(
         "SANAD_ALLOWED_ORIGINS",
-        "http://localhost:5173,http://127.0.0.1:5173",
+        "http://localhost:5173,http://127.0.0.1:5173,https://localhost,capacitor://localhost,http://localhost",
     ).split(",")
     if origin.strip()
 ]
@@ -162,7 +187,7 @@ app.add_middleware(
     CORSMiddleware,
     allow_origins=allowed_origins,
     allow_credentials=True,
-    allow_methods=["GET", "POST", "PATCH", "DELETE"],
+    allow_methods=["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
     allow_headers=["Content-Type", "X-Admin-Token", "Authorization"],
 )
 
@@ -194,12 +219,23 @@ AUTH_SESSION_DAYS = 30
 
 
 def user_to_dict(user):
+    email = user.email
+    if email and email.endswith("@accounts.sanad.invalid"):
+        email = None
     return {
         "id": user.id,
         "display_name": user.display_name,
-        "email": user.email,
+        "email": email,
         "created_at": user.created_at.isoformat() if user.created_at else None,
     }
+
+
+def unique_account_name(db: Session, display_name: str) -> str:
+    base = normalize_account_name(display_name)[:48] or "sanad_user"
+    candidate = base
+    while db.query(User).filter(User.username == candidate).first():
+        candidate = base + "_" + secrets.token_hex(3)
+    return candidate[:60]
 
 
 def check_request_origin(request: Request):
@@ -269,10 +305,15 @@ def create_auth_session(user: User, db: Session, response: Response):
 @app.post("/auth/register", status_code=201)
 def register_account(data: AuthRegister, request: Request, response: Response, db: Session = Depends(get_db)):
     check_request_origin(request)
-    email = data.email.lower()
-    if db.query(User).filter(User.email == email).first():
+    enforce_rate_limit(request, "auth-register", 5)
+    username = normalize_account_name(data.display_name)
+    if db.query(User).filter(User.username == username).first():
+        raise HTTPException(status_code=409, detail="الاسم مستخدم بالفعل. جرّب إضافة جزء مميز من اسمك.")
+    email = data.email.lower() if data.email else "account-" + secrets.token_hex(12) + "@accounts.sanad.invalid"
+    if data.email and db.query(User).filter(User.email == email).first():
         raise HTTPException(status_code=409, detail="البريد الإلكتروني مسجل بالفعل")
     user = User(
+        username=username,
         email=email,
         display_name=data.display_name,
         password_hash=hash_password(data.password),
@@ -294,9 +335,14 @@ def register_account(data: AuthRegister, request: Request, response: Response, d
 @app.post("/auth/login")
 def login_account(data: AuthLogin, request: Request, response: Response, db: Session = Depends(get_db)):
     check_request_origin(request)
-    user = db.query(User).filter(User.email == data.email.lower()).first()
+    enforce_rate_limit(request, "auth-login", 10)
+    username = normalize_account_name(data.username)
+    user = db.query(User).filter(User.username == username).first()
+    # التوافق مع الحسابات القديمة التي كانت تسجل الدخول بالبريد الإلكتروني.
+    if not user and "@" in data.username:
+        user = db.query(User).filter(User.email == data.username.lower()).first()
     if not user or not verify_password(data.password, user.password_hash):
-        raise HTTPException(status_code=401, detail="البريد الإلكتروني أو كلمة المرور غير صحيحة")
+        raise HTTPException(status_code=401, detail="الاسم أو كلمة المرور غير صحيحة")
     try:
         create_auth_session(user, db, response)
         return {"user": user_to_dict(user)}
@@ -305,9 +351,12 @@ def login_account(data: AuthLogin, request: Request, response: Response, db: Ses
         raise HTTPException(status_code=500, detail="تعذر تسجيل الدخول حاليًا")
 
 
+
 @app.get("/auth/me")
-def current_account(user: User = Depends(get_current_user)):
-    return {"user": user_to_dict(user)}
+def current_account(request: Request, db: Session = Depends(get_db)):
+    # A visitor without a session is a normal guest state, not an API error.
+    _, user = find_auth_session(request, db)
+    return {"user": user_to_dict(user) if user else None}
 
 
 @app.post("/auth/logout")
@@ -353,46 +402,6 @@ def sync_account_favorites(data: FavoriteSync, request: Request, user: User = De
         db.rollback()
         raise HTTPException(status_code=500, detail="تعذرت مزامنة المفضلة")
 
-
-
-def normalize_search_text(value: str | None) -> str:
-    return normalize_arabic_text(value)
-
-
-def search_score(service, normalized_query: str) -> int:
-    name = normalize_search_text(service.name)
-    description = normalize_search_text(service.description)
-    authority = normalize_search_text(service.authority)
-    eligibility = normalize_search_text(service.eligibility)
-    documents = normalize_search_text(service.documents)
-    steps = normalize_search_text(service.steps)
-    searchable = f"{name} {description} {authority} {eligibility} {documents} {steps}"
-
-    score = 100 if normalized_query in name else (45 if normalized_query in searchable else 0)
-    query_words = normalized_query.split()
-    matched_words = 0
-    candidates = [part for part in searchable.split() if len(part) >= 3]
-
-    for word in query_words:
-        if len(word) < 2:
-            continue
-        if word in name:
-            score += 24
-            matched_words += 1
-        elif word in searchable:
-            score += 10
-            matched_words += 1
-        elif len(word) >= 3 and any(
-            SequenceMatcher(None, word, part).ratio() >= 0.82
-            for part in candidates
-        ):
-            score += 5
-            matched_words += 1
-
-    meaningful_words = [word for word in query_words if len(word) >= 2]
-    if meaningful_words and matched_words == len(meaningful_words):
-        score += 12
-    return score
 
 
 # عرض الخدمات المنشورة مع بحث عربي فوري ونتائج مرتبة حسب الصلة
@@ -451,6 +460,190 @@ def get_service(
     return service_to_dict(service)
 
 
+@app.get("/assistant/context")
+def get_assistant_context(
+    service_id: int | None = None,
+    category: str | None = None,
+    db: Session = Depends(get_db),
+):
+    """Return safe page context; generation is intentionally a separate layer."""
+    if service_id is not None:
+        service = db.query(Service).filter(
+            Service.id == service_id,
+            Service.status == "published",
+        ).first()
+        if not service:
+            raise HTTPException(status_code=404, detail="الخدمة غير موجودة أو غير منشورة")
+        related = db.query(Service).filter(
+            Service.category == service.category,
+            Service.status == "published",
+            Service.id != service.id,
+        ).order_by(Service.id).limit(5).all()
+        return build_assistant_context(service=service, related_services=related)
+
+    if category:
+        related = db.query(Service).filter(
+            Service.category.ilike(category.strip()),
+            Service.status == "published",
+        ).order_by(Service.id).limit(8).all()
+        return build_assistant_context(category=category.strip(), related_services=related)
+
+    related = db.query(Service).filter(
+        Service.status == "published",
+    ).order_by(Service.id).limit(8).all()
+    return build_assistant_context(related_services=related)
+
+
+@app.post("/assistant/ask")
+def ask_assistant(
+    data: AssistantAsk,
+    request: Request,
+    db: Session = Depends(get_db),
+):
+    """Answer from reviewed SANAD data and optionally attach current web sources."""
+    enforce_rate_limit(request, "assistant-ask", 20)
+    question = normalize_search_text(data.question)
+    services = db.query(Service).filter(Service.status == "published").all()
+
+    selected = None
+    if data.service_id is not None:
+        selected = next((item for item in services if item.id == data.service_id), None)
+        if selected is None:
+            raise HTTPException(status_code=404, detail="الخدمة غير موجودة أو غير منشورة")
+
+    stop_words = {
+        "عايز", "عاوزه", "عاوز", "محتاج", "محتاجه", "لو", "سمحت", "من", "فضلك",
+        "ايه", "ما", "هو", "هي", "عن", "في", "على", "ازاي", "كيف", "اعمل",
+        "اعرف", "ممكن", "هل", "ينفع", "اي", "كل", "تفاصيل", "معلومات",
+        "المطلوبه", "المطلوب", "مطلوب", "الخاصه", "الخاصة", "خدمه", "خدمة",
+        "الاوراق", "الورق", "المستندات", "خطوات", "شروط", "شرط",
+    }
+    terms = [word for word in question.split() if len(word) > 1 and word not in stop_words]
+    search_phrase = " ".join(terms) or question
+
+    if selected is None:
+        ranked = [(search_score(item, search_phrase), item) for item in services]
+        ranked = [(score, item) for score, item in ranked if score > 0]
+        ranked.sort(key=lambda pair: (-pair[0], pair[1].id))
+        if ranked:
+            selected = ranked[0][1]
+
+    if selected is None:
+        web_results = search_web(f"{data.question} مصر الموقع الرسمي", count=5)
+        return {
+            "answer": (
+                "مش قادر أحدد خدمة منشورة في سَنَد تطابق سؤالك. "
+                "أرفقت نتائج بحث خارجية إن توفرت؛ اعتبرها نقاط بداية وافتح المصدر بنفسك، "
+                "ولا تعتمد على نتيجة غير رسمية لإتمام إجراء حكومي."
+            ),
+            "service": None,
+            "suggestions": [],
+            "sources": web_results,
+            "web_search_enabled": bool(os.getenv("SANAD_TAVILY_API_KEY", "").strip()),
+            "disclaimer": "نتائج الإنترنت قد تتغير أو تكون غير رسمية. تحقق من الجهة الحكومية صاحبة الخدمة.",
+        }
+
+    details = [
+        ("نبذة عن الخدمة", selected.description),
+        ("الجهة المسؤولة", selected.authority),
+        ("شروط الاستفادة", selected.eligibility),
+        ("المستندات المطلوبة", selected.documents),
+        ("خطوات الحصول على الخدمة", selected.steps),
+        ("الرسوم والتكلفة", selected.fees),
+        ("المدة المتوقعة", selected.processing_time),
+        ("طرق التقديم", selected.application_methods),
+        ("متابعة الطلب", selected.follow_up),
+        ("التظلمات والشكاوى", selected.appeals),
+        ("نصائح مهمة قبل التقديم", selected.practical_tips),
+        ("أسئلة شائعة", selected.faqs),
+    ]
+    sections = []
+    missing = []
+    for label, value in details:
+        value = (value or "").strip()
+        if value:
+            sections.append(f"{label}:\n{value}")
+        else:
+            missing.append(label)
+
+    answer = f"{selected.name}\n\n" + "\n\n".join(sections)
+    if missing:
+        answer += (
+            "\n\nمعلومات لم تُستكمل أو لم يتم توثيقها في سجل سَنَد: "
+            + "، ".join(missing)
+            + ". لن أفترض تفاصيل غير مؤكدة."
+        )
+    answer += (
+        "\n\nالمصدر المسجل للخدمة: "
+        + (selected.official_source or "لم يُضف رابط مصدر في السجل")
+    )
+
+    # Search the web for the named service and the user's specific question.
+    web_results = search_web(
+        f"{selected.name} {data.question} مصر الموقع الرسمي",
+        count=5,
+    )
+    related = [
+        item for item in services
+        if item.category == selected.category and item.id != selected.id
+    ][:4]
+    return {
+        "answer": answer,
+        "service": service_to_dict(selected),
+        "suggestions": [
+            {"id": item.id, "name": item.name, "description": item.description}
+            for item in related
+        ],
+        "sources": web_results,
+        "web_search_enabled": bool(os.getenv("SANAD_TAVILY_API_KEY", "").strip()),
+        "disclaimer": (
+            "معلومات سَنَد المنشورة منفصلة عن نتائج البحث الخارجي. "
+            "الأولوية للموقع الرسمي، وتأكد من تاريخ القرار وشروط الجهة قبل التقديم."
+        ),
+    }
+
+
+@app.get("/services/{service_id}/locations")
+def get_service_locations(
+    service_id: int,
+    db: Session = Depends(get_db),
+):
+    service = db.query(Service).filter(
+        Service.id == service_id,
+        Service.status == "published",
+    ).first()
+    if not service:
+        raise HTTPException(status_code=404, detail="الخدمة غير موجودة أو غير منشورة")
+
+    locations = db.query(ServiceLocation).filter(
+        ServiceLocation.service_id == service_id,
+        ServiceLocation.status == "published",
+    ).order_by(ServiceLocation.id).all()
+    return {
+        "map_search_url": map_search_url(service),
+        "locations": [
+            {
+                "id": location.id,
+                "name": location.name,
+                "address": location.address,
+                "governorate": location.governorate,
+                "latitude": location.latitude,
+                "longitude": location.longitude,
+                "phone": location.phone,
+                "working_hours": location.working_hours,
+                "official_source": location.official_source,
+                "last_verified": location.last_verified.isoformat() if location.last_verified else None,
+                "map_url": (
+                    f"https://www.google.com/maps/search/?api=1&query={location.latitude},{location.longitude}"
+                    if location.latitude and location.longitude else None
+                ),
+            }
+            for location in locations
+        ],
+        "total": len(locations),
+    }
+
+
 # =====================================
 # بلاغات مراجعة معلومات الخدمات
 # =====================================
@@ -469,8 +662,10 @@ def report_to_dict(report):
 @app.post("/reports", status_code=201)
 def create_service_report(
     report_data: ServiceReportCreate,
+    request: Request,
     db: Session = Depends(get_db),
 ):
+    enforce_rate_limit(request, "reports", 5)
     if report_data.service_id is not None:
         service = db.query(Service).filter(
             Service.id == report_data.service_id,
@@ -515,9 +710,29 @@ def update_service_report(
     if not report:
         raise HTTPException(status_code=404, detail="البلاغ غير موجود")
     report.status = status_data.status
+    record_admin_event(db, "report_status_updated", details=f"report_id={report.id};status={report.status}")
     db.commit()
     db.refresh(report)
     return report_to_dict(report)
+
+
+@app.get("/admin/audit-logs")
+def get_admin_audit_logs(
+    db: Session = Depends(get_db),
+    admin: bool = Depends(verify_admin_token),
+):
+    logs = db.query(AdminAuditLog).order_by(AdminAuditLog.id.desc()).limit(100).all()
+    return {"logs": [
+        {
+            "id": log.id,
+            "action": log.action,
+            "service_id": log.service_id,
+            "service_name": log.service_name,
+            "details": log.details,
+            "created_at": log.created_at.isoformat() if log.created_at else None,
+        }
+        for log in logs
+    ]}
 
 
 # =====================================
@@ -619,6 +834,8 @@ def create_service(
 
     try:
         db.add(new_service)
+        db.flush()
+        record_admin_event(db, "service_created", new_service, "saved_as=draft")
         db.commit()
         db.refresh(new_service)
 
@@ -669,12 +886,14 @@ def update_service(
             )
 
     try:
+        previous_status = service.status
         for field, value in updates.items():
             setattr(service, field, value)
 
         # أي تعديل يحتاج مراجعة جديدة قبل إعادة النشر
         service.status = "draft"
         service.last_reviewed = None
+        record_admin_event(db, "service_updated", service, f"fields={','.join(sorted(updates))};previous_status={previous_status}")
 
         db.commit()
         db.refresh(service)
@@ -713,6 +932,7 @@ def publish_service(
 
     service.status = "published"
     service.last_reviewed = datetime.now(timezone.utc)
+    record_admin_event(db, "service_published", service)
 
     db.commit()
     db.refresh(service)
@@ -742,6 +962,7 @@ def unpublish_service(
 
     service.status = "draft"
     service.last_reviewed = None
+    record_admin_event(db, "service_unpublished", service)
 
     db.commit()
     db.refresh(service)
@@ -750,7 +971,7 @@ def unpublish_service(
 
 
 # =====================================
-# لوحة الإدارة - حذف خدمة
+# لوحة الإدارة - أرشفة آمنة بدل الحذف النهائي
 # =====================================
 
 @app.delete("/admin/services/{service_id}")
@@ -770,12 +991,16 @@ def delete_service(
         )
 
     try:
-        db.delete(service)
+        # Keep the record and its relationships for auditability and recovery.
+        service.status = "draft"
+        service.last_reviewed = None
+        record_admin_event(db, "service_archived", service)
         db.commit()
 
         return {
-            "message": "تم حذف الخدمة بنجاح",
+            "message": "تم إخفاء الخدمة وتحويلها إلى مسودة. لم يتم حذف السجل.",
             "service_id": service_id,
+            "status": service.status,
         }
 
     except Exception:

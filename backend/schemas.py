@@ -1,4 +1,3 @@
-
 from pydantic import BaseModel, Field, ConfigDict
 
 
@@ -16,6 +15,13 @@ class ServiceCreate(BaseModel):
     eligibility: str | None = None
     documents: str | None = None
     steps: str | None = None
+    fees: str | None = None
+    processing_time: str | None = None
+    application_methods: str | None = None
+    follow_up: str | None = None
+    appeals: str | None = None
+    faqs: str | None = None
+    practical_tips: str | None = None
     official_source: str | None = None
 
 
@@ -33,6 +39,13 @@ class ServiceUpdate(BaseModel):
     eligibility: str | None = None
     documents: str | None = None
     steps: str | None = None
+    fees: str | None = None
+    processing_time: str | None = None
+    application_methods: str | None = None
+    follow_up: str | None = None
+    appeals: str | None = None
+    faqs: str | None = None
+    practical_tips: str | None = None
     official_source: str | None = None
 
 
@@ -57,7 +70,8 @@ class AuthRegister(BaseModel):
     model_config = ConfigDict(str_strip_whitespace=True, extra="forbid")
 
     display_name: str = Field(min_length=2, max_length=60)
-    email: str = Field(
+    email: str | None = Field(
+        default=None,
         min_length=6,
         max_length=254,
         pattern=r"^[^@\s]+@[^@\s]+\.[^@\s]+$",
@@ -68,7 +82,7 @@ class AuthRegister(BaseModel):
 class AuthLogin(BaseModel):
     model_config = ConfigDict(str_strip_whitespace=True, extra="forbid")
 
-    email: str = Field(min_length=6, max_length=254)
+    username: str = Field(min_length=2, max_length=60)
     password: str = Field(min_length=1, max_length=128)
 
 
@@ -76,3 +90,10 @@ class FavoriteSync(BaseModel):
     model_config = ConfigDict(extra="forbid")
 
     service_ids: list[int] = Field(default_factory=list, max_length=500)
+
+
+class AssistantAsk(BaseModel):
+    model_config = ConfigDict(str_strip_whitespace=True, extra="forbid")
+
+    question: str = Field(min_length=2, max_length=1000)
+    service_id: int | None = Field(default=None, ge=1)

@@ -1,4 +1,3 @@
-
 from sqlalchemy import Column, Integer, String, Text, DateTime, ForeignKey
 from sqlalchemy.sql import func
 
@@ -17,12 +16,36 @@ class Service(Base):
     eligibility = Column(Text)
     documents = Column(Text)
     steps = Column(Text)
+    fees = Column(Text)
+    processing_time = Column(Text)
+    application_methods = Column(Text)
+    follow_up = Column(Text)
+    appeals = Column(Text)
+    faqs = Column(Text)
+    practical_tips = Column(Text)
 
     official_source = Column(String(1000))
     last_reviewed = Column(DateTime(timezone=True))
     status = Column(String(50), default="draft")
 
-    created_at = Column(DateTime(timezone=True), server_default=func.now())
+    created_at = Column(DateTime, server_default=func.now())
+
+
+class ServiceLocation(Base):
+    __tablename__ = "service_locations"
+
+    id = Column(Integer, primary_key=True, index=True)
+    service_id = Column(Integer, ForeignKey("services.id", ondelete="CASCADE"), nullable=False, index=True)
+    name = Column(String(255), nullable=False)
+    address = Column(Text, nullable=False)
+    governorate = Column(String(100), nullable=True)
+    latitude = Column(String(40), nullable=True)
+    longitude = Column(String(40), nullable=True)
+    phone = Column(String(80), nullable=True)
+    working_hours = Column(Text, nullable=True)
+    official_source = Column(String(1000), nullable=False)
+    last_verified = Column(DateTime(timezone=True), nullable=True)
+    status = Column(String(50), default="draft")
 
 
 class ServiceReport(Base):
@@ -36,10 +59,22 @@ class ServiceReport(Base):
     created_at = Column(DateTime(timezone=True), server_default=func.now())
 
 
+class AdminAuditLog(Base):
+    __tablename__ = "admin_audit_logs"
+
+    id = Column(Integer, primary_key=True, index=True)
+    action = Column(String(60), nullable=False, index=True)
+    service_id = Column(Integer, nullable=True, index=True)
+    service_name = Column(String(255), nullable=True)
+    details = Column(Text, nullable=True)
+    created_at = Column(DateTime, server_default=func.now(), index=True)
+
+
 class User(Base):
     __tablename__ = "users"
 
     id = Column(Integer, primary_key=True, index=True)
+    username = Column(String(60), nullable=True)
     email = Column(String(254), nullable=False, unique=True, index=True)
     display_name = Column(String(60), nullable=False)
     password_hash = Column(String(255), nullable=False)

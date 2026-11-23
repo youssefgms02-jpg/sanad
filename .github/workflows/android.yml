@@ -1,0 +1,124 @@
+﻿name: SANAD Android APK
+
+on:
+  workflow_dispatch:
+  push:
+    tags: ["v*.*.*"]
+
+jobs:
+  android-release:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - name: Set up Java
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: "21"
+
+      - name: Set up Android SDK
+        uses: android-actions/setup-android@v3
+        with:
+          packages: platform-tools
+
+      - name: Install frontend dependencies
+        run: npm ci
+
+      - name: Generate Android project and sync web assets
+        env:
+          SANAD_BUILD_VERSION: ${{ github.ref_name }}
+          SANAD_BUILD_COMMIT: ${{ github.sha }}
+          VITE_API_URL: ${{ secrets.VITE_API_URL }}
+          VITE_UPDATE_MANIFEST_URL: https://api.github.com/repos/youssefgms02-jpg/sanad/releases/latest
+        run: |
+          npm run build
+          npx cap add android
+          npx cap sync android
+          VERSION="${GITHUB_REF_NAME#v}"
+          sed -i "s/versionName \"[^\"]*\"/versionName \"$VERSION\"/" android/app/build.gradle
+
+      - name: Configure permanent Android signing
+        env:
+          ANDROID_KEYSTORE_BASE64: ${{ secrets.ANDROID_KEYSTORE_BASE64 }}
+          ANDROID_KEYSTORE_PASSWORD: ${{ secrets.ANDROID_KEYSTORE_PASSWORD }}
+          ANDROID_KEY_ALIAS: ${{ secrets.ANDROID_KEY_ALIAS }}
+          ANDROID_KEY_PASSWORD: ${{ secrets.ANDROID_KEY_PASSWORD }}
+        run: |
+          test -n "$ANDROID_KEYSTORE_BASE64"
+          mkdir -p android/app
+          printf '%s' "$ANDROID_KEYSTORE_BASE64" | base64 --decode > android/app/sanad-release.jks
+
+          python3 - <<'PY'
+          from pathlib import Path
+          import re
+
+          path = Path("android/app/build.gradle")
+          content = path.read_text()
+
+          signing = """    signingConfigs {
+                  release {
+                      storeFile file("sanad-release.jks")
+                      storePassword System.getenv("ANDROID_KEYSTORE_PASSWORD")
+                      keyAlias System.getenv("ANDROID_KEY_ALIAS")
+                      keyPassword System.getenv("ANDROID_KEY_PASSWORD")
+                  }
+              }
+
+          """
+
+          if "signingConfigs {" not in content:
+              content = content.replace("    buildTypes {", signing + "    buildTypes {", 1)
+
+          content, count = re.subn(
+              r"(buildTypes\s*\{\s*release\s*\{)",
+              r"\1\n            signingConfig signingConfigs.release",
+              content,
+              count=1
+          )
+
+          if count != 1:
+              raise SystemExit("Could not configure Android release signing")
+
+          path.write_text(content)
+          PY
+
+      - name: Build signed Android APK
+        working-directory: android
+        env:
+          ANDROID_KEYSTORE_PASSWORD: ${{ secrets.ANDROID_KEYSTORE_PASSWORD }}
+          ANDROID_KEY_ALIAS: ${{ secrets.ANDROID_KEY_ALIAS }}
+          ANDROID_KEY_PASSWORD: ${{ secrets.ANDROID_KEY_PASSWORD }}
+        run: ./gradlew assembleRelease --no-daemon
+
+      - name: Rename Android APK
+        run: cp android/app/build/outputs/apk/release/app-release.apk "SANAD-${GITHUB_REF_NAME}-android.apk"
+
+      - name: Upload Android APK as workflow artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: sanad-${{ github.ref_name }}-android
+          path: SANAD-${{ github.ref_name }}-android.apk
+          if-no-files-found: error
+
+      - name: Attach Android APK to GitHub Release
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: ${{ github.ref_name }}
+          name: SANAD ${{ github.ref_name }}
+          body: "SANAD Android signed release."
+          draft: false
+          prerelease: false
+          files: SANAD-${{ github.ref_name }}-android.apk
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

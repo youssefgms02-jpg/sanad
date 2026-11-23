@@ -1,0 +1,62 @@
+name: SANAD Windows
+
+on:
+  workflow_dispatch:
+  push:
+    tags: ["v*.*.*"]
+
+jobs:
+  windows:
+    runs-on: windows-latest
+    permissions:
+      contents: write
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+
+      - name: Set up Rust
+        uses: dtolnay/rust-toolchain@stable
+
+      - name: Install frontend dependencies
+        run: npm ci
+
+      - name: Sync Tauri version with release tag
+        shell: bash
+        env:
+          RELEASE_TAG: ${{ github.ref_name }}
+        run: |
+          node -e "const fs=require('fs'); const p='src-tauri/tauri.conf.json'; const c=JSON.parse(fs.readFileSync(p,'utf8')); c.version=process.env.RELEASE_TAG.replace(/^v/,''); fs.writeFileSync(p, JSON.stringify(c,null,2)+'\\n');"
+
+      - name: Build and publish signed Tauri updater artifacts
+        uses: tauri-apps/tauri-action@v0
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          TAURI_SIGNING_PRIVATE_KEY: ${{ secrets.TAURI_SIGNING_PRIVATE_KEY }}
+          TAURI_SIGNING_PRIVATE_KEY_PASSWORD: ${{ secrets.TAURI_SIGNING_PRIVATE_KEY_PASSWORD }}
+          SANAD_BUILD_VERSION: ${{ github.ref_name }}
+          SANAD_BUILD_COMMIT: ${{ github.sha }}
+          VITE_API_URL: ${{ secrets.VITE_API_URL }}
+          VITE_UPDATE_MANIFEST_URL: https://api.github.com/repos/youssefgms02-jpg/sanad/releases/latest
+        with:
+          tagName: ${{ github.ref_name }}
+          releaseName: "SANAD ${{ github.ref_name }}"
+          releaseBody: "تحديث رسمي لتطبيق سَنَد. يتم التحقق من التوقيع قبل التثبيت."
+          releaseDraft: false
+          prerelease: false
+          args: --verbose
+
+      - name: Upload Windows installers as workflow artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: sanad-windows-${{ github.ref_name }}
+          path: |
+            src-tauri/target/release/bundle/msi/*.msi
+            src-tauri/target/release/bundle/nsis/*.exe
+            src-tauri/target/release/bundle/**/*.sig
+          if-no-files-found: error
