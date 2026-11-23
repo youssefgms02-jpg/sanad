@@ -162,7 +162,7 @@ def main():
             for url in item["official_sources"]:
                 if url.strip() not in existing_urls:
                     existing_urls.append(url.strip())
-            combined_sources = "\\n".join(existing_urls)
+            combined_sources = "\n".join(existing_urls)
             if len(combined_sources) > 1000:
                 raise SystemExit(
                     f"service id {service.id}: combined official_source is "
