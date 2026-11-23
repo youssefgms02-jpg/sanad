@@ -20,6 +20,19 @@ function getSourceUrls(value) {
     return [...new Set(matches.map((url) => url.replace(/[.,،؛:!?)}\]»]+$/g, "")))];
 }
 
+function parseFaqs(value) {
+    const raw = displayText(value).trim();
+    if (!raw) return [];
+    try {
+        const parsed = JSON.parse(raw);
+        return Array.isArray(parsed)
+            ? parsed.filter((item) => item && typeof item === "object" && (item.question || item.answer))
+            : [];
+    } catch {
+        return [];
+    }
+}
+
 function ServiceDetails() {
     const { serviceId } = useParams();
     const [service, setService] = useState(null);
@@ -123,6 +136,7 @@ function ServiceDetails() {
     }, [serviceId]);
 
     const sources = service ? getSourceUrls(service.official_source) : [];
+    const faqItems = service ? parseFaqs(service.faqs) : [];
 
     return (
         <>
@@ -175,13 +189,25 @@ function ServiceDetails() {
                                     ["متابعة الطلب", service.follow_up],
                                     ["التظلمات والشكاوى", service.appeals],
                                     ["نصائح مهمة قبل التقديم", service.practical_tips],
-                                    ["أسئلة شائعة", service.faqs],
                                 ].filter(([, value]) => value && String(value).trim()).map(([heading, value]) => (
                                     <section className="service-info-block" key={heading}>
                                         <h3>{heading}</h3>
                                         <p>{displayText(value)}</p>
                                     </section>
                                 ))}
+                                {faqItems.length > 0 && (
+                                    <section className="service-info-block service-faq-block">
+                                        <h3>أسئلة شائعة</h3>
+                                        <div className="service-faq-list">
+                                            {faqItems.map((faq, index) => (
+                                                <article className="service-faq-item" key={index}>
+                                                    {faq.question && <h4>{displayText(faq.question)}</h4>}
+                                                    {faq.answer && <p>{displayText(faq.answer)}</p>}
+                                                </article>
+                                            ))}
+                                        </div>
+                                    </section>
+                                )}
                                 <section className="service-locations-block">
                                     <h3>أماكن الحصول على الخدمة</h3>
                                     {locations.length > 0 ? (
