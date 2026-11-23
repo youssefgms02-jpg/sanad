@@ -43,7 +43,13 @@ def validate_source_url(url):
     if not isinstance(url, str) or not url.strip():
         return False
     parsed = urlparse(url.strip())
-    return parsed.scheme.lower() == "https" and bool(parsed.netloc)
+    scheme = parsed.scheme.lower()
+    host = (parsed.hostname or "").lower()
+    # One legacy official complaints portal is still published as HTTP.
+    # Keep this narrow exception; all other sources must use HTTPS.
+    return bool(host) and (
+        scheme == "https" or (scheme == "http" and host == "www.shakwa.eg")
+    )
 
 
 def load_all_records():
