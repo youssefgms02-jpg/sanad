@@ -2077,3 +2077,211 @@ html[data-theme="dark"] .service-detail-page .service-detail-actions button {
     .service-detail-page .service-info-block,
     .service-detail-page .service-detail-actions button { transition: none; }
 }
+
+
+/* SANAD — service details: premium single-column reading flow */
+.service-detail-page {
+    max-width: 980px;
+    margin-inline: auto;
+    padding: 22px clamp(16px, 3vw, 34px) 64px;
+}
+.service-detail-page > h1 {
+    max-width: 860px;
+    margin: 8px auto 16px;
+    padding-bottom: 15px;
+    border-bottom: 1px solid #d8e6ef;
+    color: #123b5b;
+    font-size: clamp(27px, 3.2vw, 38px);
+    font-weight: 800;
+    line-height: 1.5;
+    letter-spacing: -.35px;
+}
+.service-detail-page .service-detail-actions {
+    max-width: 860px;
+    margin: 0 auto 18px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+}
+.service-detail-page .service-detail-actions button {
+    min-height: 42px;
+    padding: 9px 15px;
+    border: 1px solid #d7e5ee;
+    border-radius: 12px;
+    background: #fff;
+    color: #24516e;
+    font-weight: 650;
+    box-shadow: 0 2px 7px #123b5b08;
+}
+.service-detail-page .service-lead {
+    max-width: 860px;
+    margin: 0 auto 28px;
+    padding: 21px 23px;
+    border: 1px solid #d5e7f0;
+    border-right: 5px solid #2585a5;
+    border-radius: 17px;
+    background: linear-gradient(135deg, #fff 0%, #f1f8fc 100%);
+    box-shadow: 0 8px 24px #123b5b0b;
+    color: #49677d;
+    font-size: 16px;
+    line-height: 2.05;
+}
+.service-detail-page > h2 {
+    max-width: 860px;
+    margin: 0 auto 15px;
+    color: #174766;
+    font-size: 22px;
+    font-weight: 800;
+}
+.service-detail-page .service-details-panel {
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: stretch;
+    gap: 14px !important;
+    width: 100%;
+    max-width: 860px;
+    margin: 0 auto;
+}
+.service-detail-page .service-info-block,
+.service-detail-page .service-locations-block,
+.service-detail-page .service-source-block,
+.service-detail-page .service-report-form {
+    display: block;
+    width: 100%;
+    min-width: 0;
+    margin: 0;
+    padding: 21px 23px;
+    border: 1px solid #dce8ef;
+    border-radius: 16px;
+    background: #fff;
+    box-shadow: 0 5px 18px #153d5b0a;
+    text-align: right;
+    transition: border-color .2s ease, box-shadow .2s ease, transform .2s ease;
+}
+.service-detail-page .service-info-block:hover {
+    border-color: #b7d3e1;
+    box-shadow: 0 9px 25px #153d5b12;
+    transform: translateY(-1px);
+}
+.service-detail-page .service-info-block h3,
+.service-detail-page .service-locations-block h3,
+.service-detail-page .service-source-block h3,
+.service-detail-page .service-report-form h3 {
+    display: flex;
+    align-items: center;
+    gap: 11px;
+    margin: 0 0 12px;
+    color: #174766;
+    font-size: 17px;
+    font-weight: 800;
+    line-height: 1.6;
+}
+.service-detail-page .service-info-block h3::before,
+.service-detail-page .service-locations-block h3::before,
+.service-detail-page .service-source-block h3::before {
+    content: "";
+    width: 10px;
+    height: 10px;
+    flex: 0 0 10px;
+    border-radius: 3px;
+    background: #2585a5;
+    box-shadow: 0 0 0 5px #eaf4f8;
+}
+.service-detail-page .service-info-block p,
+.service-detail-page .service-locations-block p,
+.service-detail-page .service-source-block p {
+    margin: 0;
+    color: #526c80;
+    font-size: 15px;
+    line-height: 2.05;
+    white-space: pre-line;
+    overflow-wrap: anywhere;
+}
+.service-detail-page .service-info-block:nth-child(4) {
+    border-right: 5px solid #2585a5;
+    background: linear-gradient(120deg, #fff 0%, #f3f9fc 100%);
+}
+.service-detail-page .service-faq-item {
+    padding: 15px 0;
+    border-top: 1px solid #e7eef3;
+}
+.service-detail-page .service-faq-item:first-child { border-top: 0; }
+.service-detail-page .service-faq-item h4 {
+    margin: 0 0 7px;
+    color: #174766;
+    font-size: 15px;
+    font-weight: 750;
+}
+.service-detail-page .service-location-card {
+    margin-top: 12px;
+    padding: 16px;
+    border: 1px solid #e1ebf1;
+    border-radius: 12px;
+    background: #f8fbfd;
+}
+.service-detail-page .service-location-card p + p { margin-top: 6px; }
+.service-detail-page .service-source-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    padding: 0;
+    list-style: none;
+}
+.service-detail-page .service-source-list a,
+.service-detail-page .service-map-search-link {
+    display: inline-flex;
+    align-items: center;
+    min-height: 38px;
+    padding: 7px 13px;
+    border: 1px solid #d5e6ef;
+    border-radius: 10px;
+    background: #f2f8fb;
+    font-weight: 700;
+}
+html[data-theme="dark"] .service-detail-page > h1,
+html[data-theme="dark"] .service-detail-page > h2,
+html[data-theme="dark"] .service-detail-page .service-info-block h3,
+html[data-theme="dark"] .service-detail-page .service-locations-block h3,
+html[data-theme="dark"] .service-detail-page .service-source-block h3,
+html[data-theme="dark"] .service-detail-page .service-faq-item h4 {
+    color: var(--sanad-dark-text);
+    border-color: var(--sanad-dark-border);
+}
+html[data-theme="dark"] .service-detail-page .service-lead,
+html[data-theme="dark"] .service-detail-page .service-info-block,
+html[data-theme="dark"] .service-detail-page .service-locations-block,
+html[data-theme="dark"] .service-detail-page .service-source-block,
+html[data-theme="dark"] .service-detail-page .service-report-form {
+    border-color: var(--sanad-dark-border);
+    background: var(--sanad-dark-elevated);
+}
+html[data-theme="dark"] .service-detail-page .service-info-block p,
+html[data-theme="dark"] .service-detail-page .service-locations-block p,
+html[data-theme="dark"] .service-detail-page .service-source-block p,
+html[data-theme="dark"] .service-detail-page .service-lead {
+    color: var(--sanad-dark-muted);
+}
+html[data-theme="dark"] .service-detail-page .service-location-card,
+html[data-theme="dark"] .service-detail-page .service-source-list a,
+html[data-theme="dark"] .service-detail-page .service-map-search-link {
+    border-color: var(--sanad-dark-border);
+    background: var(--sanad-dark-bg);
+}
+html[data-theme="dark"] .service-detail-page .service-faq-item {
+    border-color: var(--sanad-dark-border);
+}
+@media (max-width: 640px) {
+    .service-detail-page { padding: 14px 13px 48px; }
+    .service-detail-page > h1 { font-size: 25px; }
+    .service-detail-page .service-lead { padding: 16px; font-size: 14px; }
+    .service-detail-page .service-info-block,
+    .service-detail-page .service-locations-block,
+    .service-detail-page .service-source-block,
+    .service-detail-page .service-report-form { padding: 17px; }
+    .service-detail-page .service-info-block p,
+    .service-detail-page .service-locations-block p,
+    .service-detail-page .service-source-block p { font-size: 14px; }
+}
+@media (prefers-reduced-motion: reduce) {
+    .service-detail-page .service-info-block { transition: none; }
+}
