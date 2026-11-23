@@ -16,6 +16,13 @@ class Service(Base):
     eligibility = Column(Text)
     documents = Column(Text)
     steps = Column(Text)
+    fees = Column(Text)
+    processing_time = Column(Text)
+    application_methods = Column(Text)
+    follow_up = Column(Text)
+    appeals = Column(Text)
+    faqs = Column(Text)
+    practical_tips = Column(Text)
 
     official_source = Column(String(1000))
     last_reviewed = Column(DateTime(timezone=True))

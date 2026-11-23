@@ -16,6 +16,13 @@ def service_to_dict(service):
         "eligibility": service.eligibility,
         "documents": service.documents,
         "steps": service.steps,
+        "fees": getattr(service, "fees", None),
+        "processing_time": getattr(service, "processing_time", None),
+        "application_methods": getattr(service, "application_methods", None),
+        "follow_up": getattr(service, "follow_up", None),
+        "appeals": getattr(service, "appeals", None),
+        "faqs": getattr(service, "faqs", None),
+        "practical_tips": getattr(service, "practical_tips", None),
         "official_source": service.official_source,
         "source_urls": extract_http_urls(service.official_source),
         "last_reviewed": service.last_reviewed.isoformat() if service.last_reviewed else None,
@@ -51,7 +58,11 @@ def search_score(service, normalized_query):
     eligibility = normalize_search_text(service.eligibility)
     documents = normalize_search_text(service.documents)
     steps = normalize_search_text(service.steps)
-    searchable = f"{name} {description} {authority} {eligibility} {documents} {steps}"
+    extended = " ".join(normalize_search_text(getattr(service, field, "")) for field in (
+        "fees", "processing_time", "application_methods", "follow_up",
+        "appeals", "faqs", "practical_tips",
+    ))
+    searchable = f"{name} {description} {authority} {eligibility} {documents} {steps} {extended}"
 
     score = 100 if normalized_query in name else (45 if normalized_query in searchable else 0)
     query_words = normalized_query.split()

@@ -168,6 +168,20 @@ function ServiceDetails() {
                                     <h3>خطوات الحصول على الخدمة</h3>
                                     <p>{displayText(service.steps) || "يرجى اتباع التعليمات المنشورة لدى الجهة الرسمية."}</p>
                                 </section>
+                                {[
+                                    ["الرسوم والتكلفة", service.fees],
+                                    ["المدة المتوقعة", service.processing_time],
+                                    ["طرق التقديم", service.application_methods],
+                                    ["متابعة الطلب", service.follow_up],
+                                    ["التظلمات والشكاوى", service.appeals],
+                                    ["نصائح مهمة قبل التقديم", service.practical_tips],
+                                    ["أسئلة شائعة", service.faqs],
+                                ].filter(([, value]) => value && String(value).trim()).map(([heading, value]) => (
+                                    <section className="service-info-block" key={heading}>
+                                        <h3>{heading}</h3>
+                                        <p>{displayText(value)}</p>
+                                    </section>
+                                ))}
                                 <section className="service-locations-block">
                                     <h3>أماكن الحصول على الخدمة</h3>
                                     {locations.length > 0 ? (

@@ -144,3 +144,22 @@
     text-decoration: none;
 }
 .assistant-suggestions a:hover { text-decoration: underline; }
+
+
+.assistant-sources {
+    margin-top: 10px;
+    padding-top: 9px;
+    border-top: 1px solid var(--border-color, #dce5ee);
+}
+
+.assistant-sources a {
+    display: block;
+    overflow-wrap: anywhere;
+}
+
+.assistant-source-status {
+    display: block;
+    margin-top: 7px;
+    color: var(--muted-text, #64748b);
+    line-height: 1.6;
+}
