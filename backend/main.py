@@ -566,7 +566,7 @@ def ask_assistant(
             None,
         )
         if requested_value and str(requested_value).strip():
-            answer = f"{requested_label}:\\n{str(requested_value).strip()}"
+            answer = f"{requested_label}:\n{str(requested_value).strip()}"
         else:
             answer = f"المعلومات الخاصة بـ«{requested_label}» غير متوفرة أو لم يتم توثيقها لهذه الخدمة في سَنَد. لن أفترض تفاصيل غير مؤكدة."
     else:
@@ -575,19 +575,19 @@ def ask_assistant(
         for _field, label, value in details:
             value = (value or "").strip()
             if value:
-                sections.append(f"{label}:\\n{value}")
+                sections.append(f"{label}:\n{value}")
             else:
                 missing.append(label)
 
-        answer = f"{selected.name}\\n\\n" + "\\n\\n".join(sections)
+        answer = f"{selected.name}\n\n" + "\n\n".join(sections)
         if missing:
             answer += (
-                "\\n\\nمعلومات لم تُستكمل أو لم يتم توثيقها في سجل سَنَد: "
+                "\n\nمعلومات لم تُستكمل أو لم يتم توثيقها في سجل سَنَد: "
                 + "، ".join(missing)
                 + ". لن أفترض تفاصيل غير مؤكدة."
             )
         answer += (
-            "\\n\\nالمصدر المسجل للخدمة: "
+            "\n\nالمصدر المسجل للخدمة: "
             + (selected.official_source or "لم يُضف رابط مصدر في السجل")
         )
 
