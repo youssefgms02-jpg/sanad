@@ -30,6 +30,7 @@ from assistant_context import build_assistant_context
 from rate_limit import limiter, client_key
 from service_locations import map_search_url
 from assistant_web_search import search_web
+from assistant_intent import detect_requested_detail
 
 
 # اقرأ إعدادات backend/.env حتى عند تشغيل Uvicorn من مجلد مختلف.
@@ -544,39 +545,51 @@ def ask_assistant(
         }
 
     details = [
-        ("نبذة عن الخدمة", selected.description),
-        ("الجهة المسؤولة", selected.authority),
-        ("شروط الاستفادة", selected.eligibility),
-        ("المستندات المطلوبة", selected.documents),
-        ("خطوات الحصول على الخدمة", selected.steps),
-        ("الرسوم والتكلفة", selected.fees),
-        ("المدة المتوقعة", selected.processing_time),
-        ("طرق التقديم", selected.application_methods),
-        ("متابعة الطلب", selected.follow_up),
-        ("التظلمات والشكاوى", selected.appeals),
-        ("نصائح مهمة قبل التقديم", selected.practical_tips),
-        ("أسئلة شائعة", selected.faqs),
+        ("description", "نبذة عن الخدمة", selected.description),
+        ("authority", "الجهة المسؤولة", selected.authority),
+        ("eligibility", "شروط الاستفادة", selected.eligibility),
+        ("documents", "المستندات المطلوبة", selected.documents),
+        ("steps", "خطوات الحصول على الخدمة", selected.steps),
+        ("fees", "الرسوم والتكلفة", selected.fees),
+        ("processing_time", "المدة المتوقعة", selected.processing_time),
+        ("application_methods", "طرق التقديم", selected.application_methods),
+        ("follow_up", "متابعة الطلب", selected.follow_up),
+        ("appeals", "التظلمات والشكاوى", selected.appeals),
+        ("practical_tips", "نصائح مهمة قبل التقديم", selected.practical_tips),
+        ("faqs", "أسئلة شائعة", selected.faqs),
     ]
-    sections = []
-    missing = []
-    for label, value in details:
-        value = (value or "").strip()
-        if value:
-            sections.append(f"{label}:\n{value}")
-        else:
-            missing.append(label)
-
-    answer = f"{selected.name}\n\n" + "\n\n".join(sections)
-    if missing:
-        answer += (
-            "\n\nمعلومات لم تُستكمل أو لم يتم توثيقها في سجل سَنَد: "
-            + "، ".join(missing)
-            + ". لن أفترض تفاصيل غير مؤكدة."
+    requested_detail = detect_requested_detail(question)
+    if requested_detail:
+        requested_field, requested_label = requested_detail
+        requested_value = next(
+            (value for field, _label, value in details if field == requested_field),
+            None,
         )
-    answer += (
-        "\n\nالمصدر المسجل للخدمة: "
-        + (selected.official_source or "لم يُضف رابط مصدر في السجل")
-    )
+        if requested_value and str(requested_value).strip():
+            answer = f"{requested_label}:\\n{str(requested_value).strip()}"
+        else:
+            answer = f"المعلومات الخاصة بـ«{requested_label}» غير متوفرة أو لم يتم توثيقها لهذه الخدمة في سَنَد. لن أفترض تفاصيل غير مؤكدة."
+    else:
+        sections = []
+        missing = []
+        for _field, label, value in details:
+            value = (value or "").strip()
+            if value:
+                sections.append(f"{label}:\\n{value}")
+            else:
+                missing.append(label)
+
+        answer = f"{selected.name}\\n\\n" + "\\n\\n".join(sections)
+        if missing:
+            answer += (
+                "\\n\\nمعلومات لم تُستكمل أو لم يتم توثيقها في سجل سَنَد: "
+                + "، ".join(missing)
+                + ". لن أفترض تفاصيل غير مؤكدة."
+            )
+        answer += (
+            "\\n\\nالمصدر المسجل للخدمة: "
+            + (selected.official_source or "لم يُضف رابط مصدر في السجل")
+        )
 
     # Search the web for the named service and the user's specific question.
     web_results = search_web(
@@ -590,7 +603,7 @@ def ask_assistant(
     return {
         "answer": answer,
         "service": service_to_dict(selected),
-        "suggestions": [
+        "suggestions": [] if requested_detail else [
             {"id": item.id, "name": item.name, "description": item.description}
             for item in related
         ],
