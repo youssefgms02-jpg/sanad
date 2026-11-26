@@ -219,8 +219,8 @@ function ServiceDetails() {
                                                     {location.working_hours && <p>مواعيد العمل: {location.working_hours}</p>}
                                                     {location.phone && <p>الهاتف: {location.phone}</p>}
                                                     <div className="service-location-actions">
-                                                        <a href={location.official_source} target="_blank" rel="noopener noreferrer">المصدر الرسمي</a>
-                                                        {location.map_url && <a href={location.map_url} target="_blank" rel="noopener noreferrer">فتح الخريطة</a>}
+                                                        <a href={location.official_source} target="_self" rel="noopener noreferrer">المصدر الرسمي</a>
+                                                        {location.map_url && <a href={location.map_url} target="_self" rel="noopener noreferrer">فتح الخريطة</a>}
                                                     </div>
                                                 </article>
                                             ))}
@@ -228,7 +228,7 @@ function ServiceDetails() {
                                     ) : (
                                         <>
                                             <p>لا توجد فروع موثقة منشورة لهذه الخدمة حاليًا.</p>
-                                            {mapSearchUrl && <a className="service-map-search-link" href={mapSearchUrl} target="_blank" rel="noopener noreferrer">البحث عن أماكن قريبة في الخريطة</a>}
+                                            {mapSearchUrl && <a className="service-map-search-link" href={mapSearchUrl} target="_self" rel="noopener noreferrer">البحث عن أماكن قريبة في الخريطة</a>}
                                             <p className="service-source-note">نتيجة الخريطة بحث عام وليست إثباتًا لعنوان رسمي؛ تأكد من الجهة قبل الذهاب.</p>
                                         </>
                                     )}
@@ -262,7 +262,7 @@ function ServiceDetails() {
                                         <ul className="service-source-list">
                                             {sources.map((url) => (
                                                 <li key={url}>
-                                                    <a href={url} target="_blank" rel="noopener noreferrer">
+                                                    <a href={url} target="_self" rel="noopener noreferrer">
                                                         {new URL(url).hostname.replace(/^www\./, "")}
                                                     </a>
                                                 </li>
