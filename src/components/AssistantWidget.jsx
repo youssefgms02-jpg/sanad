@@ -99,7 +99,7 @@ function AssistantWidget() {
                                     <div className="assistant-suggestions assistant-sources">
                                         <strong>مصادر من الإنترنت:</strong>
                                         {message.sources.map((source, sourceIndex) => (
-                                            <a key={source.url || sourceIndex} href={source.url} target="_blank" rel="noopener noreferrer">
+                                            <a key={source.url || sourceIndex} href={source.url} target="_self" rel="noopener noreferrer">
                                                 {source.official_hint ? "مصدر حكومي محتمل: " : ""}{source.title}
                                             </a>
                                         ))}
