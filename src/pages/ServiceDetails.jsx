@@ -60,7 +60,13 @@ function ServiceDetails() {
     }
 
     async function handleShare() {
-        const shareData = { title: service?.name || "سَنَد", text: service?.description || "", url: window.location.href };
+        const publicAppUrl = (import.meta.env.VITE_PUBLIC_APP_URL || "https://sanad-web-amber.vercel.app").replace(/\/$/, "");
+        const shareUrl = publicAppUrl + "/services/" + encodeURIComponent(serviceId);
+        const shareData = {
+            title: service?.name || "سَنَد",
+            text: service?.description || "",
+            url: shareUrl,
+        };
         if (navigator.share) {
             try { await navigator.share(shareData); } catch (shareError) {
                 if (shareError.name !== "AbortError") setError("تعذرت مشاركة الرابط.");
@@ -68,10 +74,10 @@ function ServiceDetails() {
             return;
         }
         try {
-            await navigator.clipboard.writeText(window.location.href);
+            await navigator.clipboard.writeText(shareUrl);
             setError("تم نسخ رابط الخدمة.");
         } catch {
-            setError("انسخ رابط الصفحة من شريط العنوان لمشاركتها.");
+            setError("تعذر نسخ الرابط. حاول مرة أخرى.");
         }
     }
 
