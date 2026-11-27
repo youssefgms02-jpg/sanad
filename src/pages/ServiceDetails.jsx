@@ -55,8 +55,11 @@ function ServiceDetails() {
         return () => window.removeEventListener("sanad:favorites-changed", syncFavorites);
     }, [serviceId]);
 
-    function handleFavorite() {
-        setFavorite(toggleFavorite(serviceId));
+    async function handleFavorite() {
+        const nextFavorite = toggleFavorite(serviceId);
+        setFavorite(nextFavorite);
+        // Keep the local list responsive, then persist it to the signed-in account.
+        await syncFavoritesToAccount(API_BASE_URL);
     }
 
     async function handleShare() {
