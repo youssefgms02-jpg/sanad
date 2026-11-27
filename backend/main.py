@@ -254,7 +254,7 @@ def check_request_origin(request: Request):
         raise HTTPException(status_code=403, detail="مصدر الطلب غير مسموح")
 
 
-def set_auth_cookie(response: Response, token: str):
+def auth_cookie_settings():
     # The web frontend and API are hosted on separate Vercel subdomains.
     # Browsers therefore require a Secure, SameSite=None cookie for credentialed
     # cross-origin requests in production. Keep local development on Lax.
@@ -267,6 +267,11 @@ def set_auth_cookie(response: Response, token: str):
         same_site = same_site_default
     if same_site == "none" and not secure:
         raise HTTPException(status_code=500, detail="إعدادات ملفات تعريف الارتباط غير آمنة")
+    return secure, same_site
+
+
+def set_auth_cookie(response: Response, token: str):
+    secure, same_site = auth_cookie_settings()
     response.set_cookie(
         key=AUTH_COOKIE_NAME,
         value=token,
@@ -382,12 +387,13 @@ def logout_account(request: Request, response: Response, db: Session = Depends(g
     if session:
         session.revoked_at = datetime.now(timezone.utc)
         db.commit()
+    secure, same_site = auth_cookie_settings()
     response.delete_cookie(
         key=AUTH_COOKIE_NAME,
         path="/",
         httponly=True,
-        secure=os.getenv("SANAD_COOKIE_SECURE", "false").lower() == "true",
-        samesite=os.getenv("SANAD_COOKIE_SAMESITE", "lax").lower(),
+        secure=secure,
+        samesite=same_site,
     )
     return {"message": "تم تسجيل الخروج"}
 
