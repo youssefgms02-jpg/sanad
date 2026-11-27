@@ -59,11 +59,14 @@ def search_web(query: str, count: int = 5) -> list[dict]:
         snippet = str(item.get("content") or "").strip()
         if not url.startswith("https://") or not title:
             continue
+        # SANAD is a public-service guide: never present third-party pages as
+        # official sources. Keep only Egyptian government-domain results.
+        if not is_official_hint(url):
+            continue
         results.append({
             "title": title[:240],
             "url": url[:1000],
             "snippet": snippet[:700],
-            "official_hint": is_official_hint(url),
+            "official_hint": True,
         })
-    results.sort(key=lambda item: not item["official_hint"])
     return results[:count]
