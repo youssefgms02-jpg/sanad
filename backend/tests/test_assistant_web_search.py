@@ -12,10 +12,12 @@ class AssistantWebSearchTests(unittest.TestCase):
 
     def test_official_domain_hint_checks_hostname_boundary(self):
         self.assertTrue(is_official_hint("https://www.moss.gov.eg/page"))
+        self.assertTrue(is_official_hint("https://psm.gov.eg/services/1"))
         self.assertFalse(is_official_hint("https://moss.gov.eg.example.com/page"))
+        self.assertFalse(is_official_hint("https://example.com/moss.gov.eg/page"))
 
     @patch("assistant_web_search.urlopen")
-    def test_prioritizes_official_egyptian_domains(self, mocked_urlopen):
+    def test_filters_non_official_results(self, mocked_urlopen):
         class FakeResponse:
             def __enter__(self):
                 return self
@@ -33,9 +35,9 @@ class AssistantWebSearchTests(unittest.TestCase):
         with patch.dict(os.environ, {"SANAD_TAVILY_API_KEY": "test-key"}):
             results = search_web("تكافل وكرامة", count=2)
 
+        self.assertEqual(len(results), 1)
         self.assertEqual(results[0]["title"], "وزارة التضامن")
         self.assertTrue(results[0]["official_hint"])
-        self.assertEqual(len(results), 2)
 
 
 if __name__ == "__main__":
