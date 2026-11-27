@@ -3,7 +3,7 @@ import { resolve } from "node:path";
 
 const root = resolve(process.cwd());
 const packageJson = JSON.parse(await readFile(resolve(root, "package.json"), "utf8"));
-const version = (process.env.SANAD_BUILD_VERSION || packageJson.version).replace(/^v/, "");
+const version = (process.env.SANAD_BUILD_VERSION || packageJson.version).replace(/^stable-v/, "").replace(/^v/, "");
 const commit = process.env.GITHUB_SHA || process.env.SANAD_BUILD_COMMIT || "local";
 const payload = {
     version,
