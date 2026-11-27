@@ -1,4 +1,4 @@
-﻿name: SANAD Android APK
+name: SANAD Android APK
 
 on:
   workflow_dispatch:
@@ -31,6 +31,10 @@ jobs:
         uses: android-actions/setup-android@v3
         with:
           packages: platform-tools
+
+      - name: Prepare release metadata
+        shell: bash
+        run: echo "RELEASE_VERSION=${GITHUB_REF_NAME#stable-v}" >> "$GITHUB_ENV"
 
       - name: Install frontend dependencies
         run: npm ci
@@ -118,8 +122,8 @@ jobs:
         uses: softprops/action-gh-release@v2
         with:
           tag_name: ${{ github.ref_name }}
-          name: SANAD STABLE V1.0.0
-          body: "SANAD STABLE V1.0.0 — النسخة المستقرة الرسمية لتطبيق سَنَد على Android."
+          name: SANAD STABLE V${{ env.RELEASE_VERSION }}
+          body: "SANAD STABLE V${{ env.RELEASE_VERSION }} — النسخة المستقرة الرسمية لتطبيق سَنَد على Android."
           draft: false
           prerelease: false
           files: SANAD-${{ github.ref_name }}-android.apk
