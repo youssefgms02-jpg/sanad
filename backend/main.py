@@ -31,6 +31,7 @@ from rate_limit import limiter, client_key
 from service_locations import map_search_url
 from assistant_web_search import search_web
 from assistant_intent import detect_requested_detail
+from assistant_service_match import resolve_assistant_service
 
 
 # اقرأ إعدادات backend/.env حتى عند تشغيل Uvicorn من مجلد مختلف.
@@ -506,10 +507,10 @@ def ask_assistant(
     question = normalize_search_text(data.question)
     services = db.query(Service).filter(Service.status == "published").all()
 
-    selected = None
+    page_service = None
     if data.service_id is not None:
-        selected = next((item for item in services if item.id == data.service_id), None)
-        if selected is None:
+        page_service = next((item for item in services if item.id == data.service_id), None)
+        if page_service is None:
             raise HTTPException(status_code=404, detail="الخدمة غير موجودة أو غير منشورة")
 
     stop_words = {
@@ -521,13 +522,7 @@ def ask_assistant(
     }
     terms = [word for word in question.split() if len(word) > 1 and word not in stop_words]
     search_phrase = " ".join(terms) or question
-
-    if selected is None:
-        ranked = [(search_score(item, search_phrase), item) for item in services]
-        ranked = [(score, item) for score, item in ranked if score > 0]
-        ranked.sort(key=lambda pair: (-pair[0], pair[1].id))
-        if ranked:
-            selected = ranked[0][1]
+    selected = resolve_assistant_service(services, search_phrase, page_service=page_service)
 
     if selected is None:
         web_results = search_web(f"{data.question} مصر الموقع الرسمي", count=5)
