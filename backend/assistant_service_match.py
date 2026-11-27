@@ -7,16 +7,26 @@ from service_catalog import normalize_search_text, search_score
 
 
 GENERIC_SERVICE_WORDS = {
-    "استخراج", "اصدار", "اصدار", "طلب", "خدمه", "الخدمه",
-    "الحصول", "على", "من", "المميكنه", "المميكنة",
+    "استخراج", "اصدار", "طلب", "تقديم", "خدمه", "الحصول", "على", "من",
+    "المميكنه",
 }
+
+
+def _canonical_match_word(word):
+    """Normalize common Arabic definite-article variants for service matching."""
+    word = normalize_search_text(word)
+    if word.startswith("ال") and len(word) > 4:
+        word = word[2:]
+    return word
 
 
 def _distinctive_name_words(service):
     name = normalize_search_text(getattr(service, "name", ""))
     return [
-        word for word in name.split()
-        if len(word) > 2 and word not in GENERIC_SERVICE_WORDS
+        _canonical_match_word(word)
+        for word in name.split()
+        if len(_canonical_match_word(word)) > 2
+        and _canonical_match_word(word) not in GENERIC_SERVICE_WORDS
     ]
 
 
@@ -26,15 +36,20 @@ def resolve_assistant_service(services, question, page_service=None):
     On the home page, retain the existing ranked-search behavior.
     """
     normalized_question = normalize_search_text(question)
-    question_words = set(normalized_question.split())
+    question_words = {
+        _canonical_match_word(word)
+        for word in normalized_question.split()
+        if len(_canonical_match_word(word)) > 1
+    }
     explicit_matches = []
 
     for service in services:
         name_words = _distinctive_name_words(service)
         if not name_words:
             continue
-        matched = sum(word in question_words for word in set(name_words))
-        required = min(2, len(set(name_words)))
+        unique_name_words = set(name_words)
+        matched = sum(word in question_words for word in unique_name_words)
+        required = min(2, len(unique_name_words))
         if matched >= required:
             score = search_score(service, normalized_question)
             explicit_matches.append((score, service))
