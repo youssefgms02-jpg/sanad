@@ -3,7 +3,7 @@
 on:
   workflow_dispatch:
   push:
-    tags: ["v*.*.*"]
+    tags: ["stable-v*.*.*"]
 
 jobs:
   android-release:
@@ -45,7 +45,7 @@ jobs:
           npm run build
           npx cap add android
           npx cap sync android
-          VERSION="${GITHUB_REF_NAME#v}"
+          VERSION="${GITHUB_REF_NAME#stable-v}"
           sed -i "s/versionName \"[^\"]*\"/versionName \"$VERSION\"/" android/app/build.gradle
 
       - name: Configure permanent Android signing
@@ -115,8 +115,8 @@ jobs:
         uses: softprops/action-gh-release@v2
         with:
           tag_name: ${{ github.ref_name }}
-          name: SANAD ${{ github.ref_name }}
-          body: "SANAD Android signed release."
+          name: SANAD STABLE V1.0.0
+          body: "SANAD STABLE V1.0.0 — النسخة المستقرة الرسمية لتطبيق سَنَد على Android."
           draft: false
           prerelease: false
           files: SANAD-${{ github.ref_name }}-android.apk
