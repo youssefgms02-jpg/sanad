@@ -3,7 +3,7 @@ name: SANAD Windows
 on:
   workflow_dispatch:
   push:
-    tags: ["v*.*.*"]
+    tags: ["stable-v*.*.*"]
 
 jobs:
   windows:
@@ -31,7 +31,7 @@ jobs:
         env:
           RELEASE_TAG: ${{ github.ref_name }}
         run: |
-          node -e "const fs=require('fs'); const p='src-tauri/tauri.conf.json'; const c=JSON.parse(fs.readFileSync(p,'utf8')); c.version=process.env.RELEASE_TAG.replace(/^v/,''); fs.writeFileSync(p, JSON.stringify(c,null,2)+'\\n');"
+          node -e "const fs=require('fs'); const p='src-tauri/tauri.conf.json'; const c=JSON.parse(fs.readFileSync(p,'utf8')); c.version=process.env.RELEASE_TAG.replace(/^stable-v/,''); fs.writeFileSync(p, JSON.stringify(c,null,2)+'\\n');"
 
       - name: Build and publish signed Tauri updater artifacts
         uses: tauri-apps/tauri-action@v0
@@ -45,8 +45,8 @@ jobs:
           VITE_UPDATE_MANIFEST_URL: https://api.github.com/repos/youssefgms02-jpg/sanad/releases/latest
         with:
           tagName: ${{ github.ref_name }}
-          releaseName: "SANAD ${{ github.ref_name }}"
-          releaseBody: "تحديث رسمي لتطبيق سَنَد. يتم التحقق من التوقيع قبل التثبيت."
+          releaseName: "SANAD STABLE V1.0.0"
+          releaseBody: "SANAD STABLE V1.0.0 — النسخة المستقرة الرسمية لتطبيق سَنَد. يتم التحقق من التوقيع قبل التثبيت."
           releaseDraft: false
           prerelease: false
           args: --verbose
