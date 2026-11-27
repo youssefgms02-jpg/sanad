@@ -46,7 +46,10 @@ jobs:
           npx cap add android
           npx cap sync android
           VERSION="${GITHUB_REF_NAME#stable-v}"
+          IFS=. read -r MAJOR MINOR PATCH <<< "$VERSION"
+          VERSION_CODE=$((MAJOR * 10000 + MINOR * 100 + PATCH))
           sed -i "s/versionName \"[^\"]*\"/versionName \"$VERSION\"/" android/app/build.gradle
+          sed -i "s/versionCode [0-9]*/versionCode $VERSION_CODE/" android/app/build.gradle
 
       - name: Configure permanent Android signing
         env:
